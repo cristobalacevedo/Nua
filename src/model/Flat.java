@@ -109,5 +109,49 @@ public class Flat extends Estate {
 	public void setHasBalcony(boolean hasBalcony) {
 		this.hasBalcony = hasBalcony;
 	}
+	
+	public void setHasParking(boolean hasParking) {
+		this.hasParking = hasParking;
+	}
+	
+	public void setInCondominium(boolean inCondominium) {
+		this.inCondominium = inCondominium;
+	}
+	
+	public void setHasElevator(boolean hasElevator) {
+		this.hasElevator = hasElevator;
+	}
+	
+	public void setHasPool(boolean hasPool) {
+		this.hasPool = hasPool;
+	}
+	
+	public void setHasGym(boolean hasGym) {
+		this.hasGym = hasGym;
+	}
+	
+	public void setHasLaundry(boolean hasLaundry) {
+		this.hasLaundry = hasLaundry;
+	}
+	
+	public void setHasSecurity(boolean hasSecurity) {
+		this.hasSecurity = hasSecurity;
+	}
+	
+	public void setHasStorage(boolean hasStorage) {
+		this.hasStorage = hasStorage;
+	}
+	
+	// END SETTERS
+	
+	@Override
+	public String toString() {
+		return "Flat{" + "id=" + getId() + ", area=" + getArea() + ", address='" + getAddress() + '\'' + ", city='"
+				+ getCity() + '\'' + ", region='" + getRegion() + '\'' + ", description='" + getDescription() + '\''
+				+ ", numRooms=" + numRooms + ", numBathrooms=" + numBathrooms + ", hasBalcony=" + hasBalcony
+				+ ", hasParking=" + hasParking + ", inCondominium=" + inCondominium + ", hasElevator=" + hasElevator
+				+ ", hasPool=" + hasPool + ", hasGym=" + hasGym + ", hasLaundry=" + hasLaundry
+				+ ", hasSecurity=" + hasSecurity + ", hasStorage=" + hasStorage + '}';
+	}
 
 }

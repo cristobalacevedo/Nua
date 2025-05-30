@@ -1,14 +1,16 @@
 package model;
 
-public class Person {
+public abstract class Person {
 	private int id;
 	private String name;
+	private String surname;
 	private String email;
 	private String phone;
 
-	public Person(int id, String name, String email, String phone) {
+	public Person(int id, String name, String surname, String email, String phone) {
 		this.id = id;
 		this.name = name;
+		this.surname = surname;
 		this.email = email;
 		this.phone = phone;
 	}
@@ -23,6 +25,10 @@ public class Person {
 		return name;
 	}
 
+	public String getSurname() {
+		return surname;
+	}
+	
 	public String getEmail() {
 		return email;
 	}
@@ -31,7 +37,7 @@ public class Person {
 		return phone;
 	}
 	
-	// GETTERS
+	// END GETTERS
 
 	// SETTERS
 
@@ -42,6 +48,10 @@ public class Person {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
 
 	public void setEmail(String email) {
 		this.email = email;
@@ -51,6 +61,11 @@ public class Person {
 		this.phone = phone;
 	}
 	
-	// SETTERS
+	// END SETTERS
 	
+	@Override
+	public String toString() {
+		return "Person{" + "id=" + id + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email
+				+ '\'' + ", phone='" + phone + '\'' + '}';
+	}
 }

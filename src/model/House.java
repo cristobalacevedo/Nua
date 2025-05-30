@@ -83,9 +83,47 @@ public class House extends Estate {
 	public void setNumRooms(int numRooms) {
 		this.numRooms = numRooms;
 	}
+	
+	public void setNumBathrooms(int numBathrooms) {
+		this.numBathrooms = numBathrooms;
+	}
+	
+	public void setNumFloors(int numFloors) {
+		this.numFloors = numFloors;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public void setHasGarden(boolean hasGarden) {
 		this.hasGarden = hasGarden;
 	}
+	
+	public void setHasPatio(boolean hasPatio) {
+		this.hasPatio = hasPatio;
+	}
+	
+	public void setInCondominium(boolean inCondominium) {
+		this.inCondominium = inCondominium;
+	}
+	
+	public void setHasParking(boolean hasParking) {
+		this.hasParking = hasParking;
+	}
 
+	public void setHasPool(boolean hasPool) {
+		this.hasPool = hasPool;
+	}
+	
+	// END SETTERS
+
+	@Override
+	public String toString() {
+		return "House{" + "id=" + getId() + ", area=" + getArea() + ", address='" + getAddress() + '\'' + ", city='"
+				+ getCity() + '\'' + ", region='" + getRegion() + '\'' + ", description='" + getDescription() + '\''
+				+ ", numRooms=" + numRooms + ", numBathrooms=" + numBathrooms + ", numFloors=" + numFloors + ", type='"
+				+ type + '\'' + ", hasGarden=" + hasGarden + ", hasPatio=" + hasPatio + ", inCondominium="
+				+ inCondominium + ", hasParking=" + hasParking + ", hasPool=" + hasPool + '}';
+	}
 }
