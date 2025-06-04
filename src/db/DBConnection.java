@@ -1,4 +1,4 @@
-package model;
+package db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -17,4 +17,12 @@ public class DBConnection {
         }
         return conn;
     }
-}
+
+	public static Connection getConnection() {
+		Connection conn = connect();
+		if (conn == null) {
+			System.out.println("Error al conectar a la base de datos."); // SPANISH
+		}
+		return conn;
+	}
+}	

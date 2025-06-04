@@ -8,15 +8,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 // This class represents the Reports panel in the application.
-public class PropertiesPanel extends JPanel {
+public class ReportsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnBack = new JButton("Atrás"); // SPANISH
 
-	public PropertiesPanel(Container contentPane, Menu menu) {
-		setBackground(Color.MAGENTA);
+	public ReportsPanel(Container contentPane, Menu menu) {
+		setBackground(Color.YELLOW);
 		setForeground(Color.BLACK);
-		setName("PropertiesPanel"); // Set the name of the panel
+		setName("ReportsPanel"); // Set the name of the panel
 		setLayout(null);
 		setBounds(0, 0, 1080, 700);
 		setVisible(true);

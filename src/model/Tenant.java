@@ -4,9 +4,9 @@ public class Tenant extends Person {
 	private boolean isActive; // true if the tenant is currently active, false otherwise
 	private boolean isRenting; // true if the tenant is currently renting, false otherwise
 
-	public Tenant(int id, String name, String surname, String email, String phone, boolean isActive,
+	public Tenant(int id, String rut, String name, String surname, String email, String phone, String type, boolean isActive,
 			boolean isRenting) {
-		super(id, name, surname, email, phone);
+		super(rut, name, surname, email, phone, type);
 		this.isActive = isActive;
 		this.isRenting = isRenting;
 	}
@@ -21,6 +21,10 @@ public class Tenant extends Person {
 		return isRenting;
 	}
 	
+	public String getType() {
+		return "tenant"; // Overriding to return a fixed type for Tenant
+	}
+	
 	// END GETTERS
 	
 	// SETTERS
@@ -33,14 +37,17 @@ public class Tenant extends Person {
 		this.isRenting = isRenting;
 	}
 	
+	public void setType(String type) {
+		type = "tenant"; // Overriding to return a fixed type for Tenant
+	}
+	
 	// END SETTERS
 	
 	@Override
 	public String toString() {
-		return "Tenant{" + "id=" + getId() + ", name='" + getName() + '\'' + ", surname='" + getSurname() + '\''
-				+ ", email='" + getEmail() + '\'' + ", phone='" + getPhone() + '\'' + ", isActive=" + isActive
-				+ ", isRenting=" + isRenting + '}';
-	}	
+		return "Tenant{name='" + getName() + '\'' + ", surname='" + getSurname() + '\''
+				+ ", email='" + getEmail() + '\'' + ", phone='" + getPhone() + '\'' + '}';
+	}
 
 }
 

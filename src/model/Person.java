@@ -1,26 +1,30 @@
 package model;
 
 public abstract class Person {
-	private int id;
+	
+	private String rut;
 	private String name;
 	private String surname;
 	private String email;
 	private String phone;
+	private String type; // "tenant" or "landlord"
 
-	public Person(int id, String name, String surname, String email, String phone) {
-		this.id = id;
+	public Person(String rut, String name, String surname, String email, String phone, String type) {
+		
+		this.rut = rut;
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
 		this.phone = phone;
+		this.type = type;
 	}
 
 	// GETTERS
 
-	public int getId() {
-		return id;
+	public String getRut() {
+		return rut;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
@@ -37,14 +41,18 @@ public abstract class Person {
 		return phone;
 	}
 	
+	public String getType() {
+		return type;
+	}
+	
 	// END GETTERS
 
 	// SETTERS
 
-	public void setId(int id) {
-		this.id = id;
+	public void setRut(String rut) {
+		this.rut = rut;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -61,11 +69,15 @@ public abstract class Person {
 		this.phone = phone;
 	}
 	
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	// END SETTERS
 	
 	@Override
 	public String toString() {
-		return "Person{" + "id=" + id + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email
-				+ '\'' + ", phone='" + phone + '\'' + '}';
+		return "Person{rut='" + rut + '\'' + ", name='" + name + '\'' + ", surname='" + surname
+				+ '\'' + ", email='" + email + '\'' + ", phone='" + phone + '\'' + ", type='" + type + '\'' + '}';
 	}
 }

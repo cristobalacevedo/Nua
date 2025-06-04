@@ -2,7 +2,7 @@ package view;
 
 import java.awt.EventQueue;
 
-import model.DBConnection;
+import db.DBConnection;
 
 public class Main {
 
