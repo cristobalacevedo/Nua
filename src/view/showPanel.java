@@ -16,7 +16,7 @@ public class showPanel {
     	contentPane.revalidate();
     	contentPane.repaint(); 
     	newPanel.setVisible(true);
-    	newPanel.setBounds(0, 0, 1080, 700);
+    	newPanel.setBounds(0, 0, 1250, 700);
     	newPanel.setLayout(null);
     }
 }

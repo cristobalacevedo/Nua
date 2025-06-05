@@ -26,4 +26,6 @@ public class LandlordController {
             System.out.println(l);
         }
     }
+    
+    
 }

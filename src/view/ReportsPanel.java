@@ -18,7 +18,7 @@ public class ReportsPanel extends JPanel {
 		setForeground(Color.BLACK);
 		setName("ReportsPanel"); // Set the name of the panel
 		setLayout(null);
-		setBounds(0, 0, 1080, 700);
+		setBounds(0, 0, 1250, 700);
 		setVisible(true);
 		
 		// Back Button

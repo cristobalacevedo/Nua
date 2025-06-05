@@ -1,12 +1,16 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.UIManager.*;
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import java.awt.Font;
@@ -25,34 +29,20 @@ public class Menu extends JFrame {
 	private JButton btnReports = new JButton("Informes"); // SPANISH;
 	private JButton btnSettings = new JButton("Configuración"); // SPANISH;
 	private JButton btnExit = new JButton("Salir"); // SPANISH
-	
+	private boolean isMenuActive = true;
 	private JPanel clonePanel; // Clone of the menu panel
 
 	// Menu constructor
 	public Menu() {
 		
-		// THEME
-		// Set the look and feel to Nimbus if available, otherwise use the default look and feel
-		try {
-		    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-		        if ("Nimbus".equals(info.getName())) {
-		            UIManager.setLookAndFeel(info.getClassName());
-		            break;
-		        }
-		    }
-		} catch (Exception e) {
-		    // If Nimbus is not available, you can set the GUI to another look and feel.
-		}
-		// END THEME
-		
-		
 		// Parameters for the JFrame
 		setResizable(false); // Prevent resizing of the window
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(0, 0, 1080, 700);
+		setBounds(0, 0, 1250, 700);
 		setLocationRelativeTo(null); // Center the window on screen
 		setTitle("Nua - Menú Principal"); // Set the title of the window") - SPANISH
 		contentPane = new JPanel();
+		contentPane.setName("Menu"); // Set the name of the panel to "Menu"
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -104,6 +94,7 @@ public class Menu extends JFrame {
 		// Landlords Button Action
 		btnLandlords.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
 				// Show the LandlordsPanel when button is clicked
 				showPanel.showPanel(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
 			}
@@ -112,6 +103,7 @@ public class Menu extends JFrame {
 		// Properties Button Action
 		btnProperties.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
 				// Show the PropertiesPanel when button is clicked
 				showPanel.showPanel(contentPane, new PropertiesPanel(contentPane, Menu.this)); 
 			}
@@ -120,6 +112,7 @@ public class Menu extends JFrame {
 		// Rentals Button Action
 		btnRentals.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
 				// Show the RentalsPanel when button is clicked
 				showPanel.showPanel(contentPane, new RentalsPanel(contentPane, Menu.this)); 
 			}
@@ -128,6 +121,7 @@ public class Menu extends JFrame {
 		// Tenants Button Action
 		btnTenants.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
 				// Show the TenantsPanel when button is clicked
 				showPanel.showPanel(contentPane, new TenantsPanel(contentPane, Menu.this)); 
 			}
@@ -136,21 +130,42 @@ public class Menu extends JFrame {
 		// Reports Button Action
 		btnReports.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
 				// Show the ReportsPanel when button is clicked
 				showPanel.showPanel(contentPane, new ReportsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
 		
-		// Exit Button Action
-		btnExit.addActionListener(exitEvent -> {
-			System.exit(0); // Exit the application
-				});
+		// Exit Button Action, or if the ESC key is pressed, exit the application
+		btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0); // Exit the application
+			}
+		});
+		
+		// Este código va en el constructor del JFrame "Menu"
+		getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+		.put(KeyStroke.getKeyStroke("ESCAPE"), "exitApp");
+
+		getRootPane().getActionMap().put("exitApp", new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (isMenuActive) {
+				System.exit(0);
+			}
+		}
+		});
 		
 		// --- END BUTTON ACTIONS --- //
 		
 		clonePanel = MenuClone(); // Create a clone of the menu panel
 		
+		
+	}
+	
+	public void setMenuActive(boolean active) {
+		this.isMenuActive = active;
 	}
 	
 	// MENU CLONE
@@ -158,31 +173,61 @@ public class Menu extends JFrame {
 	public JPanel MenuClone(){
 		
 		JPanel menuClone = new JPanel();
-		
+		menuClone.setName("MenuClone");
 		JButton btnLandlordsClone = new JButton(btnLandlords.getText());
 		btnLandlordsClone.setFont(btnLandlords.getFont());
 		btnLandlordsClone.setBounds(btnLandlords.getBounds());
-		btnLandlordsClone.addActionListener(e -> showPanel.showPanel(contentPane, new LandlordsPanel(contentPane, Menu.this))); 
+		btnLandlordsClone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
+				// Show the LandlordsPanel when button is clicked
+				showPanel.showPanel(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
+			}
+		});
 		
 		JButton btnPropertiesClone = new JButton(btnProperties.getText());
 		btnPropertiesClone.setFont(btnProperties.getFont());
 		btnPropertiesClone.setBounds(btnProperties.getBounds());
-		btnPropertiesClone.addActionListener(e -> showPanel.showPanel(contentPane, new PropertiesPanel(contentPane, Menu.this)));
+		btnPropertiesClone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
+				// Show the PropertiesPanel when button is clicked
+				showPanel.showPanel(contentPane, new PropertiesPanel(contentPane, Menu.this)); 
+			}
+		});
 		
 		JButton btnRentalsClone = new JButton(btnRentals.getText());
 		btnRentalsClone.setFont(btnRentals.getFont());
 		btnRentalsClone.setBounds(btnRentals.getBounds());
-		btnRentalsClone.addActionListener(e -> showPanel.showPanel(contentPane, new RentalsPanel(contentPane, Menu.this)));
+		btnRentalsClone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
+				// Show the RentalsPanel when button is clicked
+				showPanel.showPanel(contentPane, new RentalsPanel(contentPane, Menu.this)); 
+			}
+		});
 		
 		JButton btnTenantsClone = new JButton(btnTenants.getText());
 		btnTenantsClone.setFont(btnTenants.getFont());
 		btnTenantsClone.setBounds(btnTenants.getBounds());
-		btnTenantsClone.addActionListener(e -> showPanel.showPanel(contentPane, new TenantsPanel(contentPane, Menu.this)));
+		btnTenantsClone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
+				// Show the TenantsPanel when button is clicked
+				showPanel.showPanel(contentPane, new TenantsPanel(contentPane, Menu.this)); 
+			}
+		});
 		
 		JButton btnReportsClone = new JButton(btnReports.getText());
 		btnReportsClone.setFont(btnReports.getFont());
 		btnReportsClone.setBounds(btnReports.getBounds());
-		btnReportsClone.addActionListener(e -> showPanel.showPanel(contentPane, new ReportsPanel(contentPane, Menu.this)));
+		btnReportsClone.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				isMenuActive = false;
+				// Show the ReportsPanel when button is clicked
+				showPanel.showPanel(contentPane, new ReportsPanel(contentPane, Menu.this)); 
+			}
+		});
 		
 		JButton btnSettingsClone = new JButton(btnSettings.getText());
 		btnSettingsClone.setFont(btnSettings.getFont());
@@ -201,6 +246,20 @@ public class Menu extends JFrame {
 		menuClone.add(btnReportsClone);
 		menuClone.add(btnSettingsClone);
 		menuClone.add(btnExitClone);
+		
+		isMenuActive = true; // Set the menu as active
+		
+		getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+		.put(KeyStroke.getKeyStroke("ESCAPE"), "exitApp");
+
+		getRootPane().getActionMap().put("exitApp", new AbstractAction() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (isMenuActive) {
+				System.exit(0);
+			}
+		}
+		});
 		
 		return menuClone;
 	}

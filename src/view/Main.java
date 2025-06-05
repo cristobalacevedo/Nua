@@ -2,25 +2,28 @@ package view;
 
 import java.awt.EventQueue;
 
+import javax.swing.UIManager;
+
 import db.DBConnection;
 
 public class Main {
-
 	public static void main(String[] args) {
-		DBConnection.connect(); // Initialize the database connection
-		
-		// Launch the GUI application
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Menu frame = new Menu();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
+		try { 
+			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) { 
+				if ("Nimbus".equals(info.getName())) { 
+					UIManager.setLookAndFeel(info.getClassName());
+					break;
 				}
 			}
+		} catch (Exception e) {
+			// Nimbus no está disponible
+		}
+
+		// Después del Look & Feel
+		EventQueue.invokeLater(() -> {
+			Menu frame = new Menu();
+			frame.setVisible(true);
 		});
 	}
-
 }
 

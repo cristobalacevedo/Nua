@@ -7,14 +7,16 @@ public class Landlord extends Person{
 	
 	public Landlord(String rut, String name, String surname, String email, String phone, String type, boolean isActive, boolean hasRentals) {
 		super(rut, name, surname, email, phone, type);
+		this.isActive = isActive; // true by default
+		this.hasRentals = hasRentals; // false by default
 	}
 	
 	// GETTERS
-	public boolean isActive() {
+	public boolean getIsActive() {
 		return isActive;
 	}
 	
-	public boolean hasRentals() {
+	public boolean getHasRentals() {
 		return hasRentals;
 	}
 	
@@ -26,21 +28,17 @@ public class Landlord extends Person{
 	
 	// SETTERS
 	
-	public void setType(String type) {
-		type = "landlord";
-	}
-	
 	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
-	}
+	}
+
 	public void setHasRentals(boolean hasRentals) {
 		this.hasRentals = hasRentals;
 	}
-	
-	// END SETTERS
-		@Override
+
+	@Override
 	public String toString() {
-		return "Landlord{name='" + getName() + '\'' + ", surname='" + getSurname() + '\''
-				+ ", email='" + getEmail() + '\'' + ", phone='" + getPhone() + '\'' + '}';
+		return "Landlord{name='" + getName() + '\'' + ", surname='" + getSurname() + '\'' +
+				", email='" + getEmail() + '\'' + ", phone='" + getPhone() + '\'' + '}';
 	}
 }

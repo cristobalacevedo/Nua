@@ -18,7 +18,7 @@ public class TenantsPanel extends JPanel {
 		setForeground(Color.BLACK);
 		setName("TenantsPanel"); // Set the name of the panel
 		setLayout(null);
-		setBounds(0, 0, 1080, 700);
+		setBounds(0, 0, 1250, 700);
 		setVisible(true);
 		
 		// Back Button
