@@ -8,11 +8,12 @@ import java.util.*;
 
 public class LandlordDAO {
 
-    private Connection conn;
+	private Connection conn;
 
-    public LandlordDAO() {
-        this.conn = DBConnection.getConnection();
-    }
+	public LandlordDAO(Connection conn) {
+	        this.conn = conn;
+	    }
+
 
     public boolean save(Landlord landlord) {
         String insertPersonSQL = "INSERT INTO person (rut, name, surname, email, phone, type) VALUES (?, ?, ?, ?, ?, 'landlord')";
@@ -63,7 +64,7 @@ public class LandlordDAO {
             FROM person p
             JOIN landlord l ON p.id = l.person_id
         """;
-
+        Connection conn = DBConnection.getConnection();
         try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
@@ -85,14 +86,14 @@ public class LandlordDAO {
         return list;
     }
 	
-	public Landlord getByRut(String rut) {
+	public static Landlord getByRut(String rut) {
 	    String sql = """
 	        SELECT p.rut, p.name, p.surname, p.email, p.phone, p.type, l.isactive, l.hasrentals
 	        FROM person p
 	        JOIN landlord l ON p.id = l.person_id
 	        WHERE p.rut = ?
 	    """;
-
+	    Connection conn = DBConnection.getConnection();
 	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 	        stmt.setString(1, rut);
 	        ResultSet rs = stmt.executeQuery();

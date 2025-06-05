@@ -96,7 +96,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the LandlordsPanel when button is clicked
-				showPanel.showPanel(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -105,7 +105,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the PropertiesPanel when button is clicked
-				showPanel.showPanel(contentPane, new PropertiesPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new PropertiesPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -114,7 +114,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the RentalsPanel when button is clicked
-				showPanel.showPanel(contentPane, new RentalsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new RentalsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -123,7 +123,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the TenantsPanel when button is clicked
-				showPanel.showPanel(contentPane, new TenantsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new TenantsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -132,7 +132,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the ReportsPanel when button is clicked
-				showPanel.showPanel(contentPane, new ReportsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new ReportsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -181,7 +181,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the LandlordsPanel when button is clicked
-				showPanel.showPanel(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -192,7 +192,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the PropertiesPanel when button is clicked
-				showPanel.showPanel(contentPane, new PropertiesPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new PropertiesPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -203,7 +203,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the RentalsPanel when button is clicked
-				showPanel.showPanel(contentPane, new RentalsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new RentalsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -214,7 +214,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the TenantsPanel when button is clicked
-				showPanel.showPanel(contentPane, new TenantsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new TenantsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -225,7 +225,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the ReportsPanel when button is clicked
-				showPanel.showPanel(contentPane, new ReportsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new ReportsPanel(contentPane, Menu.this)); 
 			}
 		});
 		

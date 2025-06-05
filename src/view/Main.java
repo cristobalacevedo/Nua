@@ -21,6 +21,7 @@ public class Main {
 
 		// Después del Look & Feel
 		EventQueue.invokeLater(() -> {
+			DBConnection.connect();
 			Menu frame = new Menu();
 			frame.setVisible(true);
 		});

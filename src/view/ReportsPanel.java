@@ -28,7 +28,7 @@ public class ReportsPanel extends JPanel {
 		// Back Button ActionListener
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showPanel.showPanel(contentPane, menu.MenuClone());// Show the MenuPanel when back button is clicked
+				showPanel.show(contentPane, menu.MenuClone());// Show the MenuPanel when back button is clicked
 			}
 		});
 				

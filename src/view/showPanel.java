@@ -10,7 +10,7 @@ import javax.swing.JPanel;
  * removes all existing components from the content pane and adds the new panel.
  */
 public class showPanel {
-	public static void showPanel(Container contentPane, JPanel newPanel) {
+	public static void show(Container contentPane, JPanel newPanel) {
 		contentPane.removeAll();
     	contentPane.add(newPanel, BorderLayout.CENTER);
     	contentPane.revalidate();
