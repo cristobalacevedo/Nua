@@ -8,8 +8,11 @@ public abstract class Person {
 	private String email;
 	private String phone;
 	private String type; // "tenant" or "landlord"
+	private String bankName;
+	private String accountType;
+	private String accountNum;
 
-	public Person(String rut, String name, String surname, String email, String phone, String type) {
+	public Person(String rut, String name, String surname, String email, String phone, String type, String bankName, String accountType, String accountNum) {
 		
 		this.rut = rut;
 		this.name = name;
@@ -17,9 +20,24 @@ public abstract class Person {
 		this.email = email;
 		this.phone = phone;
 		this.type = type;
+		this.bankName = bankName;
+		this.accountType = accountType;
+		this.accountNum = accountNum;
 	}
 
-	// GETTERS
+	public Person(String rut, String name, String surname, String email, String phone, String bankName, String accountType, String accountNum) {
+		this.rut = rut;
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.phone = phone;
+		this.bankName = bankName;
+		this.accountType = accountType;
+		this.accountNum = accountNum;
+	}
+	
+	
+	// --- GETTERS --- //
 
 	public String getRut() {
 		return rut;
@@ -45,9 +63,22 @@ public abstract class Person {
 		return type;
 	}
 	
-	// END GETTERS
+	public String getBankName() {
+		return bankName;
+	}
+	
+	public String getAccountType() {
+		return accountType;
+	}
+	
+	public String getAccountNum() {
+		return accountNum;
+	}
+	
+	
+	// --- END GETTERS --- //
 
-	// SETTERS
+	// --- SETTERS --- //
 
 	public void setRut(String rut) {
 		this.rut = rut;
@@ -73,11 +104,24 @@ public abstract class Person {
 		this.type = type;
 	}
 	
-	// END SETTERS
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+	
+	public void setTypeAccount(String accountType) {
+		this.accountType = accountType;
+	}
+	
+	public void setNumAccount(String accountNum) {
+		this.accountNum = accountNum;
+	}
+	
+	// --- END SETTERS --- //
 	
 	@Override
 	public String toString() {
-		return "Person{rut='" + rut + '\'' + ", name='" + name + '\'' + ", surname='" + surname
-				+ '\'' + ", email='" + email + '\'' + ", phone='" + phone + '\'' + ", type='" + type + '\'' + '}';
+		return "Person [rut=" + rut + ", name=" + name + ", surname=" + surname + ", email=" + email + ", phone="
+				+ phone + ", type=" + type + ", bankName=" + bankName + ", typeAccount=" + accountType
+				+ ", NumAccount=" + accountNum + "]";
 	}
 }

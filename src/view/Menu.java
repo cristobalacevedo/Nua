@@ -95,8 +95,9 @@ public class Menu extends JFrame {
 		btnLandlords.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
+				setTitle("Nua - Propietarios"); // Update the title to reflect the current panel
 				// Show the LandlordsPanel when button is clicked
-				showPanel.show(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new LandlordsPanel(contentPane, Menu.this));
 			}
 		});
 		

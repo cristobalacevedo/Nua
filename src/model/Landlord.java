@@ -5,10 +5,14 @@ public class Landlord extends Person{
 	private boolean isActive; // true if the landlord is currently active, false otherwise
 	private boolean hasRentals; // true if the landlord has rentals, false otherwise
 	
-	public Landlord(String rut, String name, String surname, String email, String phone, String type, boolean isActive, boolean hasRentals) {
-		super(rut, name, surname, email, phone, type);
+	public Landlord(String rut, String name, String surname, String email, String phone, String type, boolean isActive, boolean hasRentals, String bankName, String accountType, String accountNum) {
+		super(rut, name, surname, email, phone, type, bankName, accountType, accountNum);
 		this.isActive = isActive; // true by default
 		this.hasRentals = hasRentals; // false by default
+	}
+	
+	public Landlord(String rut, String name, String surname, String email, String phone, String bankName, String accountType, String accountNum) {
+		super(rut, name, surname, email, phone, bankName, accountType, accountNum); // type is fixed as "landlord"
 	}
 	
 	// GETTERS
@@ -38,7 +42,7 @@ public class Landlord extends Person{
 
 	@Override
 	public String toString() {
-		return "Landlord{name='" + getName() + '\'' + ", surname='" + getSurname() + '\'' +
-				", email='" + getEmail() + '\'' + ", phone='" + getPhone() + '\'' + '}';
+		return "Landlord{name='" + getName() + '\'' + ", surname='" + getSurname() + '\'' + ", email='" + getEmail()
+				+ '\'' + ", phone='" + getPhone() + '\'' + '}';
 	}
 }

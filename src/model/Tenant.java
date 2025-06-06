@@ -4,9 +4,8 @@ public class Tenant extends Person {
 	private boolean isActive; // true if the tenant is currently active, false otherwise
 	private boolean isRenting; // true if the tenant is currently renting, false otherwise
 
-	public Tenant(int id, String rut, String name, String surname, String email, String phone, String type, boolean isActive,
-			boolean isRenting) {
-		super(rut, name, surname, email, phone, type);
+	public Tenant(int id, String rut, String name, String surname, String email, String phone, String type, String bankName, String typeAccount, String numAccount, boolean isActive, boolean isRenting) {
+		super(rut, name, surname, email, phone, type, bankName, typeAccount, numAccount);
 		this.isActive = isActive;
 		this.isRenting = isRenting;
 	}

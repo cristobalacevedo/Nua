@@ -4,6 +4,7 @@ import model.Landlord;
 import utils.RUTDocumentFilter;
 import utils.RUTValidator;
 import utils.FieldValidator;
+import dao.BankDAO;
 import dao.LandlordDAO;
 import dao.PersonDAO;
 import db.DBConnection;
@@ -19,6 +20,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
@@ -53,6 +55,7 @@ public class LandlordsPanel extends JPanel {
 	private JTextField txtEmail;
 	private JTextField txtPhone;
 	private JTextField txtNum;
+	private JLabel lblLandlords;;
 	private JLabel lblPersonalData;
 	private JLabel lblRut;
 	private JLabel lblName;
@@ -68,12 +71,13 @@ public class LandlordsPanel extends JPanel {
 	private JButton btnUpdate;
 	private JButton btnShowLL;
 	private Landlord actualLandlord; // Holds the currently selected landlord for updates or deletions
-	private JComboBox comboBox;
-	private JComboBox comboBox_1;
+	private JComboBox comboBank;
+	private JComboBox comboType;
+	
 
 	
 	public LandlordsPanel(Container contentPane, Menu menu) {
-		setBackground(new Color(153, 153, 153));
+		setBackground(new Color(187, 187, 187));
 		setForeground(Color.BLACK);
 		setName("LandlordsPanel"); 
 		setLayout(null);
@@ -122,13 +126,48 @@ public class LandlordsPanel extends JPanel {
 
 		        // Buscar solo si es válido
 		        if (RUTValidator.isValid(formattedRut)) {
-		            actualLandlord = LandlordDAO.getByRut(formattedRut); // usar RUT limpio para búsqueda
+		            actualLandlord = LandlordDAO.getByRut2(formattedRut); // usar RUT limpio para búsqueda
 
 		            if (actualLandlord != null) {
 		                txtName.setText(actualLandlord.getName());
 		                txtSurname.setText(actualLandlord.getSurname());
 		                txtEmail.setText(actualLandlord.getEmail());
 		                txtPhone.setText(actualLandlord.getPhone());
+		                
+//		             // Normalización defensiva por si hay errores de mayúsculas
+//		                String bankName = actualLandlord.getBankName();
+//		                String accountType = actualLandlord.getAccountType();
+//		                String accountNum = actualLandlord.getAccountNum();
+//
+//		                // Banco
+//		                if (bankName != null) {
+//		                    for (int i = 0; i < comboBank.getItemCount(); i++) {
+//		                        if (comboBank.getItemAt(i).equalsIgnoreCase(bankName)) {
+//		                            comboBank.setSelectedIndex(i);
+//		                            break;
+//		                        }
+//		                    }
+//		                }
+//
+//		                // Tipo de cuenta
+//		                if (accountType != null) {
+//		                    for (int i = 0; i < comboType.getItemCount(); i++) {
+//		                        if (comboType.getItemAt(i).equalsIgnoreCase(accountType)) {
+//		                            comboType.setSelectedIndex(i);
+//		                            break;
+//		                        }
+//		                    }
+//		                }
+//
+//		                // Número de cuenta
+//		                if (accountNum != null) {
+//		                    txtNum.setText(accountNum);
+//		                }
+//		              
+		                
+		                comboBank.setSelectedItem(actualLandlord.getBankName()); // Set selected bank
+		                comboType.setSelectedItem(actualLandlord.getAccountType()); // Set selected account type
+		                txtNum.setText(actualLandlord.getAccountNum()); // Set account number
 		                showEditButton();
 		                btnSave.setVisible(false);
 		                System.out.println("RUT Found: " + actualLandlord.getRut());
@@ -138,6 +177,9 @@ public class LandlordsPanel extends JPanel {
 		                btnSave.setVisible(true);
 		                actualLandlord = null;
 		                System.out.println("RUT Not Found: " + formattedRut);
+		                System.out.println("Banco: " + actualLandlord.getBankName());
+		                System.out.println("Tipo Cuenta: " + actualLandlord.getAccountType());
+		                System.out.println("N° Cuenta: " + actualLandlord.getAccountNum());
 		            }
 		        } else {
 		            cleanFields();
@@ -233,6 +275,15 @@ public class LandlordsPanel extends JPanel {
 		
 		// --- LABELS --- //
 		
+		// -- LANDLORDS PANEL TITLE -- //
+		
+		lblLandlords = new JLabel("Panel de Propietarios"); // SPANISH for "Landlords Panel"");
+		lblLandlords.setForeground(Color.GRAY);
+		lblLandlords.setFont(new Font("Noto Sans JP", Font.PLAIN, 16));
+		lblLandlords.setHorizontalAlignment(SwingConstants.CENTER);
+		lblLandlords.setBounds(508, 6, 187, 16);
+		add(lblLandlords);
+		
 		// -- PERSONAL DATA TITLE -- //
 		
 		lblPersonalData = new JLabel("Datos Personales"); // SPANISH for "Personal Data"
@@ -321,16 +372,37 @@ public class LandlordsPanel extends JPanel {
 		
 		// -- BANKS -- //
 		
-		comboBox = new JComboBox();
-		comboBox.setBounds(689, 164, 270, 30);
-		add(comboBox);
+		comboBank = new JComboBox();
+		comboBank.setBounds(689, 164, 270, 30);
+		add(comboBank);
 		
+		comboBank.addItem("Seleccione Banco..."); // SPANISH for "Select..."
 		
+		BankDAO bankDAO = new BankDAO(); 
+		List<String> bankNames = bankDAO.getAllBankNames();
+
+		for (String name : bankNames) {
+		    comboBank.addItem(name);
+		}
 		
+		// -- END BANKS -- //
+		
+		// -- ACCOUNT TYPES -- //
+		
+		comboType = new JComboBox();
+		comboType.setBounds(689, 206, 270, 30);
+		add(comboType);
+		
+		comboType.addItem("Seleccione Tipo de Cuenta..."); // SPANISH for "Select Account Type..."
+		comboType.addItem("Cuenta Corriente");
+		comboType.addItem("Cuenta Vista");
+		comboType.addItem("Cuenta de Ahorro");		
+		
+		// -- END ACCOUNT TYPES -- //
 		
 		// --- END COMBO BOXES --- //
 		
-		// ---------------------
+		// --------------------- //
 		
 		// --- SEPARATORS --- //
 		
@@ -343,22 +415,30 @@ public class LandlordsPanel extends JPanel {
 		
 		// --- END SEPARATORS --- //
 		
-		// ---------------------
+		// --------------------- //
 		
 		// --- BUTTONS --- //
 		
-		// Back Button
+		// -- BACK BUTTON -- //
+		
 		btnBack.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
 		btnBack.setBounds(50, 600, 131, 50);
 		add(btnBack);
 		
-	    // Save Button
+		// -- END BACK BUTTON -- //
+		
+	    // -- SAVE BUTTON -- //
+		
 		btnSave = new JButton("Guardar"); // SPANISH for "Save"
 		btnSave.setForeground(new Color(255, 255, 255));
 		btnSave.setBackground(new Color(0, 153, 0));
 		btnSave.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 22));
 		btnSave.setBounds(537, 404, 125, 58);
 		add(btnSave);
+		
+		// -- END SAVE BUTTON -- //
+		
+		// -- DELETE BUTTON -- //
 		
 		btnDelete = new JButton("Eliminar"); // SPANISH for "Delete"
 		btnDelete.setForeground(Color.WHITE);
@@ -368,6 +448,10 @@ public class LandlordsPanel extends JPanel {
 		btnDelete.setVisible(false); // Initially hidden until a landlord is selected for deletion
 		add(btnDelete);
 		
+		// -- END DELETE BUTTON -- //
+		
+		// -- UPDATE BUTTON -- //
+		
 		btnUpdate = new JButton("Actualizar"); // SPANISH for "Update"
 		btnUpdate.setForeground(Color.WHITE);
 		btnUpdate.setBackground(new Color(51, 153, 255));
@@ -376,14 +460,16 @@ public class LandlordsPanel extends JPanel {
 		btnUpdate.setVisible(false); // Initially hidden until a landlord is selected for update
 		add(btnUpdate);
 		
+		// -- END UPDATE BUTTON -- //
+		
+		// -- SHOW LANDLORDS LIST BUTTON -- //
+		
 		btnShowLL = new JButton("Ver Listado");
 		btnShowLL.setBounds(39, 43, 142, 45);
 		btnShowLL.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 20));
 		add(btnShowLL);
 		
-		comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(689, 206, 270, 30);
-		add(comboBox_1);
+		// -- END SHOW LANDLORDS LIST BUTTON -- //
 		
 		// --- END BUTTONS --- //
 		
@@ -499,6 +585,21 @@ public class LandlordsPanel extends JPanel {
 				    return;
 				}
 				
+				if (comboBank.getSelectedIndex() == 0) {
+				    Popup.show("Debe Seleccionar un Banco.", "error"); // SPANISH for "You must select a valid bank."
+				    return;
+				}
+				
+				if (comboType.getSelectedIndex() == 0) {
+					Popup.show("Debe Seleccionar un Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."																	
+					return;
+				}
+				
+				String selectedBankName = comboBank.getSelectedItem().toString();
+				int bankId = BankDAO.getIdByName(selectedBankName); // Asegúrate que este método exista
+				String accountType = comboType.getSelectedItem().toString();
+				String accountNum = txtNum.getText().trim();
+				
 				// Create a new Landlord object, defaulting to "landlord" type
 				Landlord landlord = new Landlord(
 					rut,
@@ -508,12 +609,15 @@ public class LandlordsPanel extends JPanel {
 					phone,
 				    "landlord", // Fixed type for Landlord
 					true,       // isActive
-					false       // hasRentals
+					false,       // hasRentals
+					bankDAO.getBankByName(comboBank.getSelectedItem().toString()), // Get the selected bank name
+					comboType.getSelectedItem().toString(), // Get the selected account type
+					txtNum.getText().trim() // Get the account number
 				);
 
 				// Save the landlord using DAO
 				LandlordDAO dao = new LandlordDAO(null);
-				boolean saved = dao.save(landlord);
+				boolean saved = dao.save(landlord, bankId, accountType, accountNum);
 
 				if (saved) {
 					Popup.show("Arrendador guardado correctamente.", "success"); // SPANISH for "Landlord saved successfully"
@@ -529,6 +633,7 @@ public class LandlordsPanel extends JPanel {
 		// Back Button ActionListener
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				 // Update the title to reflect the current panel
 				showPanel.show(contentPane, menu.MenuClone());// Show the MenuPanel when back button is clicked
 			}
 		});
@@ -554,6 +659,9 @@ public class LandlordsPanel extends JPanel {
 	    txtSurname.setText("");
 	    txtEmail.setText("");
 	    txtPhone.setText("");
+	    txtNum.setText("");
+	    comboBank.setSelectedIndex(0); // Reset to "Seleccione Banco..."
+	    comboType.setSelectedIndex(0); // Reset to "Seleccione Tipo de Cuenta..."
 	}
 	
 	private void showEditButton() {
