@@ -39,6 +39,8 @@ import javax.swing.JTable;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.JList;
+import javax.swing.JComboBox;
 
 // This class represents the Landlords Panel in the application.
 public class LandlordsPanel extends JPanel {
@@ -50,19 +52,28 @@ public class LandlordsPanel extends JPanel {
 	private JTextField txtSurname;
 	private JTextField txtEmail;
 	private JTextField txtPhone;
+	private JTextField txtNum;
+	private JLabel lblPersonalData;
 	private JLabel lblRut;
 	private JLabel lblName;
 	private JLabel lblSurname;
 	private JLabel lblEmail;
 	private JLabel lblPhone;
+	private JLabel lblBankData;
+	private JLabel lblBank;
+	private JLabel lblType;
+	private JLabel lblNum;
 	private JButton btnSave;
 	private JButton btnDelete;
 	private JButton btnUpdate;
 	private JButton btnShowLL;
 	private Landlord actualLandlord; // Holds the currently selected landlord for updates or deletions
+	private JComboBox comboBox;
+	private JComboBox comboBox_1;
+
 	
 	public LandlordsPanel(Container contentPane, Menu menu) {
-		setBackground(Color.LIGHT_GRAY);
+		setBackground(new Color(153, 153, 153));
 		setForeground(Color.BLACK);
 		setName("LandlordsPanel"); 
 		setLayout(null);
@@ -70,13 +81,15 @@ public class LandlordsPanel extends JPanel {
 		setVisible(true);
 		DBConnection.getConnection();
 		
+		// --------------------- //
+		
 		// --- TEXT FIELDS --- //
 		
-		// -- RUT --
+		// -- RUT -- //
 		
 		txtRut = new JTextField();
 		txtRut.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtRut.setBounds(126, 163, 220, 30);
+		txtRut.setBounds(302, 164, 270, 30);
 		add(txtRut);
 		txtRut.setColumns(10);
 		
@@ -90,32 +103,47 @@ public class LandlordsPanel extends JPanel {
         });
 		
 		txtRut.addKeyListener(new KeyAdapter() {
-		    @Override
+			@Override
 		    public void keyReleased(KeyEvent e) {
-		    	String cleanedRut = RUTValidator.cleanRUT(txtRut.getText());
-		       
-		    		if (RUTValidator.isValid(txtRut.getText())) {
-		    			actualLandlord = LandlordDAO.getByRut(txtRut.getText());
-		    			if (actualLandlord != null) {
-		    				txtName.setText(actualLandlord.getName());
-		    				txtSurname.setText(actualLandlord.getSurname());
-		    				txtEmail.setText(actualLandlord.getEmail());
-		    				txtPhone.setText(actualLandlord.getPhone());
-		    				showEditButton();
-		    				System.out.println("RUT Found: " + actualLandlord.getRut());
-		    			} else {
-		    				cleanFields();
-		    				hideEditButtons();
-		    				btnSave.setVisible(true);
-		    				actualLandlord = null; // Reset the current landlord
-		    				System.out.println("RUT Not Found: " + txtRut.getText().trim());
-		    			}
-		    		} else {
-		    			cleanFields();
-		    			hideEditButtons();
-		    			btnSave.setVisible(true);
-		       }
-		          
+		        String inputRut = txtRut.getText().toUpperCase();;
+		        //String cleaned = RUTValidator.cleanRUT(input);
+
+		        // No hacer nada si está vacío o es muy corto
+		        if (inputRut.length() < 2) return;
+
+		        // Aplicar formato en tiempo real
+		        String formattedRut = RUTValidator.formatRUT(inputRut).toUpperCase();;
+
+		        // Evitar bucle infinito al volver a escribir sobre el campo
+		        if (!inputRut.equals(formattedRut)) {
+		            txtRut.setText(formattedRut);
+		            txtRut.setCaretPosition(txtRut.getText().length()); // Mover cursor al final
+		        }
+
+		        // Buscar solo si es válido
+		        if (RUTValidator.isValid(formattedRut)) {
+		            actualLandlord = LandlordDAO.getByRut(formattedRut); // usar RUT limpio para búsqueda
+
+		            if (actualLandlord != null) {
+		                txtName.setText(actualLandlord.getName());
+		                txtSurname.setText(actualLandlord.getSurname());
+		                txtEmail.setText(actualLandlord.getEmail());
+		                txtPhone.setText(actualLandlord.getPhone());
+		                showEditButton();
+		                btnSave.setVisible(false);
+		                System.out.println("RUT Found: " + actualLandlord.getRut());
+		            } else {
+		                cleanFields();
+		                hideEditButtons();
+		                btnSave.setVisible(true);
+		                actualLandlord = null;
+		                System.out.println("RUT Not Found: " + formattedRut);
+		            }
+		        } else {
+		            cleanFields();
+		            hideEditButtons();
+		            btnSave.setVisible(true);
+		        }
 		    }
 		});
 		
@@ -148,60 +176,78 @@ public class LandlordsPanel extends JPanel {
 //		    }
 //		});
 		
-		// -- END RUT --
+		// -- END RUT -- //
 		
-		// -- NAME --
+		// -- NAME -- //
 		
 		txtName = new JTextField();
 		txtName.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtName.setBounds(126, 204, 220, 30);
+		txtName.setBounds(302, 206, 270, 30);
 		add(txtName);
 		txtName.setColumns(10);
 		
-		// -- END NAME --
+		// -- END NAME -- //
 		
-		// -- SURNAME --
+		// -- SURNAME -- //
 		
 		txtSurname = new JTextField();
 		txtSurname.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtSurname.setBounds(126, 245, 220, 30);
+		txtSurname.setBounds(302, 245, 270, 30);
 		add(txtSurname);
 		txtSurname.setColumns(10);
 		
-		// -- END SURNAME --
+		// -- END SURNAME -- //
 		
-		// -- EMAIL --
+		// -- EMAIL -- //
 		
 		txtEmail = new JTextField();
 		txtEmail.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtEmail.setBounds(126, 286, 220, 30);
+		txtEmail.setBounds(302, 286, 270, 30);
 		add(txtEmail);
 		txtEmail.setColumns(10);
 		
-		// -- END EMAIL --
+		// -- END EMAIL -- //
 		
-		// -- PHONE --
+		// -- PHONE -- //
 		
 		txtPhone = new JTextField();
 		txtPhone.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtPhone.setBounds(126, 327, 220, 30);
+		txtPhone.setBounds(302, 328, 270, 30);
 		add(txtPhone);
 		txtPhone.setColumns(10);
 		
 		// -- END PHONE -- //
 		
+		// -- BANK NUMBER -- //
+	
+		txtNum = new JTextField();
+		txtNum.setBounds(689, 249, 270, 30);
+		add(txtNum);
+		txtNum.setColumns(10);
+		
+		// -- END BANK NUMBER -- //
 		
 		// --- END TEXT FIELDS --- //
 		
-		
+		// --------------------- //
 		
 		// --- LABELS --- //
+		
+		// -- PERSONAL DATA TITLE -- //
+		
+		lblPersonalData = new JLabel("Datos Personales"); // SPANISH for "Personal Data"
+		lblPersonalData.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
+		lblPersonalData.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPersonalData.setBounds(267, 113, 242, 39);
+		add(lblPersonalData);
+		
+		// -- END PERSONAL DATA TITLE --
 		
 		// -- RUT --
 		
 		lblRut = new JLabel("RUT:"); // SPANISH for "RUT"
 		lblRut.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblRut.setBounds(24, 159, 43, 30);
+		lblRut.setBounds(211, 164, 43, 30);
 		add(lblRut);
 		
 		// -- END RUT --
@@ -210,7 +256,7 @@ public class LandlordsPanel extends JPanel {
 		
 		lblName = new JLabel("Nombre:"); // SPANISH for "Name"
 		lblName.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblName.setBounds(24, 193, 92, 45);
+		lblName.setBounds(211, 205, 92, 30);
 		add(lblName);
 		
 		// -- END NAME --
@@ -219,7 +265,7 @@ public class LandlordsPanel extends JPanel {
 		
 		lblSurname = new JLabel("Apellido:"); // SPANISH for "Surname"
 		lblSurname.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblSurname.setBounds(24, 239, 92, 40);
+		lblSurname.setBounds(211, 245, 92, 30);
 		add(lblSurname);
 		
 		// -- END SURNAME --
@@ -228,7 +274,7 @@ public class LandlordsPanel extends JPanel {
 		
 		lblEmail = new JLabel("Email:"); // SPANISH for "Email"
 		lblEmail.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblEmail.setBounds(24, 286, 92, 26);
+		lblEmail.setBounds(211, 286, 92, 30);
 		add(lblEmail);
 		
 		// -- END EMAIL --
@@ -237,12 +283,54 @@ public class LandlordsPanel extends JPanel {
 		
 		lblPhone = new JLabel("Teléfono:"); // SPANISH for "Phone"
 		lblPhone.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblPhone.setBounds(24, 323, 92, 31);
+		lblPhone.setBounds(211, 328, 92, 30);
 		add(lblPhone);
 		
 		// -- END PHONE --
 		
+		// -- BANK DATA -- 
+		
+		lblBankData = new JLabel("Datos Bancarios"); // SPANISH for "Bank Data"
+		lblBankData.setHorizontalAlignment(SwingConstants.CENTER);
+		lblBankData.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
+		lblBankData.setBounds(670, 113, 242, 39);
+		add(lblBankData);
+		
+		lblBank = new JLabel("Banco:"); // SPANISH for "Bank"
+		lblBank.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+		lblBank.setBounds(622, 164, 64, 30);
+		add(lblBank);
+		
+		lblType = new JLabel("Tipo:"); // SPANISH for "Account Type"
+		lblType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+		lblType.setBounds(622, 206, 77, 30);
+		add(lblType);
+		
+		lblNum = new JLabel("Nº : "); // SPANISH for "Account Number"
+		lblNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+		lblNum.setBounds(622, 245, 64, 30);
+		add(lblNum);
+		
+		// -- END BANK DATA -- //
+		
 		// --- END LABELS --- //
+		
+		// ---------------------
+		
+		// --- COMBO BOXES --- //
+		
+		// -- BANKS -- //
+		
+		comboBox = new JComboBox();
+		comboBox.setBounds(689, 164, 270, 30);
+		add(comboBox);
+		
+		
+		
+		
+		// --- END COMBO BOXES --- //
+		
+		// ---------------------
 		
 		// --- SEPARATORS --- //
 		
@@ -250,49 +338,56 @@ public class LandlordsPanel extends JPanel {
 		separator.setForeground(Color.GRAY);
 		separator.setBackground(Color.GRAY);
 		separator.setOrientation(SwingConstants.VERTICAL);
-		separator.setBounds(358, 163, 12, 233);
+		separator.setBounds(598, 164, 12, 233);
 		add(separator);
 		
 		// --- END SEPARATORS --- //
 		
+		// ---------------------
+		
 		// --- BUTTONS --- //
 		
 		// Back Button
-		btnBack.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 16));
-		btnBack.setBounds(50, 600, 100, 30);
+		btnBack.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
+		btnBack.setBounds(50, 600, 131, 50);
 		add(btnBack);
 		
 	    // Save Button
 		btnSave = new JButton("Guardar"); // SPANISH for "Save"
-		btnSave.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 16));
-		btnSave.setBounds(246, 389, 100, 30);
+		btnSave.setForeground(new Color(255, 255, 255));
+		btnSave.setBackground(new Color(0, 153, 0));
+		btnSave.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 22));
+		btnSave.setBounds(537, 404, 125, 58);
 		add(btnSave);
 		
 		btnDelete = new JButton("Eliminar"); // SPANISH for "Delete"
 		btnDelete.setForeground(Color.WHITE);
 		btnDelete.setBackground(Color.RED);
 		btnDelete.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 14));
-		btnDelete.setBounds(100, 389, 92, 30);
+		btnDelete.setBounds(287, 390, 92, 30);
 		btnDelete.setVisible(false); // Initially hidden until a landlord is selected for deletion
 		add(btnDelete);
 		
 		btnUpdate = new JButton("Actualizar"); // SPANISH for "Update"
 		btnUpdate.setForeground(Color.WHITE);
-		btnUpdate.setBackground(Color.BLUE);
-		btnUpdate.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 14));
-		btnUpdate.setBounds(246, 390, 100, 30);
+		btnUpdate.setBackground(new Color(51, 153, 255));
+		btnUpdate.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 22));
+		btnUpdate.setBounds(531, 404, 142, 58);
 		btnUpdate.setVisible(false); // Initially hidden until a landlord is selected for update
 		add(btnUpdate);
 		
 		btnShowLL = new JButton("Ver Listado");
-		btnShowLL.setBounds(50, 479, 142, 45);
+		btnShowLL.setBounds(39, 43, 142, 45);
 		btnShowLL.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 20));
 		add(btnShowLL);
 		
-
+		comboBox_1 = new JComboBox();
+		comboBox_1.setBounds(689, 206, 270, 30);
+		add(comboBox_1);
+		
 		// --- END BUTTONS --- //
 		
-		
+		// --------------------- //
 		
 		// --- TABLE --- //		
 
@@ -366,7 +461,7 @@ public class LandlordsPanel extends JPanel {
 	
 		// --- END TABLE --- //
 		
-		
+		// --------------------- //
 		
 		// --- BUTTON ACTIONS --- //
 		
@@ -448,7 +543,9 @@ public class LandlordsPanel extends JPanel {
 		
 	}
 	
-	// --- AUXILIARY METHODS ---
+	// --------------------- //
+	
+	// --- AUXILIARY METHODS --- //
 	
 	// This method clears all text fields in the panel.
 	private void cleanFields() {
@@ -485,7 +582,7 @@ public class LandlordsPanel extends JPanel {
 	        if (landlord != null) {
 	            fillFields(landlord);
 	        } else {
-	            cleanFields(); // NO limpia el txtRut
+	            cleanFields(); // Do not clean RUT field
 	        }
 	    }
 	}
@@ -497,7 +594,7 @@ public class LandlordsPanel extends JPanel {
 	    if (rut.length() < 8) return;
 
 	    if (!RUTValidator.isValid(rut)) {
-	        // Si quieres: limpiar campos si el RUT no es válido
+	      
 	    	cleanFields();
 	        hideEditButtons();
 	        return;
@@ -513,8 +610,7 @@ public class LandlordsPanel extends JPanel {
 	        txtEmail.setText(landlord.getEmail());
 	        txtPhone.setText(landlord.getPhone());
 
-	        showEditButton(); // btnActualizar y btnEliminar visibles
-	        btnSave.setVisible(false);
+	        showEditButton(); // btnUpdate & btnDelete visible, btnSave hidden
 	    } else {
 	    	cleanFields();
 	    	hideEditButtons();

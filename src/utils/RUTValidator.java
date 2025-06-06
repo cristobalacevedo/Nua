@@ -54,6 +54,5 @@ public class RUTValidator {
         formatted.append("-").append(dv);
         return formatted.toString();
     }
-    
 
 }
