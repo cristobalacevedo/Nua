@@ -1,18 +1,18 @@
 package view;
 
 import model.Landlord;
-import utils.RUTDocumentFilter;
 import utils.RUTValidator;
 import utils.FieldValidator;
+import utils.RUTDocumentFilter;
 import dao.BankDAO;
 import dao.LandlordDAO;
 import dao.PersonDAO;
+
 import db.DBConnection;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -24,28 +24,17 @@ import java.util.List;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
-import javax.swing.text.PlainDocument;
-import javax.swing.JTable;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
-import javax.swing.JList;
+import javax.swing.text.AbstractDocument;
 import javax.swing.JComboBox;
+
 // FALTA VALIDAR :
-// CTRL V EN RUT, YA QUE IGUAL LLEGAN CARACTERES NO VÁLIDOS
-// CAMPO NUMERO DE CUENTA VACÍO
+// CTRL V EN RUT, YA QUE IGUAL LLEGAN CARACTERES NO VÁLIDOS --- READY
+// CAMPO NUMERO DE CUENTA VACÍO 
 // CARACTERES NO VALIDOS EN TELEFONO, SOLO PERMITIRÁ EL "+" Y ESPACIOS, ADEMÁS DE NÚMEROS
 
 // This class represents the Landlords Panel in the application.
@@ -101,15 +90,26 @@ public class LandlordsPanel extends JPanel {
 		add(txtRut);
 		txtRut.setColumns(10);
 		
-		txtRut.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char c = e.getKeyChar();
-                if (!Character.isDigit(c) && c != '.' && c !='-' && c != 'k' && c != 'K' && c != KeyEvent.VK_BACK_SPACE) {
-                    e.consume(); // Avoid invalid input nor letters except 'k' or 'K'
-                }
-            }
-        });
+		((AbstractDocument) txtRut.getDocument()).setDocumentFilter(new RUTDocumentFilter()); // Apply the custom document filter to the RUT field for a better user experience and validation experience
 		
+		txtRut.addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyTyped(KeyEvent e) {
+		        char c = e.getKeyChar();
+		        String text = txtRut.getText();
+
+		        // Solo permitir números, puntos y guiones
+		        if (!Character.isDigit(c) && c != '.' && c != '-' && c != 'k' && c != 'K') {
+		            e.consume();
+		            return;
+		        }
+
+		        // Limitar a 12 caracteres
+		        if (text.length() >= 12) {
+		            e.consume();
+		        }
+		    }
+		});
 		txtRut.addKeyListener(new KeyAdapter() {
 			@Override
 		    public void keyReleased(KeyEvent e) {
