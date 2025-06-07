@@ -10,7 +10,6 @@ public class showFrame {
 	public static void show(JFrame newFrame) {
 		newFrame.setResizable(false); // Prevent resizing of the window
 		newFrame.setLocationRelativeTo(null); // Center the window on screen
-		newFrame.setTitle("Nua - Listado de Arrendatarios"); // Set the title of the window") - SPANISH
 		newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Close the window without exiting the application
 		newFrame.setLayout(new BorderLayout()); // Set layout to BorderLayout
     	newFrame.setVisible(true);

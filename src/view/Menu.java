@@ -40,7 +40,7 @@ public class Menu extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 1250, 700);
 		setLocationRelativeTo(null); // Center the window on screen
-		setTitle("Nua - Menú Principal"); // Set the title of the window") - SPANISH
+		setTitle("NUA - Menú Principal"); // Set the title of the window") - SPANISH
 		contentPane = new JPanel();
 		contentPane.setName("Menu"); // Set the name of the panel to "Menu"
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -95,7 +95,7 @@ public class Menu extends JFrame {
 		btnLandlords.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
-				setTitle("Nua - Propietarios"); // Update the title to reflect the current panel
+				setTitle("NUA - Propietarios"); // Update the title to reflect the current panel
 				// Show the LandlordsPanel when button is clicked
 				showPanel.show(contentPane, new LandlordsPanel(contentPane, Menu.this));
 			}
@@ -172,7 +172,7 @@ public class Menu extends JFrame {
 	// MENU CLONE
 	
 	public JPanel MenuClone(){
-		
+		setTitle("NUA - Menú Principal");
 		JPanel menuClone = new JPanel();
 		menuClone.setName("MenuClone");
 		JButton btnLandlordsClone = new JButton(btnLandlords.getText());
@@ -182,6 +182,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the LandlordsPanel when button is clicked
+				setTitle("NUA - Propietarios"); // Update the title to reflect the current panel
 				showPanel.show(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
 			}
 		});

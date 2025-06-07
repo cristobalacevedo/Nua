@@ -28,6 +28,7 @@ public class LandlordsList extends JFrame {
 	private JButton btnBack;
 
 	public LandlordsList() {
+		setTitle("NUA - Lista de Propietarios"); // SPANISH for "Landlords List"
 		setName("LandlordsList");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(0, 0, 910, 525);

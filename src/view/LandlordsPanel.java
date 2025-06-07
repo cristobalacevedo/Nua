@@ -71,8 +71,8 @@ public class LandlordsPanel extends JPanel {
 	private JButton btnUpdate;
 	private JButton btnShowLL;
 	private Landlord actualLandlord; // Holds the currently selected landlord for updates or deletions
-	private JComboBox comboBank;
-	private JComboBox comboType;
+	private JComboBox<String> comboBank;
+	private JComboBox<String> comboType;
 	
 
 	
@@ -170,16 +170,16 @@ public class LandlordsPanel extends JPanel {
 		                txtNum.setText(actualLandlord.getAccountNum()); // Set account number
 		                showEditButton();
 		                btnSave.setVisible(false);
-		                System.out.println("RUT Found: " + actualLandlord.getRut());
+		                System.out.println("\nRUT Found	: " + actualLandlord.getRut());
+		                System.out.println("Bank		: " + actualLandlord.getBankName());
+		                System.out.println("Account Type	: " + actualLandlord.getAccountType());
+		                System.out.println("N°    		: " + actualLandlord.getAccountNum());
 		            } else {
 		                cleanFields();
 		                hideEditButtons();
 		                btnSave.setVisible(true);
 		                actualLandlord = null;
 		                System.out.println("RUT Not Found: " + formattedRut);
-		                System.out.println("Banco: " + actualLandlord.getBankName());
-		                System.out.println("Tipo Cuenta: " + actualLandlord.getAccountType());
-		                System.out.println("N° Cuenta: " + actualLandlord.getAccountNum());
 		            }
 		        } else {
 		            cleanFields();
@@ -263,6 +263,7 @@ public class LandlordsPanel extends JPanel {
 		// -- BANK NUMBER -- //
 	
 		txtNum = new JTextField();
+		txtNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		txtNum.setBounds(689, 249, 270, 30);
 		add(txtNum);
 		txtNum.setColumns(10);
@@ -372,7 +373,8 @@ public class LandlordsPanel extends JPanel {
 		
 		// -- BANKS -- //
 		
-		comboBank = new JComboBox();
+		comboBank = new JComboBox<String>();
+		comboBank.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		comboBank.setBounds(689, 164, 270, 30);
 		add(comboBank);
 		
@@ -389,7 +391,8 @@ public class LandlordsPanel extends JPanel {
 		
 		// -- ACCOUNT TYPES -- //
 		
-		comboType = new JComboBox();
+		comboType = new JComboBox<String>();
+		comboType.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		comboType.setBounds(689, 206, 270, 30);
 		add(comboType);
 		
@@ -551,7 +554,8 @@ public class LandlordsPanel extends JPanel {
 		
 		// --- BUTTON ACTIONS --- //
 		
-		// Save Button ActionListener
+		// -- SAVE BUTTON ACTION LISTENER -- //
+		
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -620,7 +624,8 @@ public class LandlordsPanel extends JPanel {
 				boolean saved = dao.save(landlord, bankId, accountType, accountNum);
 
 				if (saved) {
-					Popup.show("Arrendador guardado correctamente.", "success"); // SPANISH for "Landlord saved successfully"
+					//ModFont.setOptionPaneFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 16)); // Update the title to reflect the current panel
+					Popup.showSuccess("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
 					System.out.println("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
 					cleanFields();
 				} else {
@@ -630,7 +635,133 @@ public class LandlordsPanel extends JPanel {
 			}
 		});
 
-		// Back Button ActionListener
+		// -- END SAVE BUTTON ACTION LISTENER -- //
+		
+		// -- UPDATE BUTTON ACTION LISTENER -- //
+		
+		btnUpdate.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+
+		        Map<String, JTextField> campos = new LinkedHashMap<>();
+		        campos.put("RUT", txtRut);
+		        campos.put("Nombre", txtName);
+		        campos.put("Apellido", txtSurname);
+		        campos.put("Email", txtEmail);
+		        campos.put("Teléfono", txtPhone);
+
+		        // Validación de campos vacíos
+		        if (!FieldValidator.validField(campos)) return;
+
+		        // Obtener valores
+		        String rut = txtRut.getText().trim();
+		        String name = txtName.getText().trim();
+		        String surname = txtSurname.getText().trim();
+		        String email = txtEmail.getText().trim();
+		        String phone = txtPhone.getText().trim();
+
+		        // Validar RUT
+		        if (!RUTValidator.isValid(rut)) {
+		            Popup.show("RUT inválido. Verifica el formato y el dígito verificador.", "error"); // SPANISH for "Invalid RUT. Check the format and the verification digit."
+		            return;
+		        }
+
+		        // Verificar que el RUT sí exista (para poder actualizar)
+		        if (!PersonDAO.rutExistsInDB(rut)) {
+		            Popup.show("El RUT no existe en el sistema. No se puede actualizar.", "error"); // SPANISH for "The RUT does not exist in the system. Cannot update."
+		            return;
+		        }
+
+		        if (comboBank.getSelectedIndex() == 0) {
+		            Popup.show("Debe Seleccionar un Banco.", "error"); // SPANISH for "You must select a valid bank."
+		            return;
+		        }
+
+		        if (comboType.getSelectedIndex() == 0) {
+		            Popup.show("Debe Seleccionar un Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."
+		            return;
+		        }
+
+		        String selectedBankName = comboBank.getSelectedItem().toString();
+		        int bankId = BankDAO.getIdByName(selectedBankName);
+		        String accountType = comboType.getSelectedItem().toString();
+		        String accountNum = txtNum.getText().trim();
+
+		        // Crear objeto Landlord actualizado
+		        Landlord landlord = new Landlord(
+		            rut,
+		            name,
+		            surname,
+		            email,
+		            phone,
+		            "landlord",
+		            true,   // isActive (puedes adaptar según tu lógica)
+		            false,  // hasRentals (puedes adaptar si ya tiene arriendos)
+		            selectedBankName,
+		            accountType,
+		            accountNum
+		        );
+
+		        // Actualizar usando DAO
+		        LandlordDAO dao = new LandlordDAO(null);
+		        boolean updated = dao.update(landlord, bankId, accountType, accountNum);
+
+		        if (updated) {
+		        	Popup.showSuccess("Arrendador actualizado correctamente."); // SPANISH for "Landlord updated successfully"
+		            System.out.println("Landlord updated successfully."); 
+		            cleanFields();
+	                hideEditButtons();
+		        } else {
+		            Popup.show("Error al actualizar arrendador.", "error"); // SPANISH for "Error updating landlord"
+		            System.out.println("Error updating landlord.");
+		        }
+		    }
+		});
+		
+		// -- END UPDATE BUTTON ACTION LISTENER -- //
+		
+		// -- DELETE BUTTON ACTION LISTENER -- //	
+		
+		btnDelete.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String rut = txtRut.getText().trim();
+
+		        if (rut.isEmpty()) {
+		            Popup.show("Debe ingresar el RUT del arrendador que desea eliminar.", "error");
+		            return;
+		        }
+
+		        if (!RUTValidator.isValid(rut)) {
+		            Popup.show("RUT inválido. Verifique el formato.", "error");
+		            return;
+		        }
+
+		        if (!PersonDAO.rutExistsInDB(rut)) {
+		            Popup.show("No existe un arrendador con ese RUT.", "error");
+		            return;
+		        }
+
+		        int confirm = PopupDialog.showYesNoWarn(null,
+		        	    "¿Está seguro que desea eliminar al arrendador con RUT: " + rut + "?",
+		        	    "Confirmar eliminación");
+
+		        if (confirm == JOptionPane.YES_OPTION) {
+		            LandlordDAO dao = new LandlordDAO(null);
+		            boolean deleted = dao.delete(rut);
+
+		            if (deleted) {
+		                Popup.showUserDeletedSuccess("Arrendador eliminado con éxito.");
+		                cleanFields();
+		            } else {
+		                Popup.show("Error al eliminar arrendador.", "error");
+		            }
+		        }
+		    }
+		});
+		
+		// -- END DELETE BUTTON ACTION LISTENER -- //
+		
+		// -- BACK BUTTON ACTION LISTENER -- //
+		
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				 // Update the title to reflect the current panel
@@ -638,11 +769,17 @@ public class LandlordsPanel extends JPanel {
 			}
 		});
 		
+		// -- END BACK BUTTON ACTION LISTENER -- //
+		
+		// -- UPDATE BUTTON ACTION LISTENER -- //
+		
 		btnShowLL.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showFrame.show(new LandlordsList()); // Show the LandlordsList Frame when the button is clicked
 			}
 		});
+		
+		// -- END UPDATE BUTTON ACTION LISTENER -- //
 		
 		// --- END BUTTON ACTIONS --- //
 		
