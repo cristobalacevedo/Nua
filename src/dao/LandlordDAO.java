@@ -101,6 +101,24 @@ public class LandlordDAO {
         return list;
     }
 	
+    public List<String> getAllNames() {
+		List<String> LandlordList = new ArrayList<>();
+		String sql = "SELECT CONCAT(name, ' ', surname) AS full_name FROM person p JOIN landlord l on p.id = l.person_id";
+		
+		try (
+				Connection conn = DBConnection.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+				
+                LandlordList.add(rs.getString("full_name"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return LandlordList;
+	} 
+    
 	public static Landlord getByRut(String rut) {
 	    String sql = """
 	        SELECT p.rut, p.name, p.surname, p.email, p.phone, p.type, l.isactive, l.hasrentals
@@ -167,6 +185,37 @@ public class LandlordDAO {
 	    return null;
 	}
 	
+	public static Landlord getIdByName(String name) {
+	    String sql = """
+	        SELECT p.id, p.rut, p.name, p.surname, p.email, p.phone, p.type, l.isactive, l.hasrentals
+	        FROM person p
+	        JOIN landlord l ON p.id = l.person_id
+	        WHERE CONCAT(p.name, ' ', p.surname) = ?
+	    """;
+	    Connection conn = DBConnection.getConnection();
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, name);
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            return new Landlord(
+	                rs.getString("rut"),
+	                rs.getString("name"),
+	                rs.getString("surname"),
+	                rs.getString("email"),
+	                rs.getString("phone"),
+	                rs.getString("type"),
+	                rs.getBoolean("isactive"),
+	                rs.getBoolean("hasrentals"),
+	                rs.getString("type"),
+	                rs.getString("type"),
+	                rs.getString("type")
+	            );
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+		return null;
+	}
 	
 	public boolean update(Landlord landlord, int bankId, String accountType, String accountNum) {
 	    String updatePersonSQL = "UPDATE person SET name = ?, surname = ?, email = ?, phone = ? WHERE rut = ?";

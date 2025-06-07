@@ -3,6 +3,7 @@ package view;
 import model.Landlord;
 import utils.RUTValidator;
 import utils.FieldValidator;
+import utils.PhoneDocumentFilter;
 import utils.RUTDocumentFilter;
 import dao.BankDAO;
 import dao.LandlordDAO;
@@ -34,7 +35,7 @@ import javax.swing.JComboBox;
 
 // FALTA VALIDAR :
 // CTRL V EN RUT, YA QUE IGUAL LLEGAN CARACTERES NO VÁLIDOS --- READY
-// CAMPO NUMERO DE CUENTA VACÍO 
+// CAMPO NUMERO DE CUENTA VACÍO EN SAVE Y UPDATE, DEBE SER OBLIGATORIO --- READY
 // CARACTERES NO VALIDOS EN TELEFONO, SOLO PERMITIRÁ EL "+" Y ESPACIOS, ADEMÁS DE NÚMEROS
 
 // This class represents the Landlords Panel in the application.
@@ -261,6 +262,27 @@ public class LandlordsPanel extends JPanel {
 		txtPhone.setBounds(302, 328, 270, 30);
 		add(txtPhone);
 		txtPhone.setColumns(10);
+		
+		((AbstractDocument) txtPhone.getDocument()).setDocumentFilter(new PhoneDocumentFilter()); // Apply the custom document filter to the RUT field for a better user experience and validation experience
+		
+		txtPhone.addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyTyped(KeyEvent e) {
+		        char c = e.getKeyChar();
+		        String text = txtPhone.getText();
+
+		        // Only allow digits, spaces, and the '+' character
+		        if (!Character.isDigit(c) && c != ' ' && c != '+') {
+		            e.consume();
+		            return;
+		        }
+
+		        // Limit to 15 characters
+		        if (text.length() >= 15) {
+		            e.consume();
+		        }
+		    }
+		});
 		
 		// -- END PHONE -- //
 		
@@ -569,6 +591,8 @@ public class LandlordsPanel extends JPanel {
 		        campos.put("Apellido", txtSurname);
 		        campos.put("Email", txtEmail);
 		        campos.put("Teléfono", txtPhone);
+		       // campos.put("Banco", comboBank); // Added bank field validation
+		        campos.put("N° (Número de Cuenta)", txtNum); // Added account number field validation
 
 		        // Validación de campos vacíos
 		        if (!FieldValidator.validField(campos)) return;
@@ -579,6 +603,7 @@ public class LandlordsPanel extends JPanel {
 		        String surname = txtSurname.getText().trim();
 		        String email = txtEmail.getText().trim();
 		        String phone = txtPhone.getText().trim();
+		        String num = txtNum.getText().trim();
 
 				// Clean and validate RUT
 				if (!RUTValidator.isValid(rut)) {
@@ -594,14 +619,15 @@ public class LandlordsPanel extends JPanel {
 				}
 				
 				if (comboBank.getSelectedIndex() == 0) {
-				    Popup.show("Debe Seleccionar un Banco.", "error"); // SPANISH for "You must select a valid bank."
+				    Popup.show("Campos obligatorios vacíos:\n - Banco.", "error"); // SPANISH for "You must select a valid bank."
 				    return;
 				}
 				
 				if (comboType.getSelectedIndex() == 0) {
-					Popup.show("Debe Seleccionar un Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."																	
+					Popup.show("Campos obligatorios vacíos:\n - Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."																	
 					return;
 				}
+			
 				
 				String selectedBankName = comboBank.getSelectedItem().toString();
 				int bankId = BankDAO.getIdByName(selectedBankName); // Asegúrate que este método exista
@@ -620,7 +646,7 @@ public class LandlordsPanel extends JPanel {
 					false,       // hasRentals
 					bankDAO.getBankByName(comboBank.getSelectedItem().toString()), // Get the selected bank name
 					comboType.getSelectedItem().toString(), // Get the selected account type
-					txtNum.getText().trim() // Get the account number
+					num // Get the account number
 				);
 
 				// Save the landlord using DAO
@@ -652,6 +678,7 @@ public class LandlordsPanel extends JPanel {
 		        campos.put("Apellido", txtSurname);
 		        campos.put("Email", txtEmail);
 		        campos.put("Teléfono", txtPhone);
+		        campos.put("N° (Número de Cuenta)", txtNum); // Added account number field validation
 
 		        // Validación de campos vacíos
 		        if (!FieldValidator.validField(campos)) return;
@@ -676,14 +703,14 @@ public class LandlordsPanel extends JPanel {
 		        }
 
 		        if (comboBank.getSelectedIndex() == 0) {
-		            Popup.show("Debe Seleccionar un Banco.", "error"); // SPANISH for "You must select a valid bank."
-		            return;
-		        }
-
-		        if (comboType.getSelectedIndex() == 0) {
-		            Popup.show("Debe Seleccionar un Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."
-		            return;
-		        }
+				    Popup.show("Campos obligatorios vacíos:\n - Banco.", "error"); // SPANISH for "You must select a valid bank."
+				    return;
+				}
+				
+				if (comboType.getSelectedIndex() == 0) {
+					Popup.show("Campos obligatorios vacíos:\n - Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."																	
+					return;
+				}
 
 		        String selectedBankName = comboBank.getSelectedItem().toString();
 		        int bankId = BankDAO.getIdByName(selectedBankName);
