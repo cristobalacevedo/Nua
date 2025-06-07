@@ -43,6 +43,10 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.JList;
 import javax.swing.JComboBox;
+// FALTA VALIDAR :
+// CTRL V EN RUT, YA QUE IGUAL LLEGAN CARACTERES NO VÁLIDOS
+// CAMPO NUMERO DE CUENTA VACÍO
+// CARACTERES NO VALIDOS EN TELEFONO, SOLO PERMITIRÁ EL "+" Y ESPACIOS, ADEMÁS DE NÚMEROS
 
 // This class represents the Landlords Panel in the application.
 public class LandlordsPanel extends JPanel {
