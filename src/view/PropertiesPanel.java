@@ -92,7 +92,11 @@ public class PropertiesPanel extends JPanel {
 		comboLandlord.addItem("Seleccione un Propietario"); // SPANISH for "Select a Landlord"
 		
 		LandlordDAO landlordDAO = new LandlordDAO(null); // Create an instance of LandlordDAO to fetch landlords
-		List<String> landlords = landlordDAO.getAllNames(); // Fetch all landlords from the database
+		List<String> landlords = landlordDAO.getAllNamesWithRUT(); // Fetch all landlords from the database
+//		String name = landlords; // Get the name of the landlord
+//		// Obtiene los ruts de los propietarios y los concatena con sus nombres
+//		List<String> ruts = landlordDAO.getRutByName(name); // Fetch all RUTs (Chilean ID numbers) of landlords
+//		
 		
 		for (String landlord : landlords) {
 			comboLandlord.addItem(landlord); // Add each landlord to the combo box

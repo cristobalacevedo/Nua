@@ -101,9 +101,9 @@ public class LandlordDAO {
         return list;
     }
 	
-    public List<String> getAllNames() {
+    public List<String> getAllNamesWithRUT() {
 		List<String> LandlordList = new ArrayList<>();
-		String sql = "SELECT CONCAT(name, ' ', surname) AS full_name FROM person p JOIN landlord l on p.id = l.person_id";
+		String sql = "SELECT CONCAT(name, ' ', surname, ' (', rut, ')') AS full_name FROM person p JOIN landlord l on p.id = l.person_id";
 		
 		try (
 				Connection conn = DBConnection.getConnection();
@@ -118,6 +118,27 @@ public class LandlordDAO {
 		}
 		return LandlordList;
 	} 
+    
+    public List<String> getRutByName(String name) {
+		List<String> ruts = new ArrayList<>();
+		String sql = """
+			SELECT p.rut
+			FROM person p
+			JOIN landlord l ON p.id = l.person_id
+			WHERE CONCAT(p.name, ' ', p.surname) = ?
+		""";
+		Connection conn = DBConnection.getConnection();
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, name);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				ruts.add(rs.getString("rut"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ruts;
+	}
     
 	public static Landlord getByRut(String rut) {
 	    String sql = """
