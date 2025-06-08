@@ -103,7 +103,7 @@ public class PropertiesPanel extends JPanel {
 		// -- PROPERTY TYPE -- //
 		
 		comboPropertyType = new JComboBox<>();
-		comboPropertyType.setBounds(791, 29, 270, 30);
+		comboPropertyType.setBounds(791, 29, 180, 30);
 		comboPropertyType.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		comboPropertyType.setEditable(false); // Make the combo box not editable
 		add(comboPropertyType);
@@ -473,7 +473,6 @@ public class PropertiesPanel extends JPanel {
 		comboRegion.setSelectedIndex(0); // Reset region selection
 		comboTown.removeAllItems(); // Clear towns
 		comboTown.addItem("Seleccione una Comuna"); // SPANISH for "Select a Town"
-		
 		txtAddress.setText(""); // Clear address text field
 		txtNum1.setText(""); // Clear address number 1 text field
 		txtNum2.setText(""); // Clear address number 2 text field
@@ -611,6 +610,23 @@ public class PropertiesPanel extends JPanel {
 		lblAddressNum2.setVisible(true); // Show label for address number 2
 		lblLocationTitle.setText("Dirección de la Oficina"); // SPANISH for "Office Address"
 		lblRoomQty.setVisible(false); // Hide room quantity label for office
+		lblBathQty.setVisible(true); // Show bath quantity label for office
+		lblFloorQty.setVisible(false); // Hide floor quantity label for office
+		lblParkingQty.setVisible(true); // Show parking quantity label for office
+		lblHasStorage.setVisible(true); // Show storage label for office
+		lblHasGarden.setVisible(false); // Hide garden label for office
+		lblHasPatio.setVisible(false); // Hide patio label for office
+		lblHasPool.setVisible(false); // Hide pool label for office
+		lblHasBalcony.setVisible(false); // Hide balcony label for office
+		lblHasBBQ.setVisible(false); // Hide BBQ label for office
+		lblHasTerrace.setVisible(false); // Hide terrace label for office
+		lblHasLaundryRoom.setVisible(false); // Hide laundry room label for office
+		lblInCondo.setVisible(false); // Hide "In Condominium" label for office
+		lblBuildingHasLift.setVisible(true); // Show building lift label for office
+		lblBuildingHasPool.setVisible(false); // Hide building pool label for office
+		lblBuildingHasBBQ.setVisible(false); // Hide building BBQ label for office
+		lblBuildingHasGym.setVisible(false); // Hide building gym label for office
+		lblBuildingHasLaundryRoom.setVisible(false); // Hide building laundry room label for office
 		
 	}
 }
