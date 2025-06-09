@@ -1,6 +1,7 @@
 package dao;
 
 import model.Landlord;
+import utils.LandlordOption;
 import db.DBConnection;
 
 import java.sql.*;
@@ -238,6 +239,30 @@ public class LandlordDAO {
 		return null;
 	}
 	
+	public List<LandlordOption> getAllLandlordOptions() {
+	    List<LandlordOption> list = new ArrayList<>();
+	    String sql = "SELECT person_id, name, surname, rut FROM landlord JOIN person ON landlord.person_id = person.id";
+
+	    try (Connection conn = DBConnection.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql);
+	         ResultSet rs = stmt.executeQuery()) {
+
+	        while (rs.next()) {
+	            int id = rs.getInt("person_id");
+	            String name = rs.getString("name") + " " + rs.getString("surname");
+	            String rut = rs.getString("rut");
+	            String displayName = id + " - " + name + " - " + rut;
+
+	            list.add(new LandlordOption(id, displayName));
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return list;
+	}
+	
 	public boolean update(Landlord landlord, int bankId, String accountType, String accountNum) {
 	    String updatePersonSQL = "UPDATE person SET name = ?, surname = ?, email = ?, phone = ? WHERE rut = ?";
 	    String updateLandlordSQL = "UPDATE landlord SET isactive = ?, hasrentals = ? WHERE person_id = (SELECT id FROM person WHERE rut = ?)";
@@ -324,6 +349,12 @@ public class LandlordDAO {
 	    }
 
 	    return false;
+	}
+
+
+	public static int getLandlordIdByNameWithRUT(String selectedLandlord) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

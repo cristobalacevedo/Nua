@@ -26,4 +26,9 @@ public class TownDAO {
 
 		return towns;
 	}
+
+	public static int getTownIdByName(String selectedTown) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
