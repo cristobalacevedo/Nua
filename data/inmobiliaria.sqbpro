@@ -1,3 +1,239 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="inmobiliaria.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="3272"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="address" custom_title="0" dock_id="4" table="4,7:mainaddress"/><dock_state state="000000ff00000000fd00000001000000020000024800000213fc0100000002fb000000160064006f0063006b00420072006f00770073006500310100000000000002480000000000000000fb000000160064006f0063006b00420072006f00770073006500340100000000ffffffff0000011e00ffffff000002480000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">SELECT CONCAT(name, ' ', surname) AS full_name
-FROM person p 
-JOIN landlord l on p.id = l.person_id </sql><current_tab id="0"/></tab_sql></sqlb_project>
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="inmobiliaria.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="1"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="3283"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="town" custom_title="0" dock_id="3" table="4,4:maintown"/><dock_state state="000000ff00000000fd0000000100000002000002590000029ffc0100000003fb000000160064006f0063006b00420072006f00770073006500310100000000000002590000000000000000fb000000160064006f0063006b00420072006f00770073006500320100000000000002590000000000000000fb000000160064006f0063006b00420072006f00770073006500330100000000000002590000012900ffffff000002590000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="address" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="151"/><column index="3" value="47"/><column index="4" value="47"/><column index="5" value="55"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="bank" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="239"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="bankaccount" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="55"/><column index="2" value="66"/><column index="3" value="135"/><column index="4" value="127"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="condo" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="40"/><column index="3" value="72"/><column index="4" value="117"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="condo_platform" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="40"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="country" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="47"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="doorman" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="66"/><column index="2" value="61"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="flat" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="77"/><column index="3" value="64"/><column index="4" value="60"/><column index="5" value="72"/><column index="6" value="71"/><column index="7" value="87"/><column index="8" value="96"/><column index="9" value="93"/><column index="10" value="97"/><column index="11" value="52"/><column index="12" value="61"/><column index="13" value="117"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="house" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="77"/><column index="3" value="60"/><column index="4" value="64"/><column index="5" value="60"/><column index="6" value="71"/><column index="7" value="68"/><column index="8" value="57"/><column index="9" value="52"/><column index="10" value="72"/><column index="11" value="49"/><column index="12" value="52"/><column index="13" value="61"/><column index="14" value="117"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="land" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="77"/><column index="3" value="60"/><column index="4" value="64"/><column index="5" value="60"/><column index="6" value="71"/><column index="7" value="68"/><column index="8" value="57"/><column index="9" value="52"/><column index="10" value="72"/><column index="11" value="49"/><column index="12" value="52"/><column index="13" value="61"/><column index="14" value="117"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="landlord" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="66"/><column index="2" value="52"/><column index="3" value="68"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="office" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="77"/><column index="3" value="64"/><column index="4" value="111"/><column index="5" value="72"/><column index="6" value="77"/><column index="7" value="87"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="parking" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="77"/><column index="3" value="46"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="person" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="103"/><column index="3" value="79"/><column index="4" value="63"/><column index="5" value="119"/><column index="6" value="231"/><column index="7" value="71"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="property" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="4" mode="0"/></sort><column_widths><column index="1" value="35"/><column index="2" value="73"/><column index="3" value="110"/><column index="4" value="72"/><column index="5" value="35"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="property_type" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="63"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="region" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="1" mode="0"/></sort><column_widths><column index="1" value="35"/><column index="2" value="79"/><column index="3" value="391"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="tenant" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="66"/><column index="2" value="58"/><column index="3" value="52"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="town" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="35"/><column index="2" value="63"/><column index="3" value="71"/><column index="4" value="167"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">PRAGMA foreign_keys = OFF;
+
+-- No hay soporte para CREATE SCHEMA, solo usar la base de datos SQLite
+
+-- Tabla country
+CREATE TABLE IF NOT EXISTS country (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
+);
+
+-- Tabla region
+CREATE TABLE IF NOT EXISTS region (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  country_id INTEGER NOT NULL,
+  FOREIGN KEY (country_id) REFERENCES country(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla town
+CREATE TABLE IF NOT EXISTS town (
+  id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  region_id INTEGER NOT NULL,
+  region_country_id INTEGER NOT NULL,
+  PRIMARY KEY (id, region_id, region_country_id),
+  FOREIGN KEY (region_id, region_country_id) REFERENCES region(id, country_id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla address
+CREATE TABLE IF NOT EXISTS address (
+  id INTEGER NOT NULL,
+  st_name TEXT,
+  num_1 TEXT,
+  num_2 TEXT,
+  town_id INTEGER NOT NULL,
+  PRIMARY KEY (id, town_id),
+  FOREIGN KEY (town_id) REFERENCES town(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla condo_platform
+CREATE TABLE IF NOT EXISTS condo_platform (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT
+);
+
+-- Tabla condo
+CREATE TABLE IF NOT EXISTS condo (
+  id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  address_id INTEGER NOT NULL,
+  condo_platform_id INTEGER NOT NULL,
+  PRIMARY KEY (id, address_id, condo_platform_id),
+  FOREIGN KEY (address_id) REFERENCES address(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (condo_platform_id) REFERENCES condo_platform(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla property_type
+CREATE TABLE IF NOT EXISTS property_type (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT
+);
+
+-- Tabla bank
+CREATE TABLE IF NOT EXISTS bank (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT UNIQUE
+);
+
+-- Tabla person
+CREATE TABLE IF NOT EXISTS person (
+  id INTEGER NOT NULL PRIMARY KEY,
+  rut TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  surname TEXT NOT NULL,
+  phone TEXT,
+  email TEXT,
+  type TEXT NOT NULL
+);
+
+-- Tabla bankaccount
+CREATE TABLE IF NOT EXISTS bankaccount (
+  bank_id INTEGER NOT NULL,
+  person_id INTEGER NOT NULL,
+  type TEXT,
+  num TEXT,
+  PRIMARY KEY (bank_id, person_id),
+  FOREIGN KEY (bank_id) REFERENCES bank(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla landlord
+CREATE TABLE IF NOT EXISTS landlord (
+  person_id INTEGER NOT NULL PRIMARY KEY,
+  isactive INTEGER,
+  hasrentals INTEGER,
+  FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla property
+CREATE TABLE IF NOT EXISTS property (
+  id INTEGER NOT NULL,
+  landlord_id INTEGER NOT NULL,
+  property_type_id INTEGER NOT NULL,
+  address_id INTEGER NOT NULL,
+  size TEXT,
+  PRIMARY KEY (id, landlord_id, property_type_id, address_id),
+  FOREIGN KEY (landlord_id) REFERENCES landlord(person_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (property_type_id) REFERENCES property_type(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (address_id) REFERENCES address(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla doorman
+CREATE TABLE IF NOT EXISTS doorman (
+  condo_id INTEGER NOT NULL,
+  person_id INTEGER NOT NULL,
+  PRIMARY KEY (condo_id, person_id),
+  FOREIGN KEY (condo_id) REFERENCES condo(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla flat
+CREATE TABLE IF NOT EXISTS flat (
+  id INTEGER NOT NULL,
+  property_id INTEGER NOT NULL,
+  room_qty INTEGER,
+  bath_qty INTEGER,
+  floor INTEGER,
+  hasstorage TEXT,
+  hasparking INTEGER,
+  buildinghaslift INTEGER,
+  buildinghaspool INTEGER,
+  buildinghasbbq INTEGER,
+  buildinghasgym INTEGER,
+  buildinghaslaundry INTEGER,
+  incondo INTEGER,
+  condo_id INTEGER,
+  PRIMARY KEY (id, property_id, condo_id),
+  FOREIGN KEY (property_id) REFERENCES property(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (condo_id) REFERENCES condo(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla office
+CREATE TABLE IF NOT EXISTS office (
+  id INTEGER NOT NULL,
+  property_id INTEGER NOT NULL,
+  cabin_qty INTEGER,
+  meetingroom_qty INTEGER,
+  hasstorage INTEGER,
+  parking_qty INTEGER,
+  buildinghaslift INTEGER,
+  PRIMARY KEY (id, property_id),
+  FOREIGN KEY (property_id) REFERENCES property(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla aval
+CREATE TABLE IF NOT EXISTS aval (
+  person_id INTEGER NOT NULL PRIMARY KEY,
+  FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla tenant
+CREATE TABLE IF NOT EXISTS tenant (
+  person_id INTEGER NOT NULL,
+  isactive INTEGER,
+  hasrentals INTEGER,
+  aval_id INTEGER,
+  PRIMARY KEY (person_id, aval_id),
+  FOREIGN KEY (person_id) REFERENCES person(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (aval_id) REFERENCES aval(person_id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla rental
+CREATE TABLE IF NOT EXISTS rental (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  property_id INTEGER NOT NULL,
+  tenant_person_id INTEGER NOT NULL,
+  value INTEGER,
+  commission INTEGER,
+  start_date DATE,
+  expected_end_date DATE,
+  real_end_date DATE,
+  FOREIGN KEY (property_id) REFERENCES property(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (tenant_person_id) REFERENCES tenant(person_id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla land
+CREATE TABLE IF NOT EXISTS land (
+  id INTEGER NOT NULL,
+  property_id INTEGER NOT NULL,
+  room_qty INTEGER,
+  floor_qty INTEGER,
+  bath_qty INTEGER,
+  hasparking INTEGER,
+  hasgarden INTEGER,
+  haspatio INTEGER,
+  haspool INTEGER,
+  hasstorage INTEGER,
+  haslaundry INTEGER,
+  hasbbq INTEGER,
+  incondo INTEGER,
+  condo_id INTEGER,
+  PRIMARY KEY (id, property_id, condo_id),
+  FOREIGN KEY (property_id) REFERENCES property(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (condo_id) REFERENCES condo(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla house
+CREATE TABLE IF NOT EXISTS house (
+  id INTEGER NOT NULL,
+  property_id INTEGER NOT NULL,
+  room_qty INTEGER,
+  floor_qty INTEGER,
+  bath_qty INTEGER,
+  hasparking INTEGER,
+  hasgarden INTEGER,
+  haspatio INTEGER,
+  haspool INTEGER,
+  hasstorage INTEGER,
+  haslaundry INTEGER,
+  hasbbq INTEGER,
+  incondo INTEGER,
+  condo_id INTEGER,
+  PRIMARY KEY (id, property_id, condo_id),
+  FOREIGN KEY (property_id) REFERENCES property(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (condo_id) REFERENCES condo(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+-- Tabla parking
+CREATE TABLE IF NOT EXISTS parking (
+  id INTEGER NOT NULL,
+  property_id INTEGER NOT NULL,
+  flat_id INTEGER,
+  PRIMARY KEY (id, property_id, flat_id),
+  FOREIGN KEY (property_id) REFERENCES property(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  FOREIGN KEY (flat_id) REFERENCES flat(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+PRAGMA foreign_keys = ON;
+</sql><current_tab id="0"/></tab_sql></sqlb_project>

@@ -13,6 +13,7 @@ import dao.TownDAO;
 import db.DBConnection;
 import utils.LandlordOption;
 import utils.PropertyTypeOption;
+import utils.TownOption;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -37,7 +38,7 @@ public class PropertiesPanel extends JPanel {
 	private JComboBox<LandlordOption> comboLandlord; // Text field for landlord information
 	private JComboBox<PropertyTypeOption> comboPropertyType;
 	private JComboBox<String> comboRegion;
-	private JComboBox<String> comboTown; // Text field for town information
+	private JComboBox<TownOption> comboTown; // Text field for town information
 	private JLabel lblLandlord;
 	private JLabel lblPropertyType;
 	private JLabel lblRegion;
@@ -218,20 +219,18 @@ public class PropertiesPanel extends JPanel {
 					int regionID = RegionDAO.getRegionIDByName(selectedRegion); // Get the ID of the selected region
 					comboTown.removeAllItems(); // Clear previous towns
 
-					List<String> towns = TownDAO.getAllTownsByRegionID(regionID); // Fetch towns for the selected region
-					for (String town : towns) {
+					List<TownOption> towns = TownDAO.getAllTownsByRegionID(regionID); // Fetch towns for the selected region
+					for (TownOption town : towns) {
 						comboTown.addItem(town); // Add each town to the combo box
 					}
 				} else {
 					comboTown.removeAllItems(); // Clear towns if no region is selected
-					comboTown.addItem("Seleccione una Comuna"); // SPANISH for "Select a Town"
+					comboTown.addItem(new TownOption(0 , "Seleccione una Comuna")); // SPANISH for "Select a Town"
 				}
 			}
 		});
 		
-		// -- END REGION -- //
-		
-		// -- TOWN -- //
+	
 		
 		comboTown = new JComboBox<>();
 		comboTown.setBounds(222, 233, 310, 30);
@@ -239,7 +238,11 @@ public class PropertiesPanel extends JPanel {
 		comboTown.setEditable(false); // Make the combo box not editable
 		add(comboTown); 
 		
-		comboTown.addItem("Seleccione una Comuna"); // SPANISH for "Select a Town"
+		comboTown.addItem(new TownOption(0 , "Seleccione una Comuna")); // SPANISH for "Select a Town"
+		
+	// -- END REGION -- //
+		
+		// -- TOWN -- //
 		
 		// -- END TOWN -- //
 
@@ -694,9 +697,9 @@ public class PropertiesPanel extends JPanel {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
 		    	LandlordOption selectedLandlord = (LandlordOption) comboLandlord.getSelectedItem();
+		    	TownOption selectedTown = (TownOption) comboTown.getSelectedItem();
 		    	int landlordId = selectedLandlord.getId();
 		    	String nameAndRut = selectedLandlord.toString();
-		        String selectedTown = (String) comboTown.getSelectedItem();
 		        int townId = selectedTown.getId();
 
 		        if (selectedLandlord == null || selectedLandlord.equals("Seleccione un Propietario")) {
@@ -711,45 +714,55 @@ public class PropertiesPanel extends JPanel {
 
 		        try {
 		            //int landlordId = LandlordDAO.getLandlordIdByNameWithRUT(selectedLandlord);
-		            int townId = TownDAO.getTownIdByName(selectedTown);
+		            //int townId = TownDAO.getTownIdByName(selectedTown);
+		            
+		            // Extrae el id del tipo seleccionado
+		            
+		            PropertyTypeOption selectedType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
+					if (selectedType == null || selectedType.getValue().isEmpty()) {
+						Popup.show("Debe seleccionar un tipo de propiedad válido.", "error"); // SPANISH for "You must select a valid property type."
+						return;
+					}
+					String propertyType = selectedType.getValue();
+					if (propertyType.equals("House")) {
+		            
+						HousePropertyData data = new HousePropertyData();
+						data.setLandlordId(landlordId);
+						data.setTownId(townId);
+						data.setStreetName(txtAddress.getText().trim());
+						data.setNum1(txtNum1.getText().trim());
+						data.setNum2(txtNum2.isVisible() ? txtNum2.getText().trim() : null);
+						data.setSize(Integer.parseInt(txtSize.getText().trim()));
 
-		            HousePropertyData data = new HousePropertyData();
-		            data.setLandlordId(landlordId);
-		            data.setTownId(townId);
-		            data.setStreetName(txtAddress.getText().trim());
-		            data.setNum1(txtNum1.getText().trim());
-		            data.setNum2(txtNum2.isVisible() ? txtNum2.getText().trim() : null);
-		            data.setSize(Integer.parseInt(txtSize.getText().trim()));
+						data.setRoomQty((int) spinnerRoom.getValue());
+						data.setBathQty((int) spinnerBath.getValue());
+						data.setFloorQty((int) spinnerFloor.getValue());
+						data.setHasParking((int) spinnerParking.getValue() > 0);
+						data.setHasStorage((int) spinnerStorage.getValue() > 0);
 
-		            data.setRoomQty((int) spinnerRoom.getValue());
-		            data.setBathQty((int) spinnerBath.getValue());
-		            data.setFloorQty((int) spinnerFloor.getValue());
-		            data.setHasParking((int) spinnerParking.getValue() > 0);
-		            data.setHasStorage((int) spinnerStorage.getValue() > 0);
-
-		            data.setHasGarden(chckbxGarden.isSelected());
-		            data.setHasPatio(chckbxPatio.isSelected());
-		            data.setHasPool(chckbxPool.isSelected());
-		            data.setHasBBQ(chckbxBBQ.isSelected());
-		            data.setHasBalcony(chckbxBalcony.isSelected());
-		            data.setHasTerrace(chckbxTerrace.isSelected());
-		            data.setHasLaundry(chckbxLaundry.isSelected());
-		            data.setInCondo(chckbxInCondo.isSelected());
+						data.setHasGarden(chckbxGarden.isSelected());
+						data.setHasPatio(chckbxPatio.isSelected());
+						data.setHasPool(chckbxPool.isSelected());
+						data.setHasBBQ(chckbxBBQ.isSelected());
+						data.setHasBalcony(chckbxBalcony.isSelected());
+						data.setHasTerrace(chckbxTerrace.isSelected());
+						data.setHasLaundry(chckbxLaundry.isSelected());
+						data.setInCondo(chckbxInCondo.isSelected());
 
 		            // Puedes agregar condicionales si quieres setear condoId o condoPlatformId
-		            data.setCondoId(null);
-		            data.setCondoPlatformId(null);
+						data.setCondoId(null);
+						data.setCondoPlatformId(null);
 
-		            data.setPropertyTypeId(1); // 1 = house, puedes mapear según necesites
+						data.setPropertyTypeId(1); // 1 = house, puedes mapear según necesites
 
-		            boolean success = propertiesDAO.insertCompleteHouse(data);
-		            if (success) {
-		                Popup.showSuccess("Propiedad insertada correctamente.");
-		                // Podrías limpiar los campos si quieres
+						boolean success = propertiesDAO.insertCompleteHouse(data);
+						if (success) {
+							Popup.showSuccess("Propiedad insertada correctamente.");
+							// Podrías limpiar los campos si quieres
 		            } else {
 		                Popup.show("Hubo un error al insertar la propiedad.", "error");
 		            }
-
+					}
 		        } catch (Exception ex) {
 		            ex.printStackTrace();
 		            Popup.show("Hubo un error al insertar la propiedad. ERROR: "+ ex.getMessage(), "error");
@@ -773,7 +786,7 @@ public class PropertiesPanel extends JPanel {
 		comboPropertyType.setSelectedIndex(0); // Reset property type selection
 		comboRegion.setSelectedIndex(0); // Reset region selection
 		comboTown.removeAllItems(); // Clear towns
-		comboTown.addItem("Seleccione una Comuna"); // SPANISH for "Select a Town"
+		//comboTown.addItem("Seleccione una Comuna"); // SPANISH for "Select a Town"
 		txtAddress.setText(""); // Clear address text field
 		txtNum1.setText(""); // Clear address number 1 text field
 		txtNum2.setText(""); // Clear address number 2 text field
