@@ -28,6 +28,8 @@ import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+import java.awt.Component;
 
 // This class represents the Properties panel in the application.
 public class PropertiesPanel extends JPanel {
@@ -35,10 +37,12 @@ public class PropertiesPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JButton btnBack = new JButton("Atrás"); // SPANISH
 	private JButton btnSave; // Button to save property information
+	private JButton btnNewCondo;
 	private JComboBox<LandlordOption> comboLandlord; // Text field for landlord information
 	private JComboBox<PropertyTypeOption> comboPropertyType;
 	private JComboBox<String> comboRegion;
 	private JComboBox<TownOption> comboTown; // Text field for town information
+	private JComboBox<String> comboCondo;
 	private JLabel lblLandlord;
 	private JLabel lblPropertyType;
 	private JLabel lblRegion;
@@ -91,14 +95,17 @@ public class PropertiesPanel extends JPanel {
 	private JCheckBox chckbxBldngGym;
 	private JCheckBox chckbxBldngLaundry;
 	private PropertyDAO propertiesDAO = new PropertyDAO(DBConnection.getConnection());
-	
+	private JLabel lblRol;
+	private JTextField txtRol;
+	private JLabel lblPanelDePropiedades;
+	private JSeparator separator;
 	
 	public PropertiesPanel(Container contentPane, Menu menu) {
 		setBackground(new Color(187, 187, 187));
 		setForeground(Color.BLACK);
 		setName("PropertiesPanel"); // Set the name of the panel
 		setLayout(null);
-		setBounds(0, 0, 1250, 700);
+		setBounds(0, 0, 1250, 660);
 		setVisible(true);
 		DBConnection.getConnection();
 		
@@ -134,7 +141,7 @@ public class PropertiesPanel extends JPanel {
 		// -- PROPERTY TYPE -- //
 		
 		comboPropertyType = new JComboBox<>();
-		comboPropertyType.setBounds(791, 29, 180, 30);
+		comboPropertyType.setBounds(737, 29, 180, 30);
 		comboPropertyType.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		comboPropertyType.setEditable(false); // Make the combo box not editable
 		add(comboPropertyType);
@@ -230,8 +237,6 @@ public class PropertiesPanel extends JPanel {
 			}
 		});
 		
-	
-		
 		comboTown = new JComboBox<>();
 		comboTown.setBounds(222, 233, 310, 30);
 		comboTown.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18)); 
@@ -240,12 +245,46 @@ public class PropertiesPanel extends JPanel {
 		
 		comboTown.addItem(new TownOption(0 , "Seleccione una Comuna")); // SPANISH for "Select a Town"
 		
-	// -- END REGION -- //
+		// -- END SAVE BUTTON -- //
+		
+		// -- NEW CONDO BUTTON -- //
+		
+		btnNewCondo = new JButton("Agregar");
+		btnNewCondo.setBackground(new Color(100, 149, 237));
+		btnNewCondo.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
+		btnNewCondo.setBounds(447, 150, 83, 30);
+		btnNewCondo.setVisible(false); // Initially hidden, it will be shown if needed (e.g., for apartments)
+		add(btnNewCondo);
+		
+		// -- END COMBO CONDO -- //
+		
+		// -- NEW CONDO BUTTON -- //
+		
+		btnNewCondo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Show the NewCondoPanel when the button is clicked
+				showMiniFrame.show(new CondoFrame());
+			}
+		});
+		
+		// -- END REGION -- //
 		
 		// -- TOWN -- //
 		
 		// -- END TOWN -- //
-
+		
+		// -- CONDO -- //
+		
+		comboCondo = new JComboBox<>();
+		comboCondo.setBounds(237, 150, 215, 30);
+		comboCondo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18)); // Set font for the combo box
+		comboCondo.setEditable(false); // Make the combo box not editable
+		comboCondo.setVisible(false); // Initially hidden, it will be shown if needed (e.g., for apartments)
+		add(comboCondo);
+		
+		comboCondo.addItem("Seleccione un Condominio"); // SPANISH for "Select a Condominium"
+		
+		
 		// --- END COMBO BOXES --- //
 		
 		// --------------------- //
@@ -265,8 +304,10 @@ public class PropertiesPanel extends JPanel {
 		btnSave.setForeground(new Color(255, 255, 255));
 		btnSave.setBackground(new Color(0, 153, 0));
 		btnSave.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 22));
-		btnSave.setBounds(515, 600, 125, 58);
+		btnSave.setBounds(559, 582, 125, 58);
 		add(btnSave);
+		
+		// -- END NEW CONDO BUTTON -- //
 		
 		// --- END BUTTONS --- //
 		
@@ -287,7 +328,7 @@ public class PropertiesPanel extends JPanel {
 		
 		lblPropertyType = new JLabel("Tipo:"); // SPANISH for "Property Type"
 		lblPropertyType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18)); // Set font size for the label
-		lblPropertyType.setBounds(734, 33, 46, 22);
+		lblPropertyType.setBounds(680, 33, 46, 22);
 		add(lblPropertyType);
 		
 		// -- END PROPERTY TYPE -- //
@@ -404,7 +445,7 @@ public class PropertiesPanel extends JPanel {
 	    
 	    lblInCondo = new JLabel("En Condominio:"); // SPANISH for "In Condominium"
 	    lblInCondo.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18)); 
-	    lblInCondo.setBounds(372, 148, 140, 30);
+	    lblInCondo.setBounds(79, 150, 140, 30);
 	    add(lblInCondo);
 	    
 	    lblBuildingHasLift = new JLabel("Edificio con Ascensor:"); // SPANISH for "Building with Elevator"
@@ -441,11 +482,11 @@ public class PropertiesPanel extends JPanel {
 		// --- SEPARATORS--- //
 		
 		separator1 = new JSeparator();
-		separator1.setBounds(112, 70, 420, 8);
+		separator1.setBounds(112, 70, 462, 8);
 		add(separator1);
 		
 		separator2 = new JSeparator();
-		separator2.setBounds(734, 70, 420, 22);
+		separator2.setBounds(680, 70, 474, 22);
 		add(separator2);
 		
 		// --- END SEPARATORS --- //
@@ -528,8 +569,10 @@ public class PropertiesPanel extends JPanel {
 		// --- CHECKBOXES --- //
 		
 		chckbxInCondo = new JCheckBox("");
-		chckbxInCondo.setBounds(502, 147, 30, 38);
+		chckbxInCondo.setBounds(221, 150, 21, 35);
 		add(chckbxInCondo);
+        
+       
 		
 		chckbxGarden = new JCheckBox("");
 		chckbxGarden.setBounds(775, 226, 30, 23);
@@ -578,6 +621,32 @@ public class PropertiesPanel extends JPanel {
 		chckbxBldngLaundry = new JCheckBox("");
 		chckbxBldngLaundry.setBounds(875, 514, 30, 23);
 		add(chckbxBldngLaundry);
+		
+		lblRol = new JLabel("ROL:");
+		lblRol.setForeground(new Color(255, 51, 0));
+		lblRol.setHorizontalAlignment(SwingConstants.LEFT);
+		lblRol.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblRol.setBounds(958, 29, 59, 30);
+		add(lblRol);
+		
+		txtRol = new JTextField();
+		txtRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+		txtRol.setColumns(10);
+		txtRol.setBounds(1009, 29, 86, 30);
+		add(txtRol);
+		
+		lblPanelDePropiedades = new JLabel("Panel de Propiedades");
+		lblPanelDePropiedades.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPanelDePropiedades.setForeground(Color.GRAY);
+		lblPanelDePropiedades.setFont(new Font("Noto Sans JP", Font.PLAIN, 16));
+		lblPanelDePropiedades.setBounds(535, 5, 187, 16);
+		add(lblPanelDePropiedades);
+		
+		separator = new JSeparator();
+		separator.setOrientation(SwingConstants.VERTICAL);
+		separator.setBounds(625, 75, 10, 453);
+		add(separator);
+		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblAddress, comboLandlord, comboPropertyType, txtRol, chckbxInCondo, comboCondo, comboRegion, btnNewCondo, comboTown, txtAddress, txtNum1, txtNum2, txtSize, lblRoomQty, spinnerRoom, spinnerBath, spinnerFloor, spinnerParking, spinnerStorage, chckbxGarden, chckbxPatio, chckbxPool, chckbxBalcony, chckbxBBQ, chckbxTerrace, lblLandlord, lblPropertyType, lblRegion, lblLocationTitle, lblTown, separator1, lblAddressNum1, lblAddressNum2, lblSize, lblBathQty, lblFloorQty, lblParkingQty, lblHasStorage, lblHasLaundryRoom, chckbxBldngLift, chckbxBldngPool, lblHasGarden, chckbxBldngBBQ, chckbxBldngGym, chckbxBldngLaundry, lblHasPatio, btnSave, lblHasPool, btnBack, lblHasBalcony, lblHasBBQ, lblHasTerrace, lblInCondo, lblBuildingHasLift, lblBuildingHasPool, lblBuildingHasBBQ, lblBuildingHasGym, lblBuildingHasLaundryRoom, separator2, chckbxLaundry, lblRol, lblPanelDePropiedades, separator}));
 		
 		// --- END CHECKBOXES --- //
 		
@@ -681,15 +750,22 @@ public class PropertiesPanel extends JPanel {
 		
 		// --- ACTION LISTENERS --- //
 		
-		// -- BACK BUTTON -- //
+		// -- COMBO CONDO -- //
 		
-		btnBack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				showPanel.show(contentPane, menu.MenuClone());// Show the MenuPanel when back button is clicked
-			}
-		});
+		chckbxInCondo.addActionListener(new ActionListener() {
+	    @Override
+	    	public void actionPerformed(ActionEvent e) {
+	    		if (chckbxInCondo.isSelected()) {
+	    			comboCondo.setVisible(true); // Show the combo box if the checkbox is selected
+	    			btnNewCondo.setVisible(true); // Show the "New Condo" button if the checkbox is selected
+	    		} else {
+	    			comboCondo.setVisible(false); // Hide the combo box if the checkbox is not selected
+	    			btnNewCondo.setVisible(false); // Hide the "New Condo" button if the checkbox is not selected
+	    		}
+	    	}
+	    });
 		
-		// -- END BACK BUTTON -- //
+		// -- END NEW CONDO BUTTON -- //
 		
 		// -- SAVE BUTTON -- //	
 		
@@ -727,19 +803,27 @@ public class PropertiesPanel extends JPanel {
 					if (propertyType.equals("House")) {
 		            
 						HousePropertyData data = new HousePropertyData();
+						
+						// PROPERTY DATA SETTERS
+						data.setPropertyTypeId(1); // 1 = house
 						data.setLandlordId(landlordId);
+						data.setSize(Integer.parseInt(txtSize.getText().trim()));
+					    // PROPERTY DATA SETTERS
+						
+						// ADDRESS DATA SETTERS
 						data.setTownId(townId);
+						data.setRegionId(RegionDAO.getRegionIDByName((String) comboRegion.getSelectedItem()));
 						data.setStreetName(txtAddress.getText().trim());
 						data.setNum1(txtNum1.getText().trim());
 						data.setNum2(txtNum2.isVisible() ? txtNum2.getText().trim() : null);
-						data.setSize(Integer.parseInt(txtSize.getText().trim()));
-
+						// ADDRESS DATA SETTERS
+						
+						// HOUSE DATA SETTERS
 						data.setRoomQty((int) spinnerRoom.getValue());
 						data.setBathQty((int) spinnerBath.getValue());
 						data.setFloorQty((int) spinnerFloor.getValue());
 						data.setHasParking((int) spinnerParking.getValue() > 0);
 						data.setHasStorage((int) spinnerStorage.getValue() > 0);
-
 						data.setHasGarden(chckbxGarden.isSelected());
 						data.setHasPatio(chckbxPatio.isSelected());
 						data.setHasPool(chckbxPool.isSelected());
@@ -748,19 +832,19 @@ public class PropertiesPanel extends JPanel {
 						data.setHasTerrace(chckbxTerrace.isSelected());
 						data.setHasLaundry(chckbxLaundry.isSelected());
 						data.setInCondo(chckbxInCondo.isSelected());
+						// HOUSE DATA SETTERS
 
 		            // Puedes agregar condicionales si quieres setear condoId o condoPlatformId
 						data.setCondoId(null);
-						data.setCondoPlatformId(null);
-
-						data.setPropertyTypeId(1); // 1 = house, puedes mapear según necesites
 
 						boolean success = propertiesDAO.insertCompleteHouse(data);
 						if (success) {
 							Popup.showSuccess("Propiedad insertada correctamente.");
 							// Podrías limpiar los campos si quieres
+							cleanFields();
+							
 		            } else {
-		                Popup.show("Hubo un error al insertar la propiedad.", "error");
+		                Popup.show("Hubo un error al crear la propiedad.", "error");
 		            }
 					}
 		        } catch (Exception ex) {
@@ -770,7 +854,17 @@ public class PropertiesPanel extends JPanel {
 		    }
 		});
 
+		// -- END SAVE BUTTON -- //
 		
+		// -- BACK BUTTON -- //
+		
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showPanel.show(contentPane, menu.MenuClone());// Show the MenuPanel when back button is clicked
+			}
+		});
+				
+		// -- END BACK BUTTON -- //
 		
 		// --- END ACTION LISTENERS --- //
 		

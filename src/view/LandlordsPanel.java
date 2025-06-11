@@ -350,7 +350,7 @@ public class LandlordsPanel extends JPanel {
 		
 		// -- EMAIL --
 		
-		lblEmail = new JLabel("Email:"); // SPANISH for "Email"
+		lblEmail = new JLabel("e-mail:"); // SPANISH for "Email"
 		lblEmail.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
 		lblEmail.setBounds(211, 286, 92, 30);
 		add(lblEmail);
@@ -806,7 +806,7 @@ public class LandlordsPanel extends JPanel {
 		
 		btnShowLL.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showFrame.show(new LandlordsList()); // Show the LandlordsList Frame when the button is clicked
+				showMiniFrame.show(new LandlordsList()); // Show the LandlordsList Frame when the button is clicked
 			}
 		});
 		

@@ -2,23 +2,32 @@ package dao;
 
 public class HousePropertyData {
 	private String streetName, num1, num2;
-    private int townId, landlordId, propertyTypeId, size;
+    private int townId, regionId, landlordId, propertyTypeId, size;
     private int bathQty, roomQty, floorQty;
     private boolean hasParking, hasGarden, hasPatio, hasPool, hasStorage, hasBBQ, hasBalcony, hasTerrace, hasLaundry;
     private boolean inCondo;
-    private Integer condoId, condoPlatformId;
+    private Integer condoId;
     
-	public HousePropertyData(String streetName, String num1, String num2, int townId, int landlordId,
+	public HousePropertyData(String streetName, String num1, String num2, int townId, int regionId, int landlordId,
 			int propertyTypeId, int size, int bathQty, int roomQty, int floorQty, boolean hasParking, boolean hasGarden,
 			boolean hasPatio, boolean hasPool, boolean hasStorage, boolean hasBBQ, boolean hasBalcony, boolean hasTerrace, boolean hasLaundry, boolean inCondo, Integer condoId,
 			Integer condoPlatformId) {
+		
+		// ADDRESS
 		this.streetName = streetName;
 		this.num1 = num1;
 		this.num2 = num2;
 		this.townId = townId;
+		this.regionId = regionId;
+		// ADDRESS
+		
+		// PROPERTY
 		this.landlordId = landlordId;
 		this.propertyTypeId = propertyTypeId;
 		this.size = size;
+		// PROPERTY
+		
+		// HOUSE
 		this.bathQty = bathQty;
 		this.roomQty = roomQty;
 		this.floorQty = floorQty;
@@ -33,12 +42,12 @@ public class HousePropertyData {
 		this.hasLaundry = hasLaundry;
 		this.inCondo = inCondo;
 		this.condoId = condoId;
-		this.condoPlatformId = condoPlatformId;
+		// HOUSE
 	}
 	
 	public HousePropertyData() {
 	    // Constructor por defecto necesario para poder usar `new HousePropertyData()`
-	}
+	 }
 	
 	public String getStreetName() {
 		return streetName;
@@ -54,6 +63,10 @@ public class HousePropertyData {
 	
 	public int getTownId() {
 		return townId;
+	}
+	
+	public int getRegionId() {
+		return regionId;
 	}
 	
 	public int getLandlordId() {
@@ -124,9 +137,6 @@ public class HousePropertyData {
 		return condoId;
 	}
 	
-	public Integer getCondoPlatformId() {
-		return condoPlatformId;
-	}
 	
 	public void setStreetName(String streetName) {
 		this.streetName = streetName;
@@ -142,6 +152,10 @@ public class HousePropertyData {
 	
 	public void setTownId(int townId) {
 		this.townId = townId;
+	}
+	
+	public void setRegionId(int regionId) {
+		this.regionId = regionId;
 	}
 	
 	public void setLandlordId(int landlordId) {
@@ -198,10 +212,6 @@ public class HousePropertyData {
 	
 	public void setCondoId(Integer condoId) {
 		this.condoId = condoId;
-	}
-	
-	public void setCondoPlatformId(Integer condoPlatformId) {
-		this.condoPlatformId = condoPlatformId;
 	}
 
 	public void setHasBalcony(boolean selected) {

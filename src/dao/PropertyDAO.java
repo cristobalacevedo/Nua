@@ -86,12 +86,13 @@ public class PropertyDAO {
 	}
 
     private int insertAddress(HousePropertyData data) throws SQLException {
-        String sql = "INSERT INTO address (st_name, num_1, num_2, town_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO address (st_name, num_1, num_2, town_id, town_region_id, town_region_country_id) VALUES (?, ?, ?, ?, ?, 1)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, data.getStreetName());
             stmt.setString(2, data.getNum1());
             stmt.setString(3, data.getNum2());
             stmt.setInt(4, data.getTownId());
+            stmt.setInt(5, data.getRegionId());
             stmt.executeUpdate();
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {

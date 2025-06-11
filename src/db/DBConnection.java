@@ -8,7 +8,7 @@ public class DBConnection {
     public static Connection connect() {
         Connection conn = null;
         try {
-            String url = "jdbc:sqlite:data/inmobiliaria.db"; // SQLite database file path
+            String url = "jdbc:sqlite:data/nua_estate.db"; // SQLite database file path
             conn = DriverManager.getConnection(url);
             System.out.println("Connection to DB has been established."); // SPANISH: "Conexión a SQLite establecida."")
             //return True;

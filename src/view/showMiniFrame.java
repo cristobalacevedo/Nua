@@ -6,7 +6,7 @@ import java.awt.Container;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-public class showFrame {
+public class showMiniFrame {
 	public static void show(JFrame newFrame) {
 		newFrame.setResizable(false); // Prevent resizing of the window
 		newFrame.setLocationRelativeTo(null); // Center the window on screen
