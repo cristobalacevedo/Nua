@@ -243,7 +243,7 @@ public class PropertiesPanel extends JPanel {
 		comboTown.setEditable(false); // Make the combo box not editable
 		add(comboTown); 
 		
-		comboTown.addItem(new TownOption(0 , "Seleccione una Comuna")); // SPANISH for "Select a Town"
+		comboTown.addItem(new TownOption(-1 , "Seleccione una Comuna")); // SPANISH for "Select a Town"
 		
 		// -- END SAVE BUTTON -- //
 		
@@ -571,9 +571,7 @@ public class PropertiesPanel extends JPanel {
 		chckbxInCondo = new JCheckBox("");
 		chckbxInCondo.setBounds(221, 150, 21, 35);
 		add(chckbxInCondo);
-        
-       
-		
+    
 		chckbxGarden = new JCheckBox("");
 		chckbxGarden.setBounds(775, 226, 30, 23);
 		add(chckbxGarden);
@@ -778,27 +776,33 @@ public class PropertiesPanel extends JPanel {
 		    	String nameAndRut = selectedLandlord.toString();
 		        int townId = selectedTown.getId();
 
-		        if (selectedLandlord == null || selectedLandlord.equals("Seleccione un Propietario")) {
-		        	Popup.show("Debe seleccionar un propietario válido.", "error"); // SPANISH for "You must select a valid landlord."
-		            return;
-		        }
-
-		        if (selectedTown == null || selectedTown.equals("Seleccione una Comuna")) {
-		        	Popup.show("Debe seleccionar una comuna válida.", "error"); // SPANISH for "You must select a valid town."
-		            return;
-		        }
+		        
 
 		        try {
 		            //int landlordId = LandlordDAO.getLandlordIdByNameWithRUT(selectedLandlord);
 		            //int townId = TownDAO.getTownIdByName(selectedTown);
 		            
 		            // Extrae el id del tipo seleccionado
+		        	
+		        	if (selectedLandlord == null || selectedLandlord.getId() == -1) { // SPANISH for "Select a Landlord")) {
+			        	Popup.show("Debe seleccionar un propietario válido.", "error"); // SPANISH for "You must select a valid landlord."
+			            return;
+			        }
+
+			        if (selectedTown == null || selectedTown.getId() == -1) {
+			        	Popup.show("Debe seleccionar una comuna válida.", "error"); // SPANISH for "You must select a valid town."
+			            return;
+			        }
+					
 		            
 		            PropertyTypeOption selectedType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
 					if (selectedType == null || selectedType.getValue().isEmpty()) {
 						Popup.show("Debe seleccionar un tipo de propiedad válido.", "error"); // SPANISH for "You must select a valid property type."
 						return;
 					}
+					
+					
+					
 					String propertyType = selectedType.getValue();
 					if (propertyType.equals("House")) {
 		            

@@ -11,7 +11,7 @@ import db.DBConnection;
 
 public class RegionDAO {
 	public static List<String> getAllRegion() {
-		List<String> propertyTypes = new ArrayList<>();
+		List<String> regions = new ArrayList<>();
 		String sql = "SELECT name FROM region";
 
 		try (
@@ -19,13 +19,13 @@ public class RegionDAO {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery()) {
 			while (rs.next()) {
-				propertyTypes.add(rs.getString("name"));
+				regions.add(rs.getString("name"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return propertyTypes;
+		return regions;
 	}	
 	
 	
