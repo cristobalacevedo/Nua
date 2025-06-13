@@ -47,7 +47,7 @@ public class CondoFrame extends JFrame {
 	private JComboBox<String> comboRegion;
 	private JComboBox<TownOption> comboTown;
 	private JComboBox<String> comboPlatform;
-	private JComboBox<String> comboCondo;
+	private JComboBox<CondoOption> comboCondo;
 	
 	private JLabel lblTitle;
 	private JLabel lblCondoName;
@@ -373,21 +373,43 @@ public class CondoFrame extends JFrame {
 		CondoFrame.add(comboTown);
 		
 		comboTown.addItem(new TownOption(0 , "Seleccione una Comuna")); // SPANISH for "Select a Town"
-
-		comboCondo = new JComboBox<String>();
+		
+		
+		
+		comboCondo = new JComboBox<CondoOption>();
+		String defaultCondo = "Seleccione un Condominio"; // SPANISH for "Select a Condominium"
 		comboCondo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
 		comboCondo.setEditable(false);
 		comboCondo.setBounds(607, 303, 242, 30);
 		CondoFrame.add(comboCondo);
-		
-		String defaultCondo = "Seleccione un Condominio"; // SPANISH for "Select a Condominium"
-		comboCondo.addItem(defaultCondo); // SPANISH for "Select a Condominium"
-		List<String> condos = CondoDAO.getAllCondoNames(); // Fetch all condos from the database
-		
-		for (String condo : condos) {
+		comboCondo.addItem(new CondoOption(0, defaultCondo)); // SPANISH for "Select a Condominium"
+		List<CondoOption> condos = CondoDAO.getAllCondoNames(); // Fetch all condos from the database
+		System.out.println("Fetching condos..."); // For debugging purposes
+		for (CondoOption condo : condos) {
 			comboCondo.addItem(condo); // Add each condo to the combo box
 			System.out.println("Condo: " + condo); // For debugging purposes
 		}
+		
+		comboCondo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CondoOption selectedCondo = (CondoOption) comboCondo.getSelectedItem(); // Get the selected condo
+				if (selectedCondo != null && selectedCondo.getId() != 0) {
+					String name = selectedCondo.getName(); // si tu clase tiene getName()
+					int condoID = selectedCondo.getId();  // Get the ID of the selected condo
+	                System.out.println("Selected Condo ID: " + condoID + " - Name: " + name); // Debugging output);
+
+				//	List<TownOption> towns = TownDAO.getAllTownsByRegionID(regionID); // Fetch towns for the selected region
+				//	for (TownOption town : towns) {
+				//		comboTown.addItem(town); // Add each town to the combo box
+					//}
+				} else {
+					System.out.println("No condo selected or default option selected.");
+				}
+			}
+		});
+		
+			
+		
 
 		comboPlatform = new JComboBox<String>();
 		comboPlatform.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
@@ -490,6 +512,7 @@ public class CondoFrame extends JFrame {
 			String rut = txtRut.getText().trim();
 			CondoOption selectedCondo = (CondoOption) comboCondo.getSelectedItem();
 			
+	        //System.out.println("Selected Condo ID: " + condoID);
 			DoormanController controller = new DoormanController();
 			boolean success = controller.saveDoorman(rut, name, surname, email, phone, selectedCondo);
 			

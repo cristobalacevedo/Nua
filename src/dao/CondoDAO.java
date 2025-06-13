@@ -86,29 +86,33 @@ public class CondoDAO {
         }
     }
 	
-    public static List<String> getAllCondoNames() {
-		List<String> condos = new ArrayList<>();
-		String sql = "SELECT name FROM condo";
+    public static List<CondoOption> getAllCondoNames() {
+        List<CondoOption> condos = new ArrayList<>();
+        String sql = "SELECT id, name FROM condo";  // ✅ Ahora traes el id
 
-		try (Connection conn = DBConnection.getConnection();
-			 PreparedStatement stmt = conn.prepareStatement(sql);
-			 ResultSet rs = stmt.executeQuery()) {
-			while (rs.next()) {
-				condos.add(rs.getString("name"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+             
+            while (rs.next()) {
+                int id = rs.getInt("id");                 // ✅ id desde la base
+                String name = rs.getString("name");       // ✅ nombre desde la base
+                condos.add(new CondoOption(id, name));    // ✅ constructor correcto
+            }
 
-		return condos;
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return condos;
+    }
     
-    public static int getCondoIDByName(int selectedCondo) {
+    public static int getCondoIDByName(String selectedCondo) {
     	int condoID = -1; // Default value if not found
     	String sql = "SELECT id FROM condo WHERE name = ?";
     	try (Connection conn = DBConnection.getConnection();
     		PreparedStatement stmt = conn.prepareStatement(sql)) {
-    		stmt.setInt(1, selectedCondo);
+    		stmt.setString(1, selectedCondo);
     		ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				condoID = rs.getInt("id");

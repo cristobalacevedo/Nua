@@ -11,7 +11,7 @@ import view.Popup;
 public class DoormanController {
 
 	public boolean saveDoorman(String rut, String name, String surname, String email, String phone,
-			int selectedCondo) {
+			CondoOption selectedCondo) {
 		if (rut == null || rut.trim().isEmpty()) {
             Popup.show("El RUT se encuentra vacío.", "error"); // SPANISH for "The name of the condominium is required."	
             return false;
@@ -37,12 +37,13 @@ public class DoormanController {
         	return false;
         }
         
-        if (selectedCondo <= 0) {
-            Popup.show("Debe seleccionar un condominio válido.", "error"); // SPANISH for "You must select a valid condominium."
-            return false;
+		if (selectedCondo == null || selectedCondo.getId() == 0) {
+			Popup.show("Debe seleccionar un condominio válido.", "error"); // SPANISH for "You must select a valid
+																			// condominium."
+			return false;
 		}
 
-        int condoID = CondoDAO.getCondoIDByName(selectedCondo);
+        int condoID = selectedCondo.getId();
         System.out.println("Selected Condo ID: " + condoID);
    
 

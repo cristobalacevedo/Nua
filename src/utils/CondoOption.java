@@ -1,25 +1,29 @@
 package utils;
 
 public class CondoOption {
-	private int id;
-    private String displayCondo; 
-    
-    public CondoOption(int id, String displayCondo) {
-    	this.id = id;
-    	this.displayCondo = displayCondo;
+    private int id;
+    private String name;
+
+    public CondoOption(int id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-	public int getId() {
-		return id;
-	}
-	
-	public String toString() {
-		return displayCondo;
-	}
+    public CondoOption(String name) {
+        this.id = 0;           // Default id
+        this.name = name;
+    }
 
+    public int getId() {
+        return id;
+    }
 
-	public String getDisplayCondo() {
-		return displayCondo;
-	}
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;  // This will be used in JComboBox or similar components
+    }
 }
-
