@@ -32,7 +32,7 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 
 // This class represents the Properties panel in the application.
-public class PropertiesPanel extends JPanel {
+public class PropertyPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnBack = new JButton("Atrás"); // SPANISH
@@ -100,7 +100,7 @@ public class PropertiesPanel extends JPanel {
 	private JLabel lblPanelDePropiedades;
 	private JSeparator separator;
 	
-	public PropertiesPanel(Container contentPane, Menu menu) {
+	public PropertyPanel(Container contentPane, Menu menu) {
 		setBackground(new Color(187, 187, 187));
 		setForeground(Color.BLACK);
 		setName("PropertiesPanel"); // Set the name of the panel

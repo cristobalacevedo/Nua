@@ -31,6 +31,9 @@ import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.text.AbstractDocument;
+
+import controller.LandlordController;
+
 import javax.swing.JComboBox;
 
 // FALTA VALIDAR :
@@ -39,7 +42,7 @@ import javax.swing.JComboBox;
 // CARACTERES NO VALIDOS EN TELEFONO, SOLO PERMITIRÁ EL "+" Y ESPACIOS, ADEMÁS DE NÚMEROS
 
 // This class represents the Landlords Panel in the application.
-public class LandlordsPanel extends JPanel {
+public class LandlordPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnBack = new JButton("Atrás"); // SPANISH
@@ -70,7 +73,7 @@ public class LandlordsPanel extends JPanel {
 	
 
 	
-	public LandlordsPanel(Container contentPane, Menu menu) {
+	public LandlordPanel(Container contentPane, Menu menu) {
 		setBackground(new Color(187, 187, 187));
 		setForeground(Color.BLACK);
 		setName("LandlordsPanel"); 
@@ -582,88 +585,125 @@ public class LandlordsPanel extends JPanel {
 		
 		// -- SAVE BUTTON ACTION LISTENER -- //
 		
-		btnSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnSave.addActionListener(e -> {
+		    Map<String, JTextField> fields = new LinkedHashMap<>();
+		    fields.put("RUT", txtRut);
+		    fields.put("Nombre", txtName);
+		    fields.put("Apellido", txtSurname);
+		    fields.put("Email", txtEmail);
+		    fields.put("Teléfono", txtPhone);
+		    fields.put("N° (Número de Cuenta)", txtNum);
 
-				Map<String, JTextField> campos = new LinkedHashMap<>();
-		        campos.put("RUT", txtRut);
-		        campos.put("Nombre", txtName);
-		        campos.put("Apellido", txtSurname);
-		        campos.put("Email", txtEmail);
-		        campos.put("Teléfono", txtPhone);
-		       // campos.put("Banco", comboBank); // Added bank field validation
-		        campos.put("N° (Número de Cuenta)", txtNum); // Added account number field validation
+		    if (!FieldValidator.validField(fields)) return;
+		    
+		    // Landlord data
+		    String rut = txtRut.getText().trim();
+		    String name = txtName.getText().trim();
+		    String surname = txtSurname.getText().trim();
+		    String email = txtEmail.getText().trim();
+		    String phone = txtPhone.getText().trim();
 
-		        // Validación de campos vacíos
-		        if (!FieldValidator.validField(campos)) return;
+		    // Bank and account data
+		    String selectedBankName = comboBank.getSelectedItem().toString();
+		    String accountType = comboType.getSelectedItem().toString();
+		    String num = txtNum.getText().trim();
 
-		        // Obtener valores
-		        String rut = txtRut.getText().trim();
-		        String name = txtName.getText().trim();
-		        String surname = txtSurname.getText().trim();
-		        String email = txtEmail.getText().trim();
-		        String phone = txtPhone.getText().trim();
-		        String num = txtNum.getText().trim();
+		    LandlordController controller = new LandlordController();
 
-				// Clean and validate RUT
-				if (!RUTValidator.isValid(rut)) {
-				    Popup.show("RUT inválido. Verifica el formato y el dígito verificador.", "error"); // SPANISH for "Invalid RUT. Check the format and the verification digit."
-				    System.out.println("RUT inválido. Verifica el formato y el dígito verificador."); // SPANISH for "Invalid RUT. Check the format and the verification digit."
-				    return;
-				}
-				
-				// Verificar existencia en la base de datos
-				if (PersonDAO.rutExistsInDB(rut)) {
-				    Popup.show("El RUT ya está registrado en el sistema.", "error"); // SPANISH for "The RUT is already registered in the system.";
-				    return;
-				}
-				
-				if (comboBank.getSelectedIndex() == 0) {
-				    Popup.show("Campos obligatorios vacíos:\n - Banco.", "error"); // SPANISH for "You must select a valid bank."
-				    return;
-				}
-				
-				if (comboType.getSelectedIndex() == 0) {
-					Popup.show("Campos obligatorios vacíos:\n - Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."																	
-					return;
-				}
-			
-				
-				String selectedBankName = comboBank.getSelectedItem().toString();
-				int bankId = BankDAO.getIdByName(selectedBankName); // Asegúrate que este método exista
-				String accountType = comboType.getSelectedItem().toString();
-				String accountNum = txtNum.getText().trim();
-				
-				// Create a new Landlord object, defaulting to "landlord" type
-				Landlord landlord = new Landlord(
-					rut,
-					name,
-					surname,
-					email,
-					phone,
-				    "landlord", // Fixed type for Landlord
-					true,       // isActive
-					false,       // hasRentals
-					bankDAO.getBankByName(comboBank.getSelectedItem().toString()), // Get the selected bank name
-					comboType.getSelectedItem().toString(), // Get the selected account type
-					num // Get the account number
-				);
+		    boolean success = controller.saveLandlord(
+		        rut, name, surname, email, phone, selectedBankName, accountType, num);
 
-				// Save the landlord using DAO
-				LandlordDAO dao = new LandlordDAO(null);
-				boolean saved = dao.save(landlord, bankId, accountType, accountNum);
-
-				if (saved) {
-					//ModFont.setOptionPaneFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 16)); // Update the title to reflect the current panel
-					Popup.showSuccess("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
-					System.out.println("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
-					cleanFields();
-				} else {
-					Popup.show("Error al guardar arrendador.", "error"); // SPANISH for "Error saving landlord"
-					System.out.println("Error al guardar arrendador."); // SPANISH for "Error saving landlord"
-				}
-			}
+		    if (success) {
+		    	System.out.println("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
+		        Popup.showSuccess("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
+		        cleanFields();
+		    } else {
+		    	System.out.println("Error al guardar arrendador."); // SPANISH for "Error saving landlord"
+		        Popup.show("Error al guardar arrendador.", "error"); // SPANISH for "Error saving landlord"
+		    }
 		});
+		
+//			public void actionPerformed(ActionEvent e) {
+//
+//				Map<String, JTextField> campos = new LinkedHashMap<>();
+//		        campos.put("RUT", txtRut);
+//		        campos.put("Nombre", txtName);
+//		        campos.put("Apellido", txtSurname);
+//		        campos.put("Email", txtEmail);
+//		        campos.put("Teléfono", txtPhone);
+//		       // campos.put("Banco", comboBank); // Added bank field validation
+//		        campos.put("N° (Número de Cuenta)", txtNum); // Added account number field validation
+//
+//		        // Validación de campos vacíos
+//		        if (!FieldValidator.validField(campos)) return;
+//
+//		        // Obtener valores
+//		        String rut = txtRut.getText().trim();
+//		        String name = txtName.getText().trim();
+//		        String surname = txtSurname.getText().trim();
+//		        String email = txtEmail.getText().trim();
+//		        String phone = txtPhone.getText().trim();
+//		        String num = txtNum.getText().trim();
+//
+//				// Clean and validate RUT
+//				if (!RUTValidator.isValid(rut)) {
+//				    Popup.show("RUT inválido. Verifica el formato y el dígito verificador.", "error"); // SPANISH for "Invalid RUT. Check the format and the verification digit."
+//				    System.out.println("RUT inválido. Verifica el formato y el dígito verificador."); // SPANISH for "Invalid RUT. Check the format and the verification digit."
+//				    return;
+//				}
+//				
+//				// Verificar existencia en la base de datos
+//				if (PersonDAO.rutExistsInDB(rut)) {
+//				    Popup.show("El RUT ya está registrado en el sistema.", "error"); // SPANISH for "The RUT is already registered in the system.";
+//				    return;
+//				}
+//				
+//				if (comboBank.getSelectedIndex() == 0) {
+//				    Popup.show("Campos obligatorios vacíos:\n - Banco.", "error"); // SPANISH for "You must select a valid bank."
+//				    return;
+//				}
+//				
+//				if (comboType.getSelectedIndex() == 0) {
+//					Popup.show("Campos obligatorios vacíos:\n - Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."																	
+//					return;
+//				}
+//			
+//				
+//				String selectedBankName = comboBank.getSelectedItem().toString();
+//				int bankId = BankDAO.getIdByName(selectedBankName); // Asegúrate que este método exista
+//				String accountType = comboType.getSelectedItem().toString();
+//				String accountNum = txtNum.getText().trim();
+//				
+//				// Create a new Landlord object, defaulting to "landlord" type
+//				Landlord landlord = new Landlord(
+//					rut,
+//					name,
+//					surname,
+//					email,
+//					phone,
+//				    "landlord", // Fixed type for Landlord
+//					true,       // isActive
+//					false,       // hasRentals
+//					bankDAO.getBankByName(comboBank.getSelectedItem().toString()), // Get the selected bank name
+//					comboType.getSelectedItem().toString(), // Get the selected account type
+//					num // Get the account number
+//				);
+//
+//				// Save the landlord using DAO
+//				LandlordDAO dao = new LandlordDAO(null);
+//				boolean saved = dao.save(landlord, bankId, accountType, accountNum);
+//
+//				if (saved) {
+//					//ModFont.setOptionPaneFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 16)); // Update the title to reflect the current panel
+//					Popup.showSuccess("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
+//					System.out.println("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
+//					cleanFields();
+//				} else {
+//					Popup.show("Error al guardar arrendador.", "error"); // SPANISH for "Error saving landlord"
+//					System.out.println("Error al guardar arrendador."); // SPANISH for "Error saving landlord"
+//				}
+//			}
+//		});
 
 		// -- END SAVE BUTTON ACTION LISTENER -- //
 		
@@ -671,16 +711,15 @@ public class LandlordsPanel extends JPanel {
 		
 		btnUpdate.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-
+		        // Reunir los campos
 		        Map<String, JTextField> campos = new LinkedHashMap<>();
 		        campos.put("RUT", txtRut);
 		        campos.put("Nombre", txtName);
 		        campos.put("Apellido", txtSurname);
 		        campos.put("Email", txtEmail);
 		        campos.put("Teléfono", txtPhone);
-		        campos.put("N° (Número de Cuenta)", txtNum); // Added account number field validation
+		        campos.put("N° (Número de Cuenta)", txtNum);
 
-		        // Validación de campos vacíos
 		        if (!FieldValidator.validField(campos)) return;
 
 		        // Obtener valores
@@ -689,106 +728,163 @@ public class LandlordsPanel extends JPanel {
 		        String surname = txtSurname.getText().trim();
 		        String email = txtEmail.getText().trim();
 		        String phone = txtPhone.getText().trim();
-
-		        // Validar RUT
-		        if (!RUTValidator.isValid(rut)) {
-		            Popup.show("RUT inválido. Verifica el formato y el dígito verificador.", "error"); // SPANISH for "Invalid RUT. Check the format and the verification digit."
-		            return;
-		        }
-
-		        // Verificar que el RUT sí exista (para poder actualizar)
-		        if (!PersonDAO.rutExistsInDB(rut)) {
-		            Popup.show("El RUT no existe en el sistema. No se puede actualizar.", "error"); // SPANISH for "The RUT does not exist in the system. Cannot update."
-		            return;
-		        }
-
-		        if (comboBank.getSelectedIndex() == 0) {
-				    Popup.show("Campos obligatorios vacíos:\n - Banco.", "error"); // SPANISH for "You must select a valid bank."
-				    return;
-				}
-				
-				if (comboType.getSelectedIndex() == 0) {
-					Popup.show("Campos obligatorios vacíos:\n - Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."																	
-					return;
-				}
-
-		        String selectedBankName = comboBank.getSelectedItem().toString();
-		        int bankId = BankDAO.getIdByName(selectedBankName);
-		        String accountType = comboType.getSelectedItem().toString();
 		        String accountNum = txtNum.getText().trim();
+		        String selectedBankName = comboBank.getSelectedItem().toString();
+		        String accountType = comboType.getSelectedItem().toString();
 
-		        // Crear objeto Landlord actualizado
-		        Landlord landlord = new Landlord(
-		            rut,
-		            name,
-		            surname,
-		            email,
-		            phone,
-		            "landlord",
-		            true,   // isActive (puedes adaptar según tu lógica)
-		            false,  // hasRentals (puedes adaptar si ya tiene arriendos)
-		            selectedBankName,
-		            accountType,
-		            accountNum
+		        // Llamar al controlador
+		        LandlordController controller = new LandlordController();
+		        boolean updated = controller.updateLandlord(
+		            rut, name, surname, email, phone, selectedBankName, accountType, accountNum
 		        );
 
-		        // Actualizar usando DAO
-		        LandlordDAO dao = new LandlordDAO(null);
-		        boolean updated = dao.update(landlord, bankId, accountType, accountNum);
-
 		        if (updated) {
-		        	Popup.showSuccess("Arrendador actualizado correctamente."); // SPANISH for "Landlord updated successfully"
-		            System.out.println("Landlord updated successfully."); 
+		            Popup.showSuccess("Arrendador actualizado correctamente.");
 		            cleanFields();
-	                hideEditButtons();
+		            hideEditButtons();
 		        } else {
-		            Popup.show("Error al actualizar arrendador.", "error"); // SPANISH for "Error updating landlord"
-		            System.out.println("Error updating landlord.");
+		            Popup.show("Error al actualizar arrendador.", "error");
 		        }
 		    }
 		});
+		
+		
+//		btnUpdate.addActionListener(new ActionListener() {
+//		    public void actionPerformed(ActionEvent e) {
+//
+//		        Map<String, JTextField> campos = new LinkedHashMap<>();
+//		        campos.put("RUT", txtRut);
+//		        campos.put("Nombre", txtName);
+//		        campos.put("Apellido", txtSurname);
+//		        campos.put("Email", txtEmail);
+//		        campos.put("Teléfono", txtPhone);
+//		        campos.put("N° (Número de Cuenta)", txtNum); // Added account number field validation
+//
+//		        // Validación de campos vacíos
+//		        if (!FieldValidator.validField(campos)) return;
+//
+//		        // Obtener valores
+//		        String rut = txtRut.getText().trim();
+//		        String name = txtName.getText().trim();
+//		        String surname = txtSurname.getText().trim();
+//		        String email = txtEmail.getText().trim();
+//		        String phone = txtPhone.getText().trim();
+//
+//		        // Validar RUT
+//		        if (!RUTValidator.isValid(rut)) {
+//		            Popup.show("RUT inválido. Verifica el formato y el dígito verificador.", "error"); // SPANISH for "Invalid RUT. Check the format and the verification digit."
+//		            return;
+//		        }
+//
+//		        // Verificar que el RUT sí exista (para poder actualizar)
+//		        if (!PersonDAO.rutExistsInDB(rut)) {
+//		            Popup.show("El RUT no existe en el sistema. No se puede actualizar.", "error"); // SPANISH for "The RUT does not exist in the system. Cannot update."
+//		            return;
+//		        }
+//
+//		        if (comboBank.getSelectedIndex() == 0) {
+//				    Popup.show("Campos obligatorios vacíos:\n - Banco.", "error"); // SPANISH for "You must select a valid bank."
+//				    return;
+//				}
+//				
+//				if (comboType.getSelectedIndex() == 0) {
+//					Popup.show("Campos obligatorios vacíos:\n - Tipo de Cuenta.", "error"); // SPANISH for "You must select a valid account type."																	
+//					return;
+//				}
+//
+//		        String selectedBankName = comboBank.getSelectedItem().toString();
+//		        int bankId = BankDAO.getIdByName(selectedBankName);
+//		        String accountType = comboType.getSelectedItem().toString();
+//		        String accountNum = txtNum.getText().trim();
+//
+//		        // Crear objeto Landlord actualizado
+//		        Landlord landlord = new Landlord(
+//		            rut,
+//		            name,
+//		            surname,
+//		            email,
+//		            phone,
+//		            "landlord",
+//		            true,   // isActive (puedes adaptar según tu lógica)
+//		            false,  // hasRentals (puedes adaptar si ya tiene arriendos)
+//		            selectedBankName,
+//		            accountType,
+//		            accountNum
+//		        );
+//
+//		        // Actualizar usando DAO
+//		        LandlordDAO dao = new LandlordDAO(null);
+//		        boolean updated = dao.update(landlord, bankId, accountType, accountNum);
+//
+//		        if (updated) {
+//		        	Popup.showSuccess("Arrendador actualizado correctamente."); // SPANISH for "Landlord updated successfully"
+//		            System.out.println("Landlord updated successfully."); 
+//		            cleanFields();
+//	                hideEditButtons();
+//		        } else {
+//		            Popup.show("Error al actualizar arrendador.", "error"); // SPANISH for "Error updating landlord"
+//		            System.out.println("Error updating landlord.");
+//		        }
+//		    }
+//		});
 		
 		// -- END UPDATE BUTTON ACTION LISTENER -- //
 		
 		// -- DELETE BUTTON ACTION LISTENER -- //	
 		
-		btnDelete.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        String rut = txtRut.getText().trim();
+		btnDelete.addActionListener(e -> {
+		    String rut = txtRut.getText().trim();
 
-		        if (rut.isEmpty()) {
-		            Popup.show("Debe ingresar el RUT del arrendador que desea eliminar.", "error");
-		            return;
-		        }
+		    LandlordController controller = new LandlordController();
+		    boolean deleted = controller.deleteLandlord(rut);
 
-		        if (!RUTValidator.isValid(rut)) {
-		            Popup.show("RUT inválido. Verifique el formato.", "error");
-		            return;
-		        }
-
-		        if (!PersonDAO.rutExistsInDB(rut)) {
-		            Popup.show("No existe un arrendador con ese RUT.", "error");
-		            return;
-		        }
-
-		        int confirm = PopupDialog.showYesNoWarn(null,
-		        	    "¿Está seguro que desea eliminar al arrendador con RUT: " + rut + "?",
-		        	    "Confirmar eliminación");
-
-		        if (confirm == JOptionPane.YES_OPTION) {
-		            LandlordDAO dao = new LandlordDAO(null);
-		            boolean deleted = dao.delete(rut);
-
-		            if (deleted) {
-		                Popup.showUserDeletedSuccess("Arrendador eliminado con éxito.");
-		                cleanFields();
-		            } else {
-		                Popup.show("Error al eliminar arrendador.", "error");
-		            }
-		        }
+		    if (deleted) {
+		        Popup.showSuccess("Arrendador eliminado con éxito.");
+		        cleanFields();
+		    } else {
+		        System.out.println("No se eliminó al arrendador (puede haber fallado o cancelado).");
 		    }
 		});
+
+
 		
+//		btnDelete.addActionListener(new ActionListener() {
+//		    public void actionPerformed(ActionEvent e) {
+//		        String rut = txtRut.getText().trim();
+//
+//		        if (rut.isEmpty()) {
+//		            Popup.show("Debe ingresar el RUT del arrendador que desea eliminar.", "error");
+//		            return;
+//		        }
+//
+//		        if (!RUTValidator.isValid(rut)) {
+//		            Popup.show("RUT inválido. Verifique el formato.", "error");
+//		            return;
+//		        }
+//
+//		        if (!PersonDAO.rutExistsInDB(rut)) {
+//		            Popup.show("No existe un arrendador con ese RUT.", "error");
+//		            return;
+//		        }
+//
+//		        int confirm = PopupDialog.showYesNoWarn(null,
+//		        	    "¿Está seguro que desea eliminar al arrendador con RUT: " + rut + "?",
+//		        	    "Confirmar eliminación");
+//
+//		        if (confirm == JOptionPane.YES_OPTION) {
+//		            LandlordDAO dao = new LandlordDAO(null);
+//		            boolean deleted = dao.delete(rut);
+//
+//		            if (deleted) {
+//		                Popup.showUserDeletedSuccess("Arrendador eliminado con éxito.");
+//		                cleanFields();
+//		            } else {
+//		                Popup.show("Error al eliminar arrendador.", "error");
+//		            }
+//		        }
+//		    }
+//		});
+//		
 		// -- END DELETE BUTTON ACTION LISTENER -- //
 		
 		// -- BACK BUTTON ACTION LISTENER -- //

@@ -9,7 +9,13 @@ public class Doorman extends Person{
 		this.condoId = condoId; // ID of the condo where the doorman works
 	}
 	
+	public Doorman() {
+		
+	}
+	
 	// GETTERS
+	
+	
 	
 	public int getCondoId() {
 		return condoId;

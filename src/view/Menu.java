@@ -97,7 +97,7 @@ public class Menu extends JFrame {
 				isMenuActive = false;
 				setTitle("NUA - Propietarios"); // Update the title to reflect the current panel
 				// Show the LandlordsPanel when button is clicked
-				showPanel.show(contentPane, new LandlordsPanel(contentPane, Menu.this));
+				showPanel.show(contentPane, new LandlordPanel(contentPane, Menu.this));
 			}
 		});
 		
@@ -106,7 +106,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the PropertiesPanel when button is clicked
-				showPanel.show(contentPane, new PropertiesPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new PropertyPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -183,7 +183,7 @@ public class Menu extends JFrame {
 				isMenuActive = false;
 				// Show the LandlordsPanel when button is clicked
 				setTitle("NUA - Propietarios"); // Update the title to reflect the current panel
-				showPanel.show(contentPane, new LandlordsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new LandlordPanel(contentPane, Menu.this)); 
 			}
 		});
 		
@@ -194,7 +194,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the PropertiesPanel when button is clicked
-				showPanel.show(contentPane, new PropertiesPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new PropertyPanel(contentPane, Menu.this)); 
 			}
 		});
 		

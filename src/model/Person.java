@@ -49,6 +49,10 @@ public abstract class Person {
 		this.type = type;
 	}
 	
+	public Person() {
+		// Default constructor
+	}
+	
 	// --- GETTERS --- //
 
 	public String getRut() {

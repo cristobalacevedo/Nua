@@ -10,9 +10,16 @@ import java.util.List;
 
 import db.DBConnection;
 import model.Condo;
+import utils.CondoOption;
 
 public class CondoDAO {
  
+    private Connection conn;
+
+    public CondoDAO(Connection conn) {
+        this.conn = conn;
+    }
+	
 	public static boolean insertFullCondo(Condo data) {
         Connection conn = null;
         try {
@@ -60,11 +67,7 @@ public class CondoDAO {
         }
     }
 
-    private Connection conn;
 
-    public CondoDAO(Connection conn) {
-        this.conn = conn;
-    }
 
     private int insertAddress(Condo data) throws SQLException {
         String sql = "INSERT INTO address (st_name, num_1, num_2, town_id, town_region_id, town_region_country_id) VALUES (?, ?, ?, ?, ?, 1)";
@@ -83,6 +86,39 @@ public class CondoDAO {
         }
     }
 	
+    public static List<String> getAllCondoNames() {
+		List<String> condos = new ArrayList<>();
+		String sql = "SELECT name FROM condo";
+
+		try (Connection conn = DBConnection.getConnection();
+			 PreparedStatement stmt = conn.prepareStatement(sql);
+			 ResultSet rs = stmt.executeQuery()) {
+			while (rs.next()) {
+				condos.add(rs.getString("name"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return condos;
+	}
+    
+    public static int getCondoIDByName(int selectedCondo) {
+    	int condoID = -1; // Default value if not found
+    	String sql = "SELECT id FROM condo WHERE name = ?";
+    	try (Connection conn = DBConnection.getConnection();
+    		PreparedStatement stmt = conn.prepareStatement(sql)) {
+    		stmt.setInt(1, selectedCondo);
+    		ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				condoID = rs.getInt("id");
+			}
+    	} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return condoID;
+    }
 	
 	public static List<String> getAllCondoPlatform() {
 		List<String> platform = new ArrayList<>();
@@ -102,12 +138,12 @@ public class CondoDAO {
 		return platform;
 	}	
 	
-	public static Integer getPlatformIDByName(String regionName) {
+	public static Integer getPlatformIDByName(String platformName) {
 		int platformID = -1; // Default value if not found
 		String sql = "SELECT id FROM condo_platform WHERE name = ?";
 
 		try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, regionName);
+			stmt.setString(1, platformName);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				platformID = rs.getInt("id");
@@ -118,6 +154,8 @@ public class CondoDAO {
 
 		return platformID;
 	}
+
+	
 
 
 	

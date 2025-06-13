@@ -18,7 +18,7 @@ public class CondoOption {
 	}
 
 
-	public String getDisplayTown() {
+	public String getDisplayCondo() {
 		return displayCondo;
 	}
 }

@@ -22,7 +22,7 @@ public class Condo {
 	}
 	
 	public Condo() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public String getName() {

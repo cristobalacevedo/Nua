@@ -7,6 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.AbstractDocument;
 
+import controller.CondoController;
+import controller.DoormanController;
 import dao.LandlordDAO;
 import dao.RegionDAO;
 import dao.TownDAO;
@@ -45,7 +47,7 @@ public class CondoFrame extends JFrame {
 	private JComboBox<String> comboRegion;
 	private JComboBox<TownOption> comboTown;
 	private JComboBox<String> comboPlatform;
-	private JComboBox<CondoOption> comboCondo;
+	private JComboBox<String> comboCondo;
 	
 	private JLabel lblTitle;
 	private JLabel lblCondoName;
@@ -372,20 +374,29 @@ public class CondoFrame extends JFrame {
 		
 		comboTown.addItem(new TownOption(0 , "Seleccione una Comuna")); // SPANISH for "Select a Town"
 
-		comboCondo = new JComboBox<CondoOption>();
+		comboCondo = new JComboBox<String>();
 		comboCondo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
 		comboCondo.setEditable(false);
 		comboCondo.setBounds(607, 303, 242, 30);
 		CondoFrame.add(comboCondo);
 		
+		String defaultCondo = "Seleccione un Condominio"; // SPANISH for "Select a Condominium"
+		comboCondo.addItem(defaultCondo); // SPANISH for "Select a Condominium"
+		List<String> condos = CondoDAO.getAllCondoNames(); // Fetch all condos from the database
+		
+		for (String condo : condos) {
+			comboCondo.addItem(condo); // Add each condo to the combo box
+			System.out.println("Condo: " + condo); // For debugging purposes
+		}
+
 		comboPlatform = new JComboBox<String>();
 		comboPlatform.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
 		comboPlatform.setEditable(false);
 		comboPlatform.setBounds(147, 134, 256, 30);
 		CondoFrame.add(comboPlatform);
+		
 		String defaultPlatform = "Seleccione una Plataforma"; // SPANISH for "Select a Region"
 		comboPlatform.addItem(defaultPlatform); // SPANISH for "Select a Region"
-		
 		// RegionDAO regionDAO = new RegionDAO(); // Create an instance of RegionDAO to fetch regions
 		List<String> platforms = CondoDAO.getAllCondoPlatform(); // Fetch all regions from the database
 		
@@ -393,7 +404,6 @@ public class CondoFrame extends JFrame {
 			comboPlatform.addItem(platform); // Add each region to the combo box
 			System.out.println("Platform: " + platform); // For debugging purposes
 		}
-		
 		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
@@ -451,76 +461,118 @@ public class CondoFrame extends JFrame {
 		txtCondoPhone.setColumns(10);
 		txtCondoPhone.setBounds(147, 315, 140, 30);
 		CondoFrame.add(txtCondoPhone);
-			
+		
 		btnSaveCondo.addActionListener(e -> {
-			System.out.println("Saving Condo Details...");
-			String name = txtNameCondo.getText().trim();
-			String address_st = txtAddress.getText().trim();
-			String email = txtCondoEmail.getText().trim();
-			String phone = txtCondoPhone.getText().trim();
-			String num = txtNum.getText().trim();
-			String platformName = (String) comboPlatform.getSelectedItem();
-			String regionName = (String) comboRegion.getSelectedItem();
-			TownOption selectedTown = (TownOption) comboTown.getSelectedItem();
+		    String name = txtNameCondo.getText().trim();
+		    String address = txtAddress.getText().trim();
+		    String email = txtCondoEmail.getText().trim();
+		    String phone = txtCondoPhone.getText().trim();
+		    String num = txtNum.getText().trim();
+		    String platformName = (String) comboPlatform.getSelectedItem();
+		    String regionName = (String) comboRegion.getSelectedItem();
+		    TownOption selectedTown = (TownOption) comboTown.getSelectedItem();
+
+		    CondoController controller = new CondoController();
+		    boolean success = controller.saveCondo(name, address, email, phone, num, platformName, regionName, selectedTown);
+
+		    if (success) {
+		        Popup.showSuccess("Condominio guardado exitosamente.");
+		    } else {
+		        System.out.println("Fallo al guardar el condominio.");
+		    }
+		});
+		
+		btnSaveDoorman.addActionListener(e ->{
+			String name = txtDoormanName.getText().trim();
+			String surname = txtSurname.getText().trim();
+			String email = txtDoormanEmail.getText().trim();
+			String phone = txtPhone.getText().trim();
+			String rut = txtRut.getText().trim();
+			CondoOption selectedCondo = (CondoOption) comboCondo.getSelectedItem();
 			
-			if (name.isEmpty() 
-				|| address_st.isEmpty() 
-				|| regionName.equals("Seleccione una Región")
-				|| selectedTown.getId() == 0) {
-				System.out.println("Please fill all fields correctly.");
-				return; // Exit if any field is empty or invalid
-			}
-			
-			if (email.isEmpty()) {
-				email = null; // Default value if email is not provided
-			}
-			
-			if (num.isEmpty()) {
-				num = null; // Default value if num is not provided
-			}
-			
-			if (platformName.isEmpty()) {
-				platformName = null; // Default value if platform is not provided
-			}
-			
-			if (phone.isEmpty()) {
-				phone = null; // Default value if phone is not provided
-			}
-			
-			// If the platform is not selected, set it to null
-			Integer platformID = CondoDAO.getPlatformIDByName(platformName);
-			if (platformID != null && platformID == -1) {
-			    platformID = null;
-			}
-			
-			
-			int townID = selectedTown.getId(); // Get the ID of the selected town
-			int regionID = RegionDAO.getRegionIDByName(regionName); // Get the ID of the selected region
-			if (townID == 0 || regionID == -1) {
-				System.out.println("Invalid platform, town, or region selected.");
-				return; // Exit if any ID is invalid
-			}
-			// Create a new Condo object with the provided details
-			Condo newCondo = new Condo();
-			
-			newCondo.setName(name);
-			newCondo.setAddress(address_st);
-			newCondo.setEmail(email);
-			newCondo.setPhone(phone);
-			newCondo.setNum(num);
-			newCondo.setCondoPlatformId(platformID);
-			newCondo.setTownID(townID);
-			newCondo.setRegionID(regionID);
-			System.out.println("(PRESAVE) Condo Details: " + newCondo); // For debugging purposes
-			
-			boolean success = CondoDAO.insertFullCondo(newCondo); // Save the condo to the database
+			DoormanController controller = new DoormanController();
+			boolean success = controller.saveDoorman(rut, name, surname, email, phone, selectedCondo);
 			
 			if (success) {
-				Popup.showSuccess("Condominio guardado exitosamente.");
+				Popup.showSuccess("Conserje guardado exitosamente.");
+				cleanDoormanFields(); // Clear fields after saving
+				hideDoormanEditButtons(); // Hide update button after saving
 			} else {
-				Popup.show("Error al guardar condominio", "error");
+				System.out.println("Fallo al guardar el conserje.");
+				Popup.show("Error al guardar el conserje", "error");
 			}
 		});
+		
+		
+//		btnSaveCondo.addActionListener(e -> {
+//			System.out.println("Saving Condo Details...");
+//			String name = txtNameCondo.getText().trim();
+//			String address_st = txtAddress.getText().trim();
+//			String email = txtCondoEmail.getText().trim();
+//			String phone = txtCondoPhone.getText().trim();
+//			String num = txtNum.getText().trim();
+//			String platformName = (String) comboPlatform.getSelectedItem();
+//			String regionName = (String) comboRegion.getSelectedItem();
+//			TownOption selectedTown = (TownOption) comboTown.getSelectedItem();
+//			
+//			if (name.isEmpty() 
+//				|| address_st.isEmpty() 
+//				|| regionName.equals("Seleccione una Región")
+//				|| selectedTown.getId() == 0) {
+//				System.out.println("Please fill all fields correctly.");
+//				return; // Exit if any field is empty or invalid
+//			}
+//			
+//			if (email.isEmpty()) {
+//				email = null; // Default value if email is not provided
+//			}
+//			
+//			if (num.isEmpty()) {
+//				num = null; // Default value if num is not provided
+//			}
+//			
+//			if (platformName.isEmpty()) {
+//				platformName = null; // Default value if platform is not provided
+//			}
+//			
+//			if (phone.isEmpty()) {
+//				phone = null; // Default value if phone is not provided
+//			}
+//			
+//			// If the platform is not selected, set it to null
+//			Integer platformID = CondoDAO.getPlatformIDByName(platformName);
+//			if (platformID != null && platformID == -1) {
+//			    platformID = null;
+//			}
+//			
+//			
+//			int townID = selectedTown.getId(); // Get the ID of the selected town
+//			int regionID = RegionDAO.getRegionIDByName(regionName); // Get the ID of the selected region
+//			if (townID == 0 || regionID == -1) {
+//				System.out.println("Invalid platform, town, or region selected.");
+//				return; // Exit if any ID is invalid
+//			}
+//			// Create a new Condo object with the provided details
+//			Condo newCondo = new Condo();
+//			
+//			newCondo.setName(name);
+//			newCondo.setAddress(address_st);
+//			newCondo.setEmail(email);
+//			newCondo.setPhone(phone);
+//			newCondo.setNum(num);
+//			newCondo.setCondoPlatformId(platformID);
+//			newCondo.setTownID(townID);
+//			newCondo.setRegionID(regionID);
+//			System.out.println("(PRESAVE) Condo Details: " + newCondo); // For debugging purposes
+//			
+//			boolean success = CondoDAO.insertFullCondo(newCondo); // Save the condo to the database
+//			
+//			if (success) {
+//				Popup.showSuccess("Condominio guardado exitosamente.");
+//			} else {
+//				Popup.show("Error al guardar condominio", "error");
+//			}
+//		});
 		
 		
 		
@@ -545,7 +597,7 @@ public class CondoFrame extends JFrame {
 		comboRegion.setSelectedIndex(0);
 		comboTown.removeAllItems();
 		comboTown.addItem(new TownOption(0, "Seleccione una Comuna")); // SPANISH for "Select a Town"
-		comboCondo.removeAllItems();
+		//comboCondo.removeAllItems();
 	}
 	
 	private void hideDoormanEditButtons() {
