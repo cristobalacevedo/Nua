@@ -9,17 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnection;
+import model.House;
 
 public class PropertyDAO {
     private Connection conn;
     private HouseDAO houseDAO;
-
- 
-	public PropertyDAO(Connection connection) {
-		this.conn = connection;
-        this.houseDAO = new HouseDAO(conn);
-	}
-
+    private FlatDAO flatDAO;	
+    //    private LandDAO landDAO;
+    //    private StorageDAO storageDAO;
+       
+    public PropertyDAO() {
+            this.conn = DBConnection.getConnection();
+            this.houseDAO = new HouseDAO(conn);
+      }
+    
 
 	public void PropertyDAO1(Connection conn) {
         this.conn = conn;
@@ -67,7 +70,7 @@ public class PropertyDAO {
 		return typeID;
 	}
 	
-	public boolean insertCompleteHouse(HousePropertyData data) throws SQLException {
+	public boolean insertCompleteHouse(House data) throws SQLException {
 	    try {
 	        conn.setAutoCommit(false);
 
@@ -85,7 +88,7 @@ public class PropertyDAO {
 	    }
 	}
 
-    private int insertAddress(HousePropertyData data) throws SQLException {
+    private int insertAddress(House data) throws SQLException {
         String sql = "INSERT INTO address (st_name, num_1, num_2, town_id, town_region_id, town_region_country_id) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming country_id is always 1 for simplicity (CHILE)
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, data.getStreetName());
@@ -102,13 +105,14 @@ public class PropertyDAO {
         }
     }
 
-    private int insertProperty(HousePropertyData data, int addressId) throws SQLException {
-        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size) VALUES (?, ?, ?, ?)";
+    private int insertProperty(House data, int addressId) throws SQLException {
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, data.getLandlordId());
             stmt.setInt(2, data.getPropertyTypeId());
             stmt.setInt(3, addressId);
             stmt.setInt(4, data.getSize());
+            stmt.setString(5, data.getRolSII());
             stmt.executeUpdate();
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {

@@ -1,7 +1,7 @@
 package dao;
 
 public class HousePropertyData {
-	private String streetName, num1, num2;
+	private String streetName, num1, num2, rolSII;
     private int townId, regionId, landlordId, propertyTypeId, size;
     private int bathQty, roomQty, floorQty;
     private boolean hasParking, hasGarden, hasPatio, hasPool, hasStorage, hasBBQ, hasBalcony, hasTerrace, hasLaundry;
@@ -9,7 +9,7 @@ public class HousePropertyData {
     private Integer condoId;
     
 	public HousePropertyData(String streetName, String num1, String num2, int townId, int regionId, int landlordId,
-			int propertyTypeId, int size, int bathQty, int roomQty, int floorQty, boolean hasParking, boolean hasGarden,
+			int propertyTypeId, String rolSII, int size, int bathQty, int roomQty, int floorQty, boolean hasParking, boolean hasGarden,
 			boolean hasPatio, boolean hasPool, boolean hasStorage, boolean hasBBQ, boolean hasBalcony, boolean hasTerrace, boolean hasLaundry, boolean inCondo, Integer condoId,
 			Integer condoPlatformId) {
 		
@@ -25,6 +25,7 @@ public class HousePropertyData {
 		this.landlordId = landlordId;
 		this.propertyTypeId = propertyTypeId;
 		this.size = size;
+		this.rolSII = null; // Asumiendo que rolSII es un campo opcional, inicializado a null
 		// PROPERTY
 		
 		// HOUSE
@@ -137,6 +138,10 @@ public class HousePropertyData {
 		return condoId;
 	}
 	
+	public String getRolSII() {
+		return rolSII;
+	}
+	
 	
 	public void setStreetName(String streetName) {
 		this.streetName = streetName;
@@ -225,5 +230,8 @@ public class HousePropertyData {
 	public void setHasLaundry(boolean selected) {
 		this.hasLaundry = selected;
 	}
-	
+
+	public void setRolSII(String rolSII) {
+		this.rolSII = rolSII;
+	}
 }

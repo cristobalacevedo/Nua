@@ -1,101 +1,124 @@
 package model;
 
 public class House extends Estate {
-	private int numRooms;
-	private int numBathrooms;
-	private int numFloors;
-	private String type; // e.g., "Detached", "Semi-detached", "Terraced"
-	private boolean hasGarden;
-	private boolean hasPatio; // true if the house has a patio
-	private boolean inCondominium; // true if the house is part of a condominium
-	private boolean hasParking; // true if the house has parking space
-	private boolean hasPool; // true if the house has a pool
+    private int bathQty, roomQty, floorQty;
+    private boolean hasParking, hasGarden, hasPatio, hasPool, hasStorage, hasBBQ, hasBalcony, hasTerrace, hasLaundry;
+    private boolean inCondo;
+    private Integer condoId;
 
-	public House(int id, int area, String address, String city, String region, String description, String type, int numRooms, boolean hasGarden, boolean hasPatio, boolean inCondominium, boolean hasParking, boolean hasPool, int numBathrooms, int numFloors) {
-		super(id, area, address, city, region, description);
-		this.numRooms = numRooms;
-
+    // Constructor with all fields
+	public House(String streetName, String num1, String num2, int townId, int regionId, int landlordId,
+			int propertyTypeId, int size, String rolSII, int roomQty, int bathQty, int floorQty, boolean hasParking, boolean hasGarden,
+			boolean hasPatio, boolean hasPool, boolean hasStorage, boolean hasBBQ, boolean hasBalcony, boolean hasTerrace, boolean hasLaundry, boolean inCondo, Integer condoId,
+			Integer condoPlatformId) {
+		
+		// ADDRESS and PROPERTY
+		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII);
+		
+		// HOUSE
+		this.roomQty = roomQty;
+		this.bathQty = bathQty;
+		this.floorQty = floorQty;
+		this.hasParking = hasParking;
 		this.hasGarden = hasGarden;
+		this.hasParking = hasParking;
+		this.hasGarden = hasGarden;
+		this.hasPatio = hasPatio;
+		this.hasPool = hasPool;
+		this.hasStorage = hasStorage;
+		this.hasBBQ = hasBBQ;
+		this.hasBalcony = hasBalcony;
+		this.hasTerrace = hasTerrace;
+		this.hasLaundry = hasLaundry;
+		this.inCondo = inCondo;
+		this.condoId = condoId;
+		
+	}
+
+    // Default constructor
+	public House(){
+	    // Default constructor necessary to use `new House()`
 	}
 
 	// GETTERS
-
-	public int getNumRooms() {
-		return numRooms;
+	
+	public int getBathQty() {
+		return bathQty;
 	}
 	
-	public int getNumBathrooms() {
-		return numBathrooms;
-	}
-
-	public int getNumFloors() {
-		return numFloors;
+	public int getRoomQty() {
+		return roomQty;
 	}
 	
-	public String getType() {
-		return type;
-	}
-
-	public boolean getHasGarden() {
-		return hasGarden;
-	}
-
-	public boolean getHasPatio() {
-		return hasPatio;
+	public int getFloorQty() {
+		return floorQty;
 	}
 	
-	public boolean getInCondominium() {
-		return inCondominium;
-	}
-	
-	public boolean getHasParking() {
+	public boolean isHasParking() {
 		return hasParking;
 	}
 	
-	public boolean getHasPool() {
+	public boolean isHasGarden() {
+		return hasGarden;
+	}
+	
+	public boolean isHasPatio() {
+		return hasPatio;
+	}
+	
+	public boolean isHasPool() {
 		return hasPool;
 	}
 	
-	public String getAddress() {
-		return super.getAddress();
+	public boolean isHasStorage() {
+		return hasStorage;
 	}
 	
-	public String getCity() {
-		return super.getCity();
+	public boolean isHasBBQ() {
+		return hasBBQ;
 	}
 	
-	public String getRegion() {
-		return super.getRegion();
+	public boolean isHasBalcony() {
+		return hasBalcony;
 	}
 	
-	public String getDescription() {
-		return super.getDescription();
+	public boolean isHasTerrace() {
+		return hasTerrace;
+	}
+
+	public boolean isHasLaundry() {
+		return hasLaundry;
 	}
 	
-	public int getId() {
-		return super.getId();
+	public boolean isInCondo() {
+		return inCondo;
+	}
+
+	public Integer getCondoId() {
+		return condoId;
 	}
 	
 	// END GETTERS
 	
+	
 	// SETTERS
-
-	public void setNumRooms(int numRooms) {
-		this.numRooms = numRooms;
+	
+	public void setBathQty(int bathQty) {
+		this.bathQty = bathQty;
 	}
 	
-	public void setNumBathrooms(int numBathrooms) {
-		this.numBathrooms = numBathrooms;
+	public void setRoomQty(int roomQty) {
+		this.roomQty = roomQty;
 	}
 	
-	public void setNumFloors(int numFloors) {
-		this.numFloors = numFloors;
+	public void setFloorQty(int floorQty) {
+		this.floorQty = floorQty;
 	}
 	
-	public void setType(String type) {
-		this.type = type;
+	public void setHasParking(boolean hasParking) {
+		this.hasParking = hasParking;
 	}
-
+	
 	public void setHasGarden(boolean hasGarden) {
 		this.hasGarden = hasGarden;
 	}
@@ -104,26 +127,47 @@ public class House extends Estate {
 		this.hasPatio = hasPatio;
 	}
 	
-	public void setInCondominium(boolean inCondominium) {
-		this.inCondominium = inCondominium;
-	}
-	
-	public void setHasParking(boolean hasParking) {
-		this.hasParking = hasParking;
-	}
-
 	public void setHasPool(boolean hasPool) {
 		this.hasPool = hasPool;
 	}
 	
-	// END SETTERS
+	public void setHasStorage(boolean hasStorage) {
+		this.hasStorage = hasStorage;
+	}
+	
+	public void setHasBBQ(boolean hasBBQ) {
+		this.hasBBQ = hasBBQ;
+	}
+	
+	public void setInCondo(boolean inCondo) {
+		this.inCondo = inCondo;
+	}
+	
+	public void setCondoId(Integer condoId) {
+		this.condoId = condoId;
+	}
 
+	public void setHasBalcony(boolean selected) {
+		this.hasBalcony = selected;
+	}
+	
+	public void setHasTerrace(boolean selected) {
+		this.hasTerrace = selected;
+	}
+	
+	public void setHasLaundry(boolean selected) {
+		this.hasLaundry = selected;
+	}
+	
 	@Override
 	public String toString() {
-		return "House{" + "id=" + getId() + ", area=" + getArea() + ", address='" + getAddress() + '\'' + ", city='"
-				+ getCity() + '\'' + ", region='" + getRegion() + '\'' + ", description='" + getDescription() + '\''
-				+ ", numRooms=" + numRooms + ", numBathrooms=" + numBathrooms + ", numFloors=" + numFloors + ", type='"
-				+ type + '\'' + ", hasGarden=" + hasGarden + ", hasPatio=" + hasPatio + ", inCondominium="
-				+ inCondominium + ", hasParking=" + hasParking + ", hasPool=" + hasPool + '}';
+		return "House{" + "streetName='" + getStreetName() + '\'' + ", num1='" + getNum1() + '\'' + ", num2='"
+				+ getNum2() + '\'' + ", townId=" + getTownId() + ", regionId=" + getRegionId() + ", landlordId="
+				+ getLandlordId() + ", propertyTypeId=" + getPropertyTypeId() + ", size=" + getSize() + ", rolSII='"
+				+ getRolSII() + '\'' + ", bathQty=" + bathQty + ", roomQty=" + roomQty + ", floorQty=" + floorQty
+				+ ", hasParking=" + hasParking + ", hasGarden=" + hasGarden + ", hasPatio=" + hasPatio + ", hasPool="
+				+ hasPool + ", hasStorage=" + hasStorage + ", hasBBQ=" + hasBBQ + ", hasBalcony=" + hasBalcony
+				+ ", hasTerrace=" + hasTerrace + ", hasLaundry=" + hasLaundry + ", inCondo=" + inCondo + ", condoId="
+				+ condoId + '}';
 	}
 }

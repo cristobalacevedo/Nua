@@ -354,7 +354,7 @@ public class CondoFrame extends JFrame {
 				if (selectedRegion != null && !selectedRegion.equals(defaultRegion)) {
 					int regionID = RegionDAO.getRegionIDByName(selectedRegion); // Get the ID of the selected region
 					comboTown.removeAllItems(); // Clear previous towns
-
+					System.out.println("Selected Region ID: " + regionID + " - Name: " + selectedRegion); // Debugging output
 					List<TownOption> towns = TownDAO.getAllTownsByRegionID(regionID); // Fetch towns for the selected region
 					for (TownOption town : towns) {
 						comboTown.addItem(town); // Add each town to the combo box
@@ -394,7 +394,7 @@ public class CondoFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				CondoOption selectedCondo = (CondoOption) comboCondo.getSelectedItem(); // Get the selected condo
 				if (selectedCondo != null && selectedCondo.getId() != 0) {
-					String name = selectedCondo.getName(); // si tu clase tiene getName()
+					String name = selectedCondo.getName(); // Get the name of the selected condo
 					int condoID = selectedCondo.getId();  // Get the ID of the selected condo
 	                System.out.println("Selected Condo ID: " + condoID + " - Name: " + name); // Debugging output);
 

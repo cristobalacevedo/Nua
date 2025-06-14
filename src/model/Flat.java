@@ -1,157 +1,142 @@
 package model;
 
 public class Flat extends Estate {
-	private int numRooms;
-	private int numBathrooms;
-	private boolean hasBalcony; // true if the flat has a balcony
-	private boolean hasParking; // true if the flat has parking space
-	private boolean inCondominium; // true if the flat is part of a condominium
-	private boolean hasElevator; // true if the building has an elevator
-	private boolean hasPool; // true if the building has a pool
-	private boolean hasGym; // true if the building has a gym
-	private boolean hasLaundry; // true if the building has a laundry room
-	private boolean hasSecurity; // true if the building has security services
-	private boolean hasStorage; // true if the flat has a storage room in the building
+	private int roomQty, bathQty, floorQty;
+	private boolean hasParking, hasGarden, hasStorage;
+	private boolean inCondo, buildingHasLift, buildingHasPool, buildingHasGym, buildingHasLaundry, buildingHasBBQ;
+	
 
-	public Flat(int id, int area, String address, String city, String region, String description, int numRooms, int numBathrooms, boolean hasBalcony, boolean hasParking, boolean inCondominium, boolean hasElevator, boolean hasPool, boolean hasGym, boolean hasLaundry, boolean hasSecurity, boolean hasStorage) {
-		super(id, area, address, city, region, description);
-		this.numRooms = numRooms;
-		this.numBathrooms = numBathrooms;
-		this.hasBalcony = hasBalcony;
+	public Flat(int roomQty, int bathQty, int floorQty, boolean hasParking, boolean hasGarden,
+			boolean hasStorage, boolean inCondo, boolean buildingHasLift, boolean buildingHasPool,
+			boolean buildingHasGym, boolean buildingHasLaundry, boolean buildingHasBBQ,
+			String streetName, String num1, String num2, int townId, int regionId, int landlordId,
+			int propertyTypeId, int size, String rolSII) {
+		// ADDRESS and PROPERTY
+		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII);
+		
+		// FLAT
+		this.roomQty = roomQty;
+		this.bathQty = bathQty;
+		this.floorQty = floorQty;
 		this.hasParking = hasParking;
-		this.inCondominium = inCondominium;
-		this.hasElevator = hasElevator;
-		this.hasPool = hasPool;
-		this.hasGym = hasGym;
-		this.hasLaundry = hasLaundry;
-		this.hasSecurity = hasSecurity;
+		this.hasGarden = hasGarden;
 		this.hasStorage = hasStorage;
+		this.inCondo = inCondo;
+		this.buildingHasLift = buildingHasLift;
+		this.buildingHasPool = buildingHasPool;
+		this.buildingHasGym = buildingHasGym;
+		this.buildingHasLaundry = buildingHasLaundry;
+		this.buildingHasBBQ = buildingHasBBQ;
 			
 	}
 
 	// GETTERS
 
-	public int getNumRooms() {
-		return numRooms;
+	public int getRoomQty() {
+        return roomQty;
+    }
+	
+	public int getBathQty() {
+        return bathQty;
+    }
+	
+	public int getFloorQty() {
+        return floorQty;
+    }
+	
+	public boolean isHasParking() {
+        return hasParking;
+    }
+	
+	public boolean isHasGarden() {
+		return hasGarden;
 	}
 	
-	public int getNumBathrooms() {
-		return numBathrooms;
-	}
-
-	public boolean getHasBalcony() {
-		return hasBalcony;
-	}
-	
-	public boolean getHasParking() {
-		return hasParking;
-	}
-	
-	public boolean getInCondominium() {
-		return inCondominium;
-	}
-	
-	public boolean getHasElevator() {
-		return hasElevator;
-	}
-	
-	public boolean getHasPool() {
-		return hasPool;
-	}
-	
-	public boolean getHasGym() {
-		return hasGym;
-	}
-	
-	public boolean getHasLaundry() {
-		return hasLaundry;
-	}
-	
-	public boolean getHasSecurity() {
-		return hasSecurity;
-	}
-	
-	public boolean getHasStorage() {
+	public boolean isHasStorage() {
 		return hasStorage;
 	}
 	
-	
-	public String getAddress() {
-		return super.getAddress();
+	public boolean isInCondo() {
+		return inCondo;
 	}
 	
-	public String getCity() {
-		return super.getCity();
+	public boolean isBuildingHasLift() {
+		return buildingHasLift;
 	}
 	
-	public String getRegion() {
-		return super.getRegion();
+	public boolean isBuildingHasPool() {
+		return buildingHasPool;
 	}
 	
-	public String getDescription() {
-		return super.getDescription();
+	public boolean isBuildingHasGym() {
+		return buildingHasGym;
 	}
 	
-	public int getId() {
-		return super.getId();
+	public boolean isBuildingHasLaundry() {
+		return buildingHasLaundry;
 	}
 	
-	// END GETTERS
+	public boolean isBuildingHasBBQ() {
+		return buildingHasBBQ;
+	}
 	
-
 	// SETTERS
-
-	public void setNumRooms(int numRooms) {
-		this.numRooms = numRooms;
+	
+	public void setRoomQty(int roomQty) {
+		this.roomQty = roomQty;
 	}
-
-
-	public void setHasBalcony(boolean hasBalcony) {
-		this.hasBalcony = hasBalcony;
+	
+	public void setBathQty(int bathQty) {
+		this.bathQty = bathQty;
+	}
+	
+	public void setFloorQty(int floorQty) {
+		this.floorQty = floorQty;
 	}
 	
 	public void setHasParking(boolean hasParking) {
 		this.hasParking = hasParking;
 	}
 	
-	public void setInCondominium(boolean inCondominium) {
-		this.inCondominium = inCondominium;
-	}
-	
-	public void setHasElevator(boolean hasElevator) {
-		this.hasElevator = hasElevator;
-	}
-	
-	public void setHasPool(boolean hasPool) {
-		this.hasPool = hasPool;
-	}
-	
-	public void setHasGym(boolean hasGym) {
-		this.hasGym = hasGym;
-	}
-	
-	public void setHasLaundry(boolean hasLaundry) {
-		this.hasLaundry = hasLaundry;
-	}
-	
-	public void setHasSecurity(boolean hasSecurity) {
-		this.hasSecurity = hasSecurity;
+	public void setHasGarden(boolean hasGarden) {
+		this.hasGarden = hasGarden;
 	}
 	
 	public void setHasStorage(boolean hasStorage) {
 		this.hasStorage = hasStorage;
 	}
 	
-	// END SETTERS
+	public void setInCondo(boolean inCondo) {
+		this.inCondo = inCondo;
+	}
+	
+	public void setBuildingHasLift(boolean buildingHasLift) {
+		this.buildingHasLift = buildingHasLift;
+	}
+	
+	public void setBuildingHasPool(boolean buildingHasPool) {
+		this.buildingHasPool = buildingHasPool;
+	}
+	
+	public void setBuildingHasGym(boolean buildingHasGym) {
+		this.buildingHasGym = buildingHasGym;
+	}
+	
+	public void setBuildingHasLaundry(boolean buildingHasLaundry) {
+		this.buildingHasLaundry = buildingHasLaundry;
+	}
+	
+	public void setBuildingHasBBQ(boolean buildingHasBBQ) {
+		this.buildingHasBBQ = buildingHasBBQ;
+	}
 	
 	@Override
 	public String toString() {
-		return "Flat{" + "id=" + getId() + ", area=" + getArea() + ", address='" + getAddress() + '\'' + ", city='"
-				+ getCity() + '\'' + ", region='" + getRegion() + '\'' + ", description='" + getDescription() + '\''
-				+ ", numRooms=" + numRooms + ", numBathrooms=" + numBathrooms + ", hasBalcony=" + hasBalcony
-				+ ", hasParking=" + hasParking + ", inCondominium=" + inCondominium + ", hasElevator=" + hasElevator
-				+ ", hasPool=" + hasPool + ", hasGym=" + hasGym + ", hasLaundry=" + hasLaundry
-				+ ", hasSecurity=" + hasSecurity + ", hasStorage=" + hasStorage + '}';
+		return "Flat{" + "roomQty=" + roomQty + ", bathQty=" + bathQty + ", floorQty=" + floorQty + ", hasParking="
+				+ hasParking + ", hasGarden=" + hasGarden + ", hasStorage=" + hasStorage + ", inCondo=" + inCondo
+				+ ", buildingHasLift=" + buildingHasLift + ", buildingHasPool=" + buildingHasPool + ", buildingHasGym="
+				+ buildingHasGym + ", buildingHasLaundry=" + buildingHasLaundry + ", buildingHasBBQ=" + buildingHasBBQ
+				+ '}';
 	}
-
+	
 }

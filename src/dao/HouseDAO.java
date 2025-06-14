@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import db.DBConnection;
+import model.House;
 
 public class HouseDAO {
     private final Connection conn;
@@ -16,7 +17,7 @@ public class HouseDAO {
         this.conn = conn;
     }
 
-    public void insertHouse(int propertyId, HousePropertyData data) throws SQLException {
+    public void insertHouse(int propertyId, House data) throws SQLException {
         String sql = """
             INSERT INTO house (
                 property_id, room_qty, bath_qty, floor_qty,

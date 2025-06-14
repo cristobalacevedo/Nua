@@ -5,20 +5,24 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import dao.HousePropertyData;
+import dao.CondoDAO;
 import dao.LandlordDAO;
 import dao.PropertyDAO;
 import dao.RegionDAO;
 import dao.TownDAO;
 import db.DBConnection;
+import utils.CondoOption;
 import utils.LandlordOption;
 import utils.PropertyTypeOption;
 import utils.TownOption;
+
+import model.House;
 
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +33,8 @@ import javax.swing.JSeparator;
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+import controller.PropertyController;
+
 import java.awt.Component;
 
 // This class represents the Properties panel in the application.
@@ -42,7 +48,7 @@ public class PropertyPanel extends JPanel {
 	private JComboBox<PropertyTypeOption> comboPropertyType;
 	private JComboBox<String> comboRegion;
 	private JComboBox<TownOption> comboTown; // Text field for town information
-	private JComboBox<String> comboCondo;
+	private JComboBox<CondoOption> comboCondo;
 	private JLabel lblLandlord;
 	private JLabel lblPropertyType;
 	private JLabel lblRegion;
@@ -94,7 +100,7 @@ public class PropertyPanel extends JPanel {
 	private JCheckBox chckbxBldngBBQ;
 	private JCheckBox chckbxBldngGym;
 	private JCheckBox chckbxBldngLaundry;
-	private PropertyDAO propertiesDAO = new PropertyDAO(DBConnection.getConnection());
+	private PropertyDAO propertiesDAO = new PropertyDAO();
 	private JLabel lblRol;
 	private JTextField txtRol;
 	private JLabel lblPanelDePropiedades;
@@ -225,7 +231,7 @@ public class PropertyPanel extends JPanel {
 				if (selectedRegion != null && !selectedRegion.equals(defaultRegion)) {
 					int regionID = RegionDAO.getRegionIDByName(selectedRegion); // Get the ID of the selected region
 					comboTown.removeAllItems(); // Clear previous towns
-
+					System.out.println("Selected Region ID: " + regionID + " - Name: " + selectedRegion); // Debugging output
 					List<TownOption> towns = TownDAO.getAllTownsByRegionID(regionID); // Fetch towns for the selected region
 					for (TownOption town : towns) {
 						comboTown.addItem(town); // Add each town to the combo box
@@ -252,7 +258,7 @@ public class PropertyPanel extends JPanel {
 		btnNewCondo = new JButton("Agregar");
 		btnNewCondo.setBackground(new Color(100, 149, 237));
 		btnNewCondo.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 14));
-		btnNewCondo.setBounds(447, 150, 83, 30);
+		btnNewCondo.setBounds(447, 151, 83, 30);
 		btnNewCondo.setVisible(false); // Initially hidden, it will be shown if needed (e.g., for apartments)
 		add(btnNewCondo);
 		
@@ -275,14 +281,38 @@ public class PropertyPanel extends JPanel {
 		
 		// -- CONDO -- //
 		
-		comboCondo = new JComboBox<>();
-		comboCondo.setBounds(237, 150, 215, 30);
-		comboCondo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18)); // Set font for the combo box
-		comboCondo.setEditable(false); // Make the combo box not editable
-		comboCondo.setVisible(false); // Initially hidden, it will be shown if needed (e.g., for apartments)
+		comboCondo = new JComboBox<CondoOption>();
+		String defaultCondo = "Seleccione un Condominio"; // SPANISH for "Select a Condominium"
+		comboCondo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+		comboCondo.setEditable(false);
+		comboCondo.setVisible(false);
+		comboCondo.setBounds(235, 151, 216, 30);
 		add(comboCondo);
+		comboCondo.addItem(new CondoOption(0, defaultCondo)); // SPANISH for "Select a Condominium"
+		List<CondoOption> condos = CondoDAO.getAllCondoNames(); // Fetch all condos from the database
+		System.out.println("Fetching condos..."); // For debugging purposes
+		for (CondoOption condo : condos) {
+			comboCondo.addItem(condo); // Add each condo to the combo box
+			System.out.println("Condo: " + condo); // For debugging purposes
+		}
 		
-		comboCondo.addItem("Seleccione un Condominio"); // SPANISH for "Select a Condominium"
+		comboCondo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CondoOption selectedCondo = (CondoOption) comboCondo.getSelectedItem(); // Get the selected condo
+				if (selectedCondo != null && selectedCondo.getId() != 0) {
+					String name = selectedCondo.getName(); // Get the name of the selected condo
+					int condoID = selectedCondo.getId();  // Get the ID of the selected condo
+	                System.out.println("Selected Condo ID: " + condoID + " - Name: " + name); // Debugging output);
+
+				//	List<TownOption> towns = TownDAO.getAllTownsByRegionID(regionID); // Fetch towns for the selected region
+				//	for (TownOption town : towns) {
+				//		comboTown.addItem(town); // Add each town to the combo box
+					//}
+				} else {
+					System.out.println("No condo selected or default option selected.");
+				}
+			}
+		});
 		
 		
 		// --- END COMBO BOXES --- //
@@ -293,7 +323,8 @@ public class PropertyPanel extends JPanel {
 		
 		// -- BACK BUTTON -- // 
 		
-		btnBack.setBounds(50, 600, 100, 30);
+		btnBack.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
+		btnBack.setBounds(50, 600, 131, 50);
 		add(btnBack);
 		
 		// -- END BACK BUTTON -- //
@@ -337,7 +368,7 @@ public class PropertyPanel extends JPanel {
 		
 		lblRegion = new JLabel("Región:"); // SPANISH for "Region"
 		lblRegion.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18)); 
-		lblRegion.setBounds(139, 192, 67, 30);
+		lblRegion.setBounds(149, 192, 67, 30);
 		add(lblRegion);
 		
 		lblTown = new JLabel("Comuna:"); // SPANISH for "Town" or "Community" or "Municipality"
@@ -624,13 +655,15 @@ public class PropertyPanel extends JPanel {
 		lblRol.setForeground(new Color(255, 51, 0));
 		lblRol.setHorizontalAlignment(SwingConstants.LEFT);
 		lblRol.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblRol.setBounds(958, 29, 59, 30);
+		lblRol.setBounds(966, 29, 59, 30);
 		add(lblRol);
 		
 		txtRol = new JTextField();
+		// RED BORDER
+		txtRol.setBorder(javax.swing.BorderFactory.createLineBorder(Color.RED));
 		txtRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		txtRol.setColumns(10);
-		txtRol.setBounds(1009, 29, 86, 30);
+		txtRol.setBounds(1009, 29, 145, 30);
 		add(txtRol);
 		
 		lblPanelDePropiedades = new JLabel("Panel de Propiedades");
@@ -767,94 +800,46 @@ public class PropertyPanel extends JPanel {
 		
 		// -- SAVE BUTTON -- //	
 		
-		btnSave.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		    	LandlordOption selectedLandlord = (LandlordOption) comboLandlord.getSelectedItem();
-		    	TownOption selectedTown = (TownOption) comboTown.getSelectedItem();
-		    	int landlordId = selectedLandlord.getId();
-		    	String nameAndRut = selectedLandlord.toString();
-		        int townId = selectedTown.getId();
+		btnSave.addActionListener(e -> {
+		    PropertyController controller = new PropertyController();
 
-		        
+		    boolean success = false;
+			try {
+				success = controller.saveHouse(
+				    (LandlordOption) comboLandlord.getSelectedItem(),
+				    (TownOption) comboTown.getSelectedItem(),
+				    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
+				    (CondoOption) comboCondo.getSelectedItem(),
+				    txtRol.getText(),
+				    txtAddress.getText(),
+				    txtNum1.getText(),
+				    txtNum2.isVisible() ? txtNum2.getText() : null,
+				    (String) comboRegion.getSelectedItem(),
+				    (int) spinnerRoom.getValue(),
+				    (int) spinnerBath.getValue(),
+				    (int) spinnerFloor.getValue(),
+				    (int) spinnerParking.getValue(),
+				    (int) spinnerStorage.getValue(),
+				    chckbxGarden.isSelected(),
+				    chckbxPatio.isSelected(),
+				    chckbxPool.isSelected(),
+				    chckbxBBQ.isSelected(),
+				    chckbxBalcony.isSelected(),
+				    chckbxTerrace.isSelected(),
+				    chckbxLaundry.isSelected(),
+				    chckbxInCondo.isSelected()
+				);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
-		        try {
-		            //int landlordId = LandlordDAO.getLandlordIdByNameWithRUT(selectedLandlord);
-		            //int townId = TownDAO.getTownIdByName(selectedTown);
-		            
-		            // Extrae el id del tipo seleccionado
-		        	
-		        	if (selectedLandlord == null || selectedLandlord.getId() == -1) { // SPANISH for "Select a Landlord")) {
-			        	Popup.show("Debe seleccionar un propietario válido.", "error"); // SPANISH for "You must select a valid landlord."
-			            return;
-			        }
-
-			        if (selectedTown == null || selectedTown.getId() == -1) {
-			        	Popup.show("Debe seleccionar una comuna válida.", "error"); // SPANISH for "You must select a valid town."
-			            return;
-			        }
-					
-		            
-		            PropertyTypeOption selectedType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
-					if (selectedType == null || selectedType.getValue().isEmpty()) {
-						Popup.show("Debe seleccionar un tipo de propiedad válido.", "error"); // SPANISH for "You must select a valid property type."
-						return;
-					}
-					
-					
-					
-					String propertyType = selectedType.getValue();
-					if (propertyType.equals("House")) {
-		            
-						HousePropertyData data = new HousePropertyData();
-						
-						// PROPERTY DATA SETTERS
-						data.setPropertyTypeId(1); // 1 = house
-						data.setLandlordId(landlordId);
-						data.setSize(Integer.parseInt(txtSize.getText().trim()));
-					    // PROPERTY DATA SETTERS
-						
-						// ADDRESS DATA SETTERS
-						data.setTownId(townId);
-						data.setRegionId(RegionDAO.getRegionIDByName((String) comboRegion.getSelectedItem()));
-						data.setStreetName(txtAddress.getText().trim());
-						data.setNum1(txtNum1.getText().trim());
-						data.setNum2(txtNum2.isVisible() ? txtNum2.getText().trim() : null);
-						// ADDRESS DATA SETTERS
-						
-						// HOUSE DATA SETTERS
-						data.setRoomQty((int) spinnerRoom.getValue());
-						data.setBathQty((int) spinnerBath.getValue());
-						data.setFloorQty((int) spinnerFloor.getValue());
-						data.setHasParking((int) spinnerParking.getValue() > 0);
-						data.setHasStorage((int) spinnerStorage.getValue() > 0);
-						data.setHasGarden(chckbxGarden.isSelected());
-						data.setHasPatio(chckbxPatio.isSelected());
-						data.setHasPool(chckbxPool.isSelected());
-						data.setHasBBQ(chckbxBBQ.isSelected());
-						data.setHasBalcony(chckbxBalcony.isSelected());
-						data.setHasTerrace(chckbxTerrace.isSelected());
-						data.setHasLaundry(chckbxLaundry.isSelected());
-						data.setInCondo(chckbxInCondo.isSelected());
-						// HOUSE DATA SETTERS
-
-		            // Puedes agregar condicionales si quieres setear condoId o condoPlatformId
-						data.setCondoId(null);
-
-						boolean success = propertiesDAO.insertCompleteHouse(data);
-						if (success) {
-							Popup.showSuccess("Propiedad insertada correctamente.");
-							// Podrías limpiar los campos si quieres
-							cleanFields();
-							
-		            } else {
-		                Popup.show("Hubo un error al crear la propiedad.", "error");
-		            }
-					}
-		        } catch (Exception ex) {
-		            ex.printStackTrace();
-		            Popup.show("Hubo un error al insertar la propiedad. ERROR: "+ ex.getMessage(), "error");
-		        }
+		    if (success) {
+		        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+		        cleanFields();
+		    } else {
+		    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
+		        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
 		    }
 		});
 

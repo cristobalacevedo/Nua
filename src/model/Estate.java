@@ -1,48 +1,59 @@
 package model;
 
 public abstract class Estate {
-	private int id;
-	private int area; // Area in square meters
-	private String address;
-	private String city;
-	private String region;
-	private String description;
+	private int townId, regionId, landlordId, propertyTypeId, size;
+	private String streetName, num1, num2, rolSII;
 	private int priceUF; // Price in UF (Unidad de Fomento), a Chilean currency unit used for real estate transactions
 	private int priceCLP; // Price in Chilean Pesos (CLP)
 	
-	public Estate(int id, int area, String address, String city, String region, String description) {
-		this.id = id;
-		this.area = area;
-		this.address = address;
-		this.city = city;
-		this.region = region;
-		this.description = description;
+	// Constructor with all fields
+	public Estate(String streetName, String num1, String num2, int townId, int regionId, int landlordId,
+			int propertyTypeId, int size, String rolSII) {
+	
 	}
 	
-	// GETTERS
-	
-	public int getId() {
-		return id;
+	// Default constructor
+	public Estate() {
+		
 	}
 	
-	public int getArea() {
-        return area;
-    }
+	  // GETTERS
 	
-	public String getAddress() {
-		return address;
+
+	public int getTownId() {
+		return townId;
 	}
 	
-	public String getCity() {
-		return city;
+	public int getRegionId() {
+		return regionId;
 	}
 	
-	public String getRegion() {
-		return region;
+	public int getLandlordId() {
+		return landlordId;
 	}
 	
-	public String getDescription() {
-		return description;
+	public int getPropertyTypeId() {
+		return propertyTypeId;
+	}
+	
+	public int getSize() {
+		return size;
+	}
+	
+	public String getStreetName() {
+		return streetName;
+	}
+	
+	public String getNum1() {
+		return num1;
+	}
+	
+	public String getNum2() {
+		return num2;
+	}
+	
+	public String getRolSII() {
+		return rolSII;
 	}
 	
 	public int getPriceUF() {
@@ -53,38 +64,54 @@ public abstract class Estate {
 		return priceCLP;
 	}
 	
-	// END GETTERS 
-	
 	// SETTERS
 	
-	public void setId(int id) {
-		this.id = id;
+	public void setTownId(int townId) {
+		this.townId = townId;
 	}
 	
-	public void setAddress(String address) {
-		this.address = address;
+	public void setRegionId(int regionId) {
+		this.regionId = regionId;
 	}
 	
-	public void setCity(String city) {
-		this.city = city;
+	public void setLandlordId(int landlordId) {
+		this.landlordId = landlordId;
 	}
 	
-	public void setRegion(String region) {
-		this.region = region;
+	public void setPropertyTypeId(int propertyTypeId) {
+		this.propertyTypeId = propertyTypeId;
 	}
 	
-	public void setDescription(String description) {
-		this.description = description;
+	public void setSize(int size) {
+		this.size = size;
 	}
 	
-	// SETTERS
-	
-	// toString method for easy display
-	@Override
-	public String toString() {
-		return "Propiedad [id=" + id + ", direccion=" + address + ", ciudad=" + city + ", Región=" + region
-				+ ", description=" + description + "]";
+	public void setStreetName(String streetName) {
+		this.streetName = streetName;
 	}
+	
+	public void setNum1(String num1) {
+		this.num1 = num1;
+	}
+	
+	public void setNum2(String num2) {
+		this.num2 = num2;
+	}
+	
+	public void setRolSII(String rolSII) {
+		this.rolSII = rolSII;
+	}
+	
+	public void setPriceUF(int priceUF) {
+		this.priceUF = priceUF;
+	}
+	
+	public void setPriceCLP(int priceCLP) {
+        this.priceCLP = priceCLP;
+	}
+	
+	
 	
 	
 }
+
