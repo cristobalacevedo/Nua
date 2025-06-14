@@ -70,6 +70,8 @@ public class CondoFrame extends JFrame {
 	private JButton btnExit;
 	private JButton btnUpdateCondo;
 	private JButton btnUpdateDoorman;
+	private JButton btnDeleteCondo;
+	private JButton btnDeleteDoorman;
 	
 	private JTextField txtCondoEmail;
 	private JTextField txtNum;
@@ -242,46 +244,22 @@ public class CondoFrame extends JFrame {
 		                txtSurname.setText(actualDoorman.getSurname());
 		                txtDoormanEmail.setText(actualDoorman.getEmail());
 		                txtPhone.setText(actualDoorman.getPhone());
+		                //comboCondo.setSelectedItem(actualDoorman.getCondoName()); 
 		                
-//		             // Normalización defensiva por si hay errores de mayúsculas
-//		                String bankName = actualLandlord.getBankName();
-//		                String accountType = actualLandlord.getAccountType();
-//		                String accountNum = actualLandlord.getAccountNum();
-//
-//		                // Banco
-//		                if (bankName != null) {
-//		                    for (int i = 0; i < comboBank.getItemCount(); i++) {
-//		                        if (comboBank.getItemAt(i).equalsIgnoreCase(bankName)) {
-//		                            comboBank.setSelectedIndex(i);
-//		                            break;
-//		                        }
-//		                    }
-//		                }
-//
-//		                // Tipo de cuenta
-//		                if (accountType != null) {
-//		                    for (int i = 0; i < comboType.getItemCount(); i++) {
-//		                        if (comboType.getItemAt(i).equalsIgnoreCase(accountType)) {
-//		                            comboType.setSelectedIndex(i);
-//		                            break;
-//		                        }
-//		                    }
-//		                }
-//
-//		                // Número de cuenta
-//		                if (accountNum != null) {
-//		                    txtNum.setText(accountNum);
-//		                }
-//		              
-		                
-		                //comboBank.setSelectedItem(actualLandlord.getBankName()); // Set selected bank
-		                //comboType.setSelectedItem(actualLandlord.getAccountType()); // Set selected account type
-		               // txtNum.setText(actualDoorman.getAccountNum()); // Set account number
+		                // Iterate through the combo box items to find the matching condo name using the CondoOption class
+		                for (int i = 0; i < comboCondo.getItemCount(); i++) {
+		                    CondoOption option = comboCondo.getItemAt(i);
+		                    if (option.getName().equals(actualDoorman.getCondoName())) {
+		                        comboCondo.setSelectedIndex(i);
+		                        break;
+		                    }
+		                }
+
 		                showDoormanEditButton();
 		                btnSaveDoorman.setVisible(false);
 		                System.out.println("\nRUT Found	: " + actualDoorman.getRut());
 		                System.out.println("Full name	: " + actualDoorman.getFullName());
-		                System.out.println("Condominium	: " + actualDoorman.getCondoId());
+		                System.out.println("Condominium	: " + actualDoorman.getCondoName());
 		                
 		            } else {
 		                cleanDoormanFields();
@@ -468,6 +446,22 @@ public class CondoFrame extends JFrame {
 		btnUpdateDoorman.setVisible(false); // Initially hidden until a doorman is found
 		CondoFrame.add(btnUpdateDoorman);
 		
+		btnDeleteCondo = new JButton("Eliminar");
+		btnDeleteCondo.setForeground(Color.WHITE);
+		btnDeleteCondo.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 18));
+		btnDeleteCondo.setBackground(new Color(255, 0, 0));		
+		btnDeleteCondo.setBounds(302, 370, 100, 30);
+		btnDeleteCondo.setVisible(false); // Initially hidden until a condo is selected
+		CondoFrame.add(btnDeleteCondo);
+		
+		btnDeleteDoorman = new JButton("Eliminar");
+		btnDeleteDoorman.setForeground(Color.WHITE);
+		btnDeleteDoorman.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 18));
+		btnDeleteDoorman.setBackground(new Color(255, 0, 0));
+		btnDeleteDoorman.setBounds(619, 345, 100, 30);
+		btnDeleteDoorman.setVisible(false); // Initially hidden until a doorman is found
+		CondoFrame.add(btnDeleteDoorman);
+		
 		lblPlatform = new JLabel("Plataforma:");
 		lblPlatform.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
 		lblPlatform.setBounds(50, 133, 110, 30);
@@ -526,6 +520,20 @@ public class CondoFrame extends JFrame {
 			}
 		});
 		
+		btnDeleteDoorman.addActionListener(e -> {
+			if (actualDoorman != null) {
+				boolean success = DoormanDAO.delete(actualDoorman.getRut());
+				if (success) {
+					Popup.showSuccess("Conserje eliminado exitosamente.");
+					cleanDoormanFields(); // Clear fields after deletion
+					hideDoormanEditButtons(); // Hide update button after deletion
+				} else {
+					Popup.show("Error al eliminar el conserje", "error");
+				}
+			} else {
+				Popup.show("No hay conserje seleccionado para eliminar.", "warning");
+			}
+		});
 		
 //		btnSaveCondo.addActionListener(e -> {
 //			System.out.println("Saving Condo Details...");
@@ -610,27 +618,23 @@ public class CondoFrame extends JFrame {
 	
 
 	private void cleanDoormanFields() {
-		txtNameCondo.setText("");
-		txtAddress.setText("");
-		txtCondoEmail.setText("");
 		txtDoormanName.setText("");
 		txtSurname.setText("");
 		txtDoormanEmail.setText("");
 		txtPhone.setText("");
-		comboRegion.setSelectedIndex(0);
-		comboTown.removeAllItems();
-		comboTown.addItem(new TownOption(0, "Seleccione una Comuna")); // SPANISH for "Select a Town"
-		//comboCondo.removeAllItems();
+		comboCondo.setSelectedIndex(0); // Reset to default "Select a Condominium"
 	}
 	
 	private void hideDoormanEditButtons() {
-		btnUpdateDoorman.setVisible(false);
 		btnSaveDoorman.setVisible(true);
+		btnUpdateDoorman.setVisible(false);
+		btnDeleteDoorman.setVisible(false); // Hide delete button as well
 	}
 	
 	private void showDoormanEditButton() {
-		btnUpdateDoorman.setVisible(true);
 		btnSaveDoorman.setVisible(false);
+		btnUpdateDoorman.setVisible(true);
+		btnDeleteDoorman.setVisible(true); // Show delete button when a doorman is found
 		
 	}
 }

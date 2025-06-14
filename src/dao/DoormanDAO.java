@@ -19,9 +19,10 @@ public class DoormanDAO {
 	
 	public static Doorman getByRut(String rut) {
 	    String sql = """
-	    	SELECT p.rut as rut, p.name as name, p.surname as surname, p.email as email, p.phone as phone, p.type as type, d.condo_id AS condoId	          
+	    	SELECT p.rut as rut, p.name as name, p.surname as surname, p.email as email, p.phone as phone, p.type as type, d.condo_id AS condoId, c.name AS condoName          
 	        FROM doorman d
 	    	JOIN person p ON d.person_id = p.id
+	    	JOIN condo c ON d.condo_id = c.id
 	    	WHERE p.rut = ?
 	    	""";
 	    Connection conn = DBConnection.getConnection();
@@ -36,7 +37,8 @@ public class DoormanDAO {
 	                rs.getString("email"),
 	                rs.getString("phone"),
 	                rs.getString("type"),
-	                rs.getInt("condoId")
+	                rs.getInt("condoId"),
+	                rs.getString("condoName") // Assuming condoName is also retrieved
 	            );
 	        }
 	    } catch (SQLException e) {
@@ -86,4 +88,37 @@ public class DoormanDAO {
 	    return false;
 	}
 
+	public static boolean delete(String rut) {
+			String deleteDoormanSQL = "DELETE FROM doorman WHERE person_id = (SELECT id FROM person WHERE rut = ?)";
+			String deletePersonSQL = "DELETE FROM person WHERE rut = ?";
+	
+			try (Connection conn = DBConnection.getConnection();
+					PreparedStatement doormanStmt = conn.prepareStatement(deleteDoormanSQL);
+					PreparedStatement personStmt = conn.prepareStatement(deletePersonSQL)) {
+		
+				conn.setAutoCommit(false);
+		
+				// Delete from doorman table
+				doormanStmt.setString(1, rut);
+				int rowsAffectedDoorman = doormanStmt.executeUpdate();
+		
+				// Delete from person table
+				personStmt.setString(1, rut);
+				int rowsAffectedPerson = personStmt.executeUpdate();
+		
+				if (rowsAffectedDoorman > 0 && rowsAffectedPerson > 0) {
+					conn.commit();
+				return true;
+				} else {
+			conn.rollback();
+			System.out.println("No se pudo eliminar el doorman o la persona.");
+			return false;
+		}
+		
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
+			return false;
+
+	}
 }

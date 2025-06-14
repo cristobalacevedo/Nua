@@ -1,7 +1,7 @@
 package model;
 
 public class Condo {
-	private String name;
+	String name;
 	private String email;
 	private String phone;
 	private String address;
