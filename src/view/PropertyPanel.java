@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -19,6 +20,7 @@ import utils.TownOption;
 
 import model.House;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -112,7 +114,7 @@ public class PropertyPanel extends JPanel {
 	
 	private JSeparator separator;
 	private JPanel panelParking;
-	private JPanel panel;
+	private JPanel panelEstacionamientos;
 	
 	public PropertyPanel(Container contentPane, Menu menu) {
 		setBackground(new Color(187, 187, 187));
@@ -122,10 +124,6 @@ public class PropertyPanel extends JPanel {
 		setBounds(0, 0, 1250, 660);
 		setVisible(true);
 		DBConnection.getConnection();
-		
-		panel = new JPanel();
-		panel.setBounds(922, 171, 270, 225);
-		add(panel);
 		
 		// --------------------- //
 		
@@ -424,7 +422,7 @@ public class PropertyPanel extends JPanel {
 		
 		lblRoomQty = new JLabel("Dormitorios:"); // SPANISH for "Bedrooms"
 		lblRoomQty.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblRoomQty.setBounds(680, 99, 125, 31);
+		lblRoomQty.setBounds(680, 99, 110, 31);
 		add(lblRoomQty);
 		
 		lblBathQty = new JLabel("Baños:"); // SPANISH for "Bathrooms"
@@ -439,7 +437,7 @@ public class PropertyPanel extends JPanel {
 		
 		lblParkingQty = new JLabel("Estacionamientos:"); // SPANISH for "Parking Spots"
 		lblParkingQty.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18)); 
-		lblParkingQty.setBounds(680, 171, 170, 30);
+		lblParkingQty.setBounds(680, 171, 153, 30);
 		add(lblParkingQty);
 		
 		lblHasStorage = new JLabel("Bodega:"); // SPANISH for "Storage"
@@ -586,23 +584,38 @@ public class PropertyPanel extends JPanel {
 		// --- SPINNERS --- //
 		
 		spinnerRoom = new JSpinner();
-		spinnerRoom.setBounds(789, 106, 46, 25);
+		spinnerRoom.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		spinnerRoom.setBounds(782, 102, 46, 30);
+		// Set the spinner to have a minimum value of 0 and a maximum value of 10
+		spinnerRoom.setModel(new javax.swing.SpinnerNumberModel(0, 0, 10, 1)); // Minimum 0, Maximum 10, Step 1
 		add(spinnerRoom);
 		
 		spinnerBath = new JSpinner();
-		spinnerBath.setBounds(737, 128, 46, 25);
+		spinnerBath.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		spinnerBath.setBounds(737, 125, 46, 30);
+		// Set the spinner to have a minimum value of 0 and a maximum value of 10
+		spinnerBath.setModel(new javax.swing.SpinnerNumberModel(0, 0, 10, 1)); // Minimum 0, Maximum 10, Step 1
 		add(spinnerBath);
 		
 		spinnerFloor = new JSpinner();
-		spinnerFloor.setBounds(737, 151, 46, 25);
+		spinnerFloor.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		spinnerFloor.setBounds(737, 151, 46, 30);
+		// Set the spinner to have a minimum value of 0 and a maximum value of 4
+		spinnerFloor.setModel(new javax.swing.SpinnerNumberModel(0, 0, 4, 1)); // Minimum 0, Maximum 4, Step 1
 		add(spinnerFloor);
 		
 		spinnerParking = new JSpinner();
-		spinnerParking.setBounds(829, 176, 46, 25);
+		spinnerParking.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		spinnerParking.setBounds(829, 171, 46, 30);
+		// Set the spinner to have a minimum value of 0 and a maximum value of 4
+		spinnerParking.setModel(new javax.swing.SpinnerNumberModel(0, 0, 4, 1)); // Minimum 0, Maximum 4, Step 1
 		add(spinnerParking);
 		
 		spinnerStorage = new JSpinner();
-		spinnerStorage.setBounds(748, 201, 46, 25);
+		spinnerStorage.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		spinnerStorage.setBounds(748, 198, 46, 30);
+		// Set the spinner to have a minimum value of 0 and a maximum value of 3
+		spinnerStorage.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1)); // Minimum 0, Maximum 3, Step 1
 		add(spinnerStorage);
 		
 		// --- END SPINNERS --- //
@@ -770,48 +783,72 @@ public class PropertyPanel extends JPanel {
 		});
 				
 		// -- END BACK BUTTON -- //
+	
+		panelEstacionamientos = new JPanel();
+		panelEstacionamientos.setLayout(null); // uno debajo del otro
+		//panelEstacionamientos.setOpaque(false); // para que no se vea gris si no quieres
+		panelEstacionamientos.setBounds(922, 170, 270, 110); // o lo que necesites
+		panelEstacionamientos.setBackground(new Color(187, 187, 187)); // Fondo blanco para el panel de estacionamientos
+		panelEstacionamientos.setVisible(false); // por si acaso se agregó oculto
+		//panelEstacionamientos.setOpaque(true);  // para que el fondo blanco se aplique
+		//panelEstacionamientos.setBorder(BorderFactory.createLineBorder(Color.RED));
+		add(panelEstacionamientos);
+		setComponentZOrder(panelEstacionamientos, 0);
 		
-		
-		spinnerParking.addChangeListener(e -> {
-		    int count = (Integer) spinnerParking.getValue();
-		    
-		    // Limpiar el contenedor
-		    contentPane.removeAll();
+		spinnerParking.addChangeListener(e -> {  
+		    int count = (Integer) spinnerParking.getValue();  
 
-		    // Generar los formularios dinámicamente
+		    panelEstacionamientos.removeAll(); // 💡 solo vacía los formularios, no todo el contentPane
+		    panelEstacionamientos.setBounds(922, 170, 270, 120 * count); 
+		    panelEstacionamientos.setVisible(true);
+
 		    for (int i = 0; i < count; i++) {
 		        JPanel miniForm = createParking(i + 1);
-		        contentPane.add(miniForm);
+		        miniForm.setBounds(0, i * 120, 270, 110); // Adjust the position of each mini form when adding it
+		        System.out.println("Adding parking form " + (i + 1)); // Debugging output
+		        panelEstacionamientos.add(miniForm);
+		        
 		    }
 
-		    // Refrescar el contenedor
-		    contentPane.revalidate();
-		    contentPane.repaint();
+		    panelEstacionamientos.revalidate();
+		    panelEstacionamientos.repaint();
 		});
 		
 		// --- END ACTION LISTENERS --- //
-		
-		
+
 	} // END OF  PropertiesPanel constructor
 	
 	// ---------------------- //
 	
 	// --- AUXILIARY METHODS --- //
 	
-	private JPanel createParking(int numero) {
+	public JPanel createParking(int numero) {
 	    JPanel panelParking = new JPanel();
-	    panelParking.setLayout(new GridLayout(3, 2, 10, 10)); // Use GridLayout for better organization);
-	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento " + numero));
-	    panelParking.setBounds(922, 170 + (numero - 1), 270, 225); // Adjust bounds as needed
-	    JTextField txtUbicacion = new JTextField(10);
+	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + numero));
+	    panelParking.setBackground(Color.WHITE);
+
 	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"});
-
-	    panelParking.add(new JLabel("Ubicación:"));
-	    panelParking.add(txtUbicacion);
-
-	    panelParking.add(new JLabel("Tipo:"));
+	    tipoCombo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+	    tipoCombo.setBounds(140, 28, 116, 30);
 	    panelParking.add(tipoCombo);
+	    
+	    JTextField txtRol = new JTextField(10);
+	    txtRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+	    txtRol.setBounds(140, 64, 116, 30);
+	    panelParking.add(txtRol);
+	    
+	    panelParking.setLayout(null);
 
+	    JLabel lblPrkngType = new JLabel("Tipo:");
+	    lblPrkngType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblPrkngType.setBounds(14, 28, 116, 16);
+	    panelParking.add(lblPrkngType);
+	   
+	    JLabel lblPrkngRol = new JLabel("ROL:");
+	    lblPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblPrkngRol.setBounds(14, 64, 116, 16);
+	    panelParking.add(lblPrkngRol);
+	   
 	    return panelParking;
 	}
 	
