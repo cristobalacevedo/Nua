@@ -1,5 +1,6 @@
 package view;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
@@ -20,7 +21,9 @@ import model.House;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -36,6 +39,8 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 import controller.PropertyController;
 
 import java.awt.Component;
+import javax.swing.JDesktopPane;
+import javax.swing.JToolBar;
 
 // This class represents the Properties panel in the application.
 public class PropertyPanel extends JPanel {
@@ -57,6 +62,7 @@ public class PropertyPanel extends JPanel {
 	private JLabel lblAddressNum1;
 	private JLabel lblAddressNum2;
 	private JLabel lblLocationTitle;
+	private JLabel lblRol;
 	private JLabel lblSize;
 	private JLabel lblRoomQty;
 	private JLabel lblBathQty;
@@ -76,7 +82,8 @@ public class PropertyPanel extends JPanel {
 	private JLabel lblBuildingHasBBQ;
 	private JLabel lblBuildingHasGym;
 	private JLabel lblBuildingHasLaundryRoom;
-	private JCheckBox chckbxInCondo;
+	private JLabel lblPanelDePropiedades;
+	private JTextField txtRol;
 	private JTextField txtAddress;
 	private JTextField txtNum1;
 	private JTextField txtNum2;
@@ -88,6 +95,7 @@ public class PropertyPanel extends JPanel {
 	private JSpinner spinnerFloor;
 	private JSpinner spinnerParking;
 	private JSpinner spinnerStorage;
+	private JCheckBox chckbxInCondo;
 	private JCheckBox chckbxGarden;
 	private JCheckBox chckbxPatio;
 	private JCheckBox chckbxPool;
@@ -101,10 +109,10 @@ public class PropertyPanel extends JPanel {
 	private JCheckBox chckbxBldngGym;
 	private JCheckBox chckbxBldngLaundry;
 	private PropertyDAO propertiesDAO = new PropertyDAO();
-	private JLabel lblRol;
-	private JTextField txtRol;
-	private JLabel lblPanelDePropiedades;
+	
 	private JSeparator separator;
+	private JPanel panelParking;
+	private JPanel panel;
 	
 	public PropertyPanel(Container contentPane, Menu menu) {
 		setBackground(new Color(187, 187, 187));
@@ -114,6 +122,10 @@ public class PropertyPanel extends JPanel {
 		setBounds(0, 0, 1250, 660);
 		setVisible(true);
 		DBConnection.getConnection();
+		
+		panel = new JPanel();
+		panel.setBounds(922, 171, 270, 225);
+		add(panel);
 		
 		// --------------------- //
 		
@@ -388,7 +400,7 @@ public class PropertyPanel extends JPanel {
 		
 		lblAddressNum2 = new JLabel("#2 Nº"); // SPANISH for "Address Number 2 (optional)"
 		lblAddressNum2.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblAddressNum2.setBounds(411, 315, 54, 30);
+		lblAddressNum2.setBounds(412, 311, 54, 30);
 		add(lblAddressNum2);
 		
 		
@@ -401,7 +413,7 @@ public class PropertyPanel extends JPanel {
 		
 		// -- SIZE -- //
 		
-		lblSize = new JLabel("Tamaño (m²):"); // SPANISH for "Size (m²)"
+		lblSize = new JLabel("Superficie (m²):"); // SPANISH for "Size (m²)"
 		lblSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
 		lblSize.setBounds(680, 75, 125, 30);
 		add(lblSize);
@@ -561,7 +573,7 @@ public class PropertyPanel extends JPanel {
 
 		txtSize = new JTextField();
 		txtSize.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18)); // Set font for the size text field
-		txtSize.setBounds(791, 84, 86, 20);
+		txtSize.setBounds(803, 75, 86, 30);
 		add(txtSize);
 		txtSize.setColumns(10);
 		
@@ -578,15 +590,15 @@ public class PropertyPanel extends JPanel {
 		add(spinnerRoom);
 		
 		spinnerBath = new JSpinner();
-		spinnerBath.setBounds(734, 131, 46, 25);
+		spinnerBath.setBounds(737, 128, 46, 25);
 		add(spinnerBath);
 		
 		spinnerFloor = new JSpinner();
-		spinnerFloor.setBounds(734, 156, 46, 25);
+		spinnerFloor.setBounds(737, 151, 46, 25);
 		add(spinnerFloor);
 		
 		spinnerParking = new JSpinner();
-		spinnerParking.setBounds(829, 180, 46, 25);
+		spinnerParking.setBounds(829, 176, 46, 25);
 		add(spinnerParking);
 		
 		spinnerStorage = new JSpinner();
@@ -677,105 +689,9 @@ public class PropertyPanel extends JPanel {
 		separator.setOrientation(SwingConstants.VERTICAL);
 		separator.setBounds(625, 75, 10, 453);
 		add(separator);
-		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblAddress, comboLandlord, comboPropertyType, txtRol, chckbxInCondo, comboCondo, comboRegion, btnNewCondo, comboTown, txtAddress, txtNum1, txtNum2, txtSize, lblRoomQty, spinnerRoom, spinnerBath, spinnerFloor, spinnerParking, spinnerStorage, chckbxGarden, chckbxPatio, chckbxPool, chckbxBalcony, chckbxBBQ, chckbxTerrace, lblLandlord, lblPropertyType, lblRegion, lblLocationTitle, lblTown, separator1, lblAddressNum1, lblAddressNum2, lblSize, lblBathQty, lblFloorQty, lblParkingQty, lblHasStorage, lblHasLaundryRoom, chckbxBldngLift, chckbxBldngPool, lblHasGarden, chckbxBldngBBQ, chckbxBldngGym, chckbxBldngLaundry, lblHasPatio, btnSave, lblHasPool, btnBack, lblHasBalcony, lblHasBBQ, lblHasTerrace, lblInCondo, lblBuildingHasLift, lblBuildingHasPool, lblBuildingHasBBQ, lblBuildingHasGym, lblBuildingHasLaundryRoom, separator2, chckbxLaundry, lblRol, lblPanelDePropiedades, separator}));
+		
 		
 		// --- END CHECKBOXES --- //
-		
-//		JRadioButton rdbtnGardenYes = new JRadioButton("Sí");
-//		rdbtnGardenYes.setBounds(1030, 234, 37, 23);
-//		add(rdbtnGardenYes);
-//		
-//		JRadioButton rdbtnGardenNo = new JRadioButton("No");
-//		rdbtnGardenNo.setBounds(1080, 234, 44, 23);
-//		add(rdbtnGardenNo);
-//		
-//		JRadioButton rdbtnPatioYes = new JRadioButton("Sí");
-//		rdbtnPatioYes.setBounds(1030, 257, 37, 23);
-//		add(rdbtnPatioYes);
-//		
-//		JRadioButton rdbtnPatioNo = new JRadioButton("No");
-//		rdbtnPatioNo.setBounds(1080, 257, 44, 23);
-//		add(rdbtnPatioNo);
-//		
-//		JRadioButton rdbtnPoolYes = new JRadioButton("Sí");
-//		rdbtnPoolYes.setBounds(1030, 281, 37, 23);
-//		add(rdbtnPoolYes);
-//		
-//		JRadioButton rdbtnPoolNo = new JRadioButton("No");
-//		rdbtnPoolNo.setBounds(1080, 281, 44, 23);
-//		add(rdbtnPoolNo);
-//		
-//		JRadioButton rdbtnBalconyYes = new JRadioButton("Sí");
-//		rdbtnBalconyYes.setBounds(1030, 298, 37, 23);
-//		add(rdbtnBalconyYes);
-//		
-//		JRadioButton rdbtnBalconyNo = new JRadioButton("No");
-//		rdbtnBalconyNo.setBounds(1080, 298, 44, 23);
-//		add(rdbtnBalconyNo);
-//		
-//		JRadioButton rdbtnBBQYes = new JRadioButton("Sí");
-//		rdbtnBBQYes.setBounds(1030, 322, 37, 23);
-//		add(rdbtnBBQYes);
-//		
-//		JRadioButton rdbtnBBQNo = new JRadioButton("No");
-//		rdbtnBBQNo.setBounds(1080, 322, 44, 23);
-//		add(rdbtnBBQNo);
-//		
-//		JRadioButton rdbtnTerraceYes = new JRadioButton("Sí");
-//		rdbtnTerraceYes.setBounds(1030, 346, 37, 23);
-//		add(rdbtnTerraceYes);
-//		
-//		JRadioButton rdbtnTerraceNo = new JRadioButton("No");
-//		rdbtnTerraceNo.setBounds(1080, 346, 44, 23);
-//		add(rdbtnTerraceNo);
-//		
-//		JRadioButton rdbtnLaundryYes = new JRadioButton("Sí");
-//		rdbtnLaundryYes.setBounds(1030, 370, 37, 23);
-//		add(rdbtnLaundryYes);
-//		
-//		JRadioButton rdbtnLaundryNo = new JRadioButton("No");
-//		rdbtnLaundryNo.setBounds(1080, 370, 44, 23);
-//		add(rdbtnLaundryNo);
-//		
-//		JRadioButton rdbtnBldngLiftYes = new JRadioButton("Sí");
-//		rdbtnBldngLiftYes.setBounds(1030, 418, 37, 23);
-//		add(rdbtnBldngLiftYes);
-//		
-//		JRadioButton rdbtnBldngLiftNo = new JRadioButton("No");
-//		rdbtnBldngLiftNo.setBounds(1080, 418, 44, 23);
-//		add(rdbtnBldngLiftNo);
-//		
-//		JRadioButton rdbtnBldngPoolYes = new JRadioButton("Sí");
-//		rdbtnBldngPoolYes.setBounds(1030, 442, 37, 23);
-//		add(rdbtnBldngPoolYes);
-//		
-//		JRadioButton rdbtnBldngPoolNo = new JRadioButton("No");
-//		rdbtnBldngPoolNo.setBounds(1080, 442, 44, 23);
-//		add(rdbtnBldngPoolNo);
-//		
-//		JRadioButton rdbtnBldngBBQYes = new JRadioButton("Sí");
-//		rdbtnBldngBBQYes.setBounds(1030, 466, 37, 23);
-//		add(rdbtnBldngBBQYes);
-//		
-//		JRadioButton rdbtnBldngBBQNo = new JRadioButton("No");
-//		rdbtnBldngBBQNo.setBounds(1080, 466, 44, 23);
-//		add(rdbtnBldngBBQNo);
-//		
-//		JRadioButton rdbtnBldngGymYes = new JRadioButton("Sí");
-//		rdbtnBldngGymYes.setBounds(1030, 490, 37, 23);
-//		add(rdbtnBldngGymYes);
-//		
-//		JRadioButton rdbtnBldngGymNo = new JRadioButton("No");
-//		rdbtnBldngGymNo.setBounds(1080, 490, 44, 23);
-//		add(rdbtnBldngGymNo);
-//		
-//		JRadioButton rdbtnBldngLaundryYes = new JRadioButton("Sí");
-//		rdbtnBldngLaundryYes.setBounds(1030, 514, 37, 23);
-//		add(rdbtnBldngLaundryYes);
-//		
-//		JRadioButton rdbtnBldngLaundryNo = new JRadioButton("No");
-//		rdbtnBldngLaundryNo.setBounds(1080, 514, 44, 23);
-//		add(rdbtnBldngLaundryNo);
 		
 		// ---------------------- //
 		
@@ -855,6 +771,24 @@ public class PropertyPanel extends JPanel {
 				
 		// -- END BACK BUTTON -- //
 		
+		
+		spinnerParking.addChangeListener(e -> {
+		    int count = (Integer) spinnerParking.getValue();
+		    
+		    // Limpiar el contenedor
+		    contentPane.removeAll();
+
+		    // Generar los formularios dinámicamente
+		    for (int i = 0; i < count; i++) {
+		        JPanel miniForm = createParking(i + 1);
+		        contentPane.add(miniForm);
+		    }
+
+		    // Refrescar el contenedor
+		    contentPane.revalidate();
+		    contentPane.repaint();
+		});
+		
 		// --- END ACTION LISTENERS --- //
 		
 		
@@ -863,6 +797,24 @@ public class PropertyPanel extends JPanel {
 	// ---------------------- //
 	
 	// --- AUXILIARY METHODS --- //
+	
+	private JPanel createParking(int numero) {
+	    JPanel panelParking = new JPanel();
+	    panelParking.setLayout(new GridLayout(3, 2, 10, 10)); // Use GridLayout for better organization);
+	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento " + numero));
+	    panelParking.setBounds(922, 170 + (numero - 1), 270, 225); // Adjust bounds as needed
+	    JTextField txtUbicacion = new JTextField(10);
+	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"});
+
+	    panelParking.add(new JLabel("Ubicación:"));
+	    panelParking.add(txtUbicacion);
+
+	    panelParking.add(new JLabel("Tipo:"));
+	    panelParking.add(tipoCombo);
+
+	    return panelParking;
+	}
+	
 	
 	public void cleanFields() {
 		comboLandlord.setSelectedIndex(0); // Reset landlord selection
