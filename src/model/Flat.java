@@ -2,15 +2,16 @@ package model;
 
 public class Flat extends Estate {
 	private int roomQty, bathQty, floorQty;
-	private boolean hasParking, hasGarden, hasStorage;
+	int hasParking;
+	private boolean hasBalcony, hasStorage;
 	private boolean inCondo, buildingHasLift, buildingHasPool, buildingHasGym, buildingHasLaundry, buildingHasBBQ;
-	
+    private Integer condoId;
 
-	public Flat(int roomQty, int bathQty, int floorQty, boolean hasParking, boolean hasGarden,
-			boolean hasStorage, boolean inCondo, boolean buildingHasLift, boolean buildingHasPool,
+	public Flat(int roomQty, int bathQty, int floorQty, boolean hasStorage, int hasParking, boolean hasBalcony,
+			boolean buildingHasLift, boolean buildingHasPool,
 			boolean buildingHasGym, boolean buildingHasLaundry, boolean buildingHasBBQ,
 			String streetName, String num1, String num2, int townId, int regionId, int landlordId,
-			int propertyTypeId, int size, String rolSII) {
+			int propertyTypeId, int size, String rolSII, boolean inCondo, Integer condoId) {
 		// ADDRESS and PROPERTY
 		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII);
 		
@@ -18,16 +19,22 @@ public class Flat extends Estate {
 		this.roomQty = roomQty;
 		this.bathQty = bathQty;
 		this.floorQty = floorQty;
-		this.hasParking = hasParking;
-		this.hasGarden = hasGarden;
 		this.hasStorage = hasStorage;
-		this.inCondo = inCondo;
+		this.hasParking = hasParking;
+		this.hasBalcony = hasBalcony;
+		
 		this.buildingHasLift = buildingHasLift;
 		this.buildingHasPool = buildingHasPool;
 		this.buildingHasGym = buildingHasGym;
 		this.buildingHasLaundry = buildingHasLaundry;
 		this.buildingHasBBQ = buildingHasBBQ;
+		this.inCondo = inCondo;
+		this.condoId = condoId; // Default value, can be set later
 			
+	}
+	
+	public Flat() {
+		// Default constructor necessary to use `new Flat()`
 	}
 
 	// GETTERS
@@ -44,12 +51,12 @@ public class Flat extends Estate {
         return floorQty;
     }
 	
-	public boolean isHasParking() {
+	public int isHasParking() {
         return hasParking;
     }
 	
-	public boolean isHasGarden() {
-		return hasGarden;
+	public boolean isHasBalcony() {
+		return hasBalcony;
 	}
 	
 	public boolean isHasStorage() {
@@ -80,6 +87,10 @@ public class Flat extends Estate {
 		return buildingHasBBQ;
 	}
 	
+	public Integer getCondoId() {
+		return condoId;
+	}
+	
 	// SETTERS
 	
 	public void setRoomQty(int roomQty) {
@@ -94,12 +105,12 @@ public class Flat extends Estate {
 		this.floorQty = floorQty;
 	}
 	
-	public void setHasParking(boolean hasParking) {
+	public void setHasParking(int hasParking) {
 		this.hasParking = hasParking;
 	}
 	
-	public void setHasGarden(boolean hasGarden) {
-		this.hasGarden = hasGarden;
+	public void setHasBalcony(boolean hasBalcony) {
+		this.hasBalcony = hasBalcony;
 	}
 	
 	public void setHasStorage(boolean hasStorage) {
@@ -108,6 +119,10 @@ public class Flat extends Estate {
 	
 	public void setInCondo(boolean inCondo) {
 		this.inCondo = inCondo;
+	}
+	
+	public void setCondoId(Integer condoId) {
+		this.condoId = condoId;
 	}
 	
 	public void setBuildingHasLift(boolean buildingHasLift) {
@@ -133,10 +148,10 @@ public class Flat extends Estate {
 	@Override
 	public String toString() {
 		return "Flat{" + "roomQty=" + roomQty + ", bathQty=" + bathQty + ", floorQty=" + floorQty + ", hasParking="
-				+ hasParking + ", hasGarden=" + hasGarden + ", hasStorage=" + hasStorage + ", inCondo=" + inCondo
+				+ hasParking + ", hasBalcony=" + hasBalcony + ", hasStorage=" + hasStorage + ", inCondo=" + inCondo
 				+ ", buildingHasLift=" + buildingHasLift + ", buildingHasPool=" + buildingHasPool + ", buildingHasGym="
 				+ buildingHasGym + ", buildingHasLaundry=" + buildingHasLaundry + ", buildingHasBBQ=" + buildingHasBBQ
-				+ '}';
+				+ ", condoId="	+ condoId + '}';
 	}
 	
 }
