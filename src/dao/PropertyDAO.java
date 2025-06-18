@@ -148,7 +148,7 @@ public class PropertyDAO {
 	        for (Parking p : parkings) {
 	            System.out.println(" -> Parking: flatId=" + p.getFlatId() + ", inCondo=" + p.isInCondo() + ", condoId=" + p.getCondoId());
 	        }
-	        parkingDAO.insertParkingInFlat(propertyId, parkings); // Insertarlos desde tu DAO
+	        parkingDAO.insertParkingInFlat(parkings); // Insertarlos desde tu DAO
 	        conn.commit();
 	        return true;
 

@@ -3,10 +3,10 @@ package model;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-public class ParkingForm extends Parking {
-    public JTextField txtRol;
-    public JComboBox<String> tipoCombo;
-    public JTextField txtNum;
+public class ParkingForm {
+    private JTextField txtRol;
+    private JComboBox<String> tipoCombo;
+    private JTextField txtNum;
 
     public ParkingForm(JTextField txtRol, JComboBox<String> tipoCombo, JTextField txtNum) {
         this.txtRol = txtRol;
@@ -14,8 +14,19 @@ public class ParkingForm extends Parking {
         this.txtNum = txtNum;
     }
 
+    public String getRol() {
+        return txtRol.getText();
+    }
 
-	public Parking toModel() {
-        return new Parking(txtRol.getText(), (String) tipoCombo.getSelectedItem());
+    public String getTipo() {
+        return (String) tipoCombo.getSelectedItem();
+    }
+
+    public Integer getNumero() {
+        try {
+            return Integer.parseInt(txtNum.getText());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

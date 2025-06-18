@@ -121,7 +121,7 @@ public class PropertyPanel extends JPanel {
 	
 	private JSeparator separator;
 	//private JPanel panelParking;
-	private List<JPanel> parkingForms = new ArrayList<>();
+	private List<ParkingForm> parkingForms = new ArrayList<>();
 	private JPanel panelEstacionamientos;
 	private JTextField txtBldngFloor;
 	public JTextField txtPrkngRol;
@@ -1123,32 +1123,38 @@ public class PropertyPanel extends JPanel {
 	    
 	    
 	    ParkingForm form = new ParkingForm(txtPrkngRol, tipoCombo, txtPrkngNum);
+	    parkingForms.add(form); // ✅ agregamos el formulario a la lista
+	    
 	    return panelParking;
 	}
 	
 	public List<Parking> getAllParkingsFromForm() {
 	    List<Parking> parkings = new ArrayList<>();
-
-	    int qty = (int) spinnerParking.getValue(); // cantidad indicada por el usuario
 	    boolean inCondo = chckbxInCondo.isSelected();
-	    String rol = txtPrkngRol.getText();
-	    Integer condoId = null;
-	    Integer parkingNum = txtPrkngNum.getText().isEmpty() ? null : Integer.parseInt(txtPrkngNum.getText());
+	    Integer condoId = comboCondo.getSelectedItem() instanceof CondoOption
+	        ? ((CondoOption) comboCondo.getSelectedItem()).getId()
+	        : null;
 
-	    if (comboCondo.getSelectedItem() instanceof CondoOption) {
-	        condoId = ((CondoOption) comboCondo.getSelectedItem()).getId();
-	    }
+	    for (ParkingForm form : parkingForms) {
+	        String rol = form.getRol();
+	        Integer num = form.getNumero(); // Si necesitas usarlo
+	        String tipo = form.getTipo();   // Si lo quieres guardar
 
-	    for (int i = 0; i < qty; i++) {
-	        Parking p = new Parking();
-	        p.setRolSII(rol);
-	        p.setInCondo(inCondo);
-	        p.setCondoId(inCondo ? condoId : null); // si no está en condominio, deja null
-	        parkings.add(p);
+	        if (rol != null && !rol.isEmpty()) {
+	            Parking p = new Parking();
+	            p.setRolSII(rol);
+	            p.setPropertyTypeId(4);
+	            p.setInCondo(inCondo);
+	            p.setCondoId(inCondo ? condoId : null);
+	            p.setFlatId(null);
+	            // Puedes guardar el tipo o número si tu modelo Parking lo permite
+	            parkings.add(p);
+	        }
 	    }
 
 	    return parkings;
 	}
+
 	
 	
 	public void cleanFields() {

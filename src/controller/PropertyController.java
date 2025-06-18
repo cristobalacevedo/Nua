@@ -291,7 +291,7 @@ public class PropertyController {
 	        
 	        // Crear objeto Parking
 	        Parking data = new Parking();
-	        data.setPropertyTypeId(4); // 3 = Parking
+	        data.setPropertyTypeId(4); // 4 = Parking
 	        data.setRolSII(rolSII.trim());
 	        data.setLandlordId(selectedLandlord.getId());
 	        data.setSize(0); // Puedes recibirlo como parámetro si usas el tamaño

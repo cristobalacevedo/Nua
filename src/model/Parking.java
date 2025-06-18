@@ -3,6 +3,7 @@ package model;
 public class Parking extends Estate {
 	private boolean inCondo;
 	private Integer condoId, flatId;
+	private Integer id;
 
 	public Parking(Integer flatId, boolean inCondo, Integer condoId,
 				   String streetName, String num1, String num2, int townId, int regionId, int landlordId,
@@ -48,14 +49,19 @@ public class Parking extends Estate {
 		this.condoId = condoId;
 	}
 
-	public void setId(int parkingPropertyId) {
-		
-		
-	}
-
+	
 	public void setRol(String rol) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setId(int parkingPropertyId) {
+		this.id = parkingPropertyId; // Assuming id is inherited from Estate
+	}
+
+
+	public int getId() {
+		return id;
 	}
 	
 	
