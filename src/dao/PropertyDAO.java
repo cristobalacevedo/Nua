@@ -131,7 +131,37 @@ public class PropertyDAO {
     
     // --- FLAT ---
     
-    public boolean insertCompleteFlat(Flat data) throws SQLException {
+    public boolean insertCompleteFlatParking(Flat data, List<Parking> parkings) throws SQLException {
+	    try {
+	        conn.setAutoCommit(false);
+
+	        int addressId = insertFlatAddress(data);
+	        int propertyId = insertFlatProperty(data, addressId);
+	        flatDAO.insertFlat(propertyId, data); 
+	        for (Parking p : parkings) {
+	        	int parkingAddressId = insertParkingAddress(p);
+	            int parkingPropertyId = insertParkingProperty(p, parkingAddressId);
+	            p.setId(parkingPropertyId); // opcional
+	            p.setFlatId(propertyId); // Relacionar flat con los estacionamientos
+	        }
+	        System.out.println("Insertando " + parkings.size() + " estacionamientos para Flat ID = " + propertyId);
+	        for (Parking p : parkings) {
+	            System.out.println(" -> Parking: flatId=" + p.getFlatId() + ", inCondo=" + p.isInCondo() + ", condoId=" + p.getCondoId());
+	        }
+	        parkingDAO.insertParkingInFlat(propertyId, parkings); // Insertarlos desde tu DAO
+	        conn.commit();
+	        return true;
+
+	    } catch (SQLException e) {
+	        conn.rollback();
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        conn.setAutoCommit(true); // 👈 Muy importante restaurar auto-commit
+	    }
+	}
+    
+    public boolean insertCompleteFlatNoParking(Flat data) throws SQLException {
 	    try {
 	        conn.setAutoCommit(false);
 
@@ -146,6 +176,8 @@ public class PropertyDAO {
 	        conn.rollback();
 	        e.printStackTrace();
 	        return false;
+	    } finally {
+	        conn.setAutoCommit(true); // 👈 Muy importante restaurar auto-commit
 	    }
 	}
 	

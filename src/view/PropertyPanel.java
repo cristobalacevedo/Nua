@@ -20,6 +20,8 @@ import utils.PropertyTypeOption;
 import utils.TownOption;
 
 import model.House;
+import model.Parking;
+import model.ParkingForm;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,8 +121,11 @@ public class PropertyPanel extends JPanel {
 	
 	private JSeparator separator;
 	//private JPanel panelParking;
+	private List<JPanel> parkingForms = new ArrayList<>();
 	private JPanel panelEstacionamientos;
 	private JTextField txtBldngFloor;
+	public JTextField txtPrkngRol;
+	public JTextField txtPrkngNum;
 	
 	
 	public PropertyPanel(Container contentPane, Menu menu) {
@@ -833,7 +839,7 @@ public class PropertyPanel extends JPanel {
 				} else if (selectedType.getValue().equals("Flat")) {
 					isFlat(); // Call the method to show flat fields
 					PropertyController controller = new PropertyController();
-					
+					List<Parking> parkings = getAllParkingsFromForm();
 					// Converts txtBldngFloor to INTEGER
 					String bldngFloorText = txtBldngFloor.getText();
 					int bldngFloor = 0;
@@ -841,8 +847,8 @@ public class PropertyPanel extends JPanel {
 						try {
 							bldngFloor = Integer.parseInt(bldngFloorText); // Convert to integer
 						} catch (NumberFormatException e1) {
-							Popup.show("El número de piso debe ser un número entero.", "error"); // Show error if
-																									// conversion fails
+							Popup.show("El número de piso debe ser un número entero.", "error"); // Show error if conversion fails
+																									
 							return; // Exit the method if conversion fails
 						}
 					} else {
@@ -851,29 +857,58 @@ public class PropertyPanel extends JPanel {
 					
 					   	boolean success = false;
 						try {
-							success = controller.saveFlat(
-							    (LandlordOption) comboLandlord.getSelectedItem(),
-							    (TownOption) comboTown.getSelectedItem(),
-							    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
-							    (CondoOption) comboCondo.getSelectedItem(),
-							    txtRol.getText(),
-							    txtAddress.getText(),
-							    txtNum1.getText(),
-							    txtNum2.isVisible() ? txtNum2.getText() : null,
-							    (String) comboRegion.getSelectedItem(),
-							    (int) spinnerRoom.getValue(), //2
-							    (int) spinnerBath.getValue(), //3 
-							    bldngFloor, //4
-							    (int) spinnerStorage.getValue(), //5
-							    (int) spinnerParking.getValue(), //6
-							    chckbxBalcony.isSelected(), //7
-						        chckbxBldngLift.isSelected(), //8
-						        chckbxBldngPool.isSelected(), //9
-						        chckbxBldngBBQ.isSelected(), //10
-						        chckbxBldngGym.isSelected(), //11
-						        chckbxBldngLaundry.isSelected(), //12
-							    chckbxInCondo.isSelected() //13
+						// if spinnerParking is more than 0, then it is a parking lot
+							if ((int) spinnerParking.getValue() > 0) {
+							
+								success = controller.saveFlatParking(
+								    (LandlordOption) comboLandlord.getSelectedItem(),
+								    (TownOption) comboTown.getSelectedItem(),
+								    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
+								    (CondoOption) comboCondo.getSelectedItem(),
+								    txtRol.getText(),
+								    txtAddress.getText(),
+								    txtNum1.getText(),
+								    txtNum2.isVisible() ? txtNum2.getText() : null,
+								    (String) comboRegion.getSelectedItem(),
+								    (int) spinnerRoom.getValue(), //2
+								    (int) spinnerBath.getValue(), //3 
+								    bldngFloor, //4
+								    (int) spinnerStorage.getValue(), //5
+								    (int) spinnerParking.getValue(), //6
+								    chckbxBalcony.isSelected(), //7
+							        chckbxBldngLift.isSelected(), //8
+							        chckbxBldngPool.isSelected(), //9
+							        chckbxBldngBBQ.isSelected(), //10
+							        chckbxBldngGym.isSelected(), //11
+							        chckbxBldngLaundry.isSelected(), //12
+								    chckbxInCondo.isSelected(), //13
+								    parkings //14
 							);
+						} else {
+							success = controller.saveFlatNoParking(
+									(LandlordOption) comboLandlord.getSelectedItem(),
+								    (TownOption) comboTown.getSelectedItem(),
+								    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
+								    (CondoOption) comboCondo.getSelectedItem(),
+								    txtRol.getText(),
+								    txtAddress.getText(),
+								    txtNum1.getText(),
+								    txtNum2.isVisible() ? txtNum2.getText() : null,
+								    (String) comboRegion.getSelectedItem(),
+								    (int) spinnerRoom.getValue(), //2
+								    (int) spinnerBath.getValue(), //3 
+								    bldngFloor, //4
+								    (int) spinnerStorage.getValue(), //5
+								    (int) spinnerParking.getValue(), //6
+								    chckbxBalcony.isSelected(), //7
+							        chckbxBldngLift.isSelected(), //8
+							        chckbxBldngPool.isSelected(), //9
+							        chckbxBldngBBQ.isSelected(), //10
+							        chckbxBldngGym.isSelected(), //11
+							        chckbxBldngLaundry.isSelected(), //12
+								    chckbxInCondo.isSelected() //13
+							);
+						}
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -1015,7 +1050,7 @@ public class PropertyPanel extends JPanel {
 		panelEstacionamientos = new JPanel();
 		panelEstacionamientos.setLayout(null); // uno debajo del otro
 		//panelEstacionamientos.setOpaque(false); // para que no se vea gris si no quieres
-		panelEstacionamientos.setBounds(922, 170, 270, 110); // o lo que necesites
+		panelEstacionamientos.setBounds(922, 190, 270, 110); // o lo que necesites
 		panelEstacionamientos.setBackground(new Color(187, 187, 187)); // Fondo blanco para el panel de estacionamientos
 		panelEstacionamientos.setVisible(false); // por si acaso se agregó oculto
 		//panelEstacionamientos.setOpaque(true);  // para que el fondo blanco se aplique
@@ -1027,17 +1062,14 @@ public class PropertyPanel extends JPanel {
 		    int count = (Integer) spinnerParking.getValue();  
 
 		    panelEstacionamientos.removeAll(); // 💡 solo vacía los formularios, no todo el contentPane
-		    panelEstacionamientos.setBounds(922, 170, 270, 120 * count); 
+		    panelEstacionamientos.setBounds(922, 110, 270, 150 * count); 
 		    panelEstacionamientos.setVisible(true);
-
+		    parkingForms.clear();
 		    for (int i = 0; i < count; i++) {
 		        JPanel miniForm = createParking(i + 1);
-		        miniForm.setBounds(0, i * 120, 270, 110); // Adjust the position of each mini form when adding it
+		        miniForm.setBounds(0, i * 137, 270, 135); // Adjust the position of each mini form when adding it
 		        System.out.println("Adding parking form " + (i + 1)); // Debugging output
 		        panelEstacionamientos.add(miniForm);
-		        
-		        
-		        
 		        
 		    }
 
@@ -1057,18 +1089,22 @@ public class PropertyPanel extends JPanel {
 	    JPanel panelParking = new JPanel();
 	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + numero));
 	    panelParking.setBackground(Color.WHITE);
-
-	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"});
+	    panelParking.setLayout(null);
+	    
+	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"}); // SPANISH for "Covered", "Uncovered"
 	    tipoCombo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
 	    tipoCombo.setBounds(140, 28, 116, 30);
 	    panelParking.add(tipoCombo);
 	    
-	    JTextField txtRol = new JTextField(10);
-	    txtRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-	    txtRol.setBounds(140, 64, 116, 30);
-	    panelParking.add(txtRol);
+	    txtPrkngRol = new JTextField(10);
+	    txtPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+	    txtPrkngRol.setBounds(140, 64, 116, 30);
+	    panelParking.add(txtPrkngRol);
 	    
-	    panelParking.setLayout(null);
+	    txtPrkngNum = new JTextField(10);
+	    txtPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+	    txtPrkngNum.setBounds(140, 100, 116, 30);
+	    panelParking.add(txtPrkngNum);
 
 	    JLabel lblPrkngType = new JLabel("Tipo:");
 	    lblPrkngType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
@@ -1079,8 +1115,39 @@ public class PropertyPanel extends JPanel {
 	    lblPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
 	    lblPrkngRol.setBounds(14, 64, 116, 16);
 	    panelParking.add(lblPrkngRol);
-	   
+	    
+	    JLabel lblPrkngNum = new JLabel("Número:");
+	    lblPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblPrkngNum.setBounds(14, 100, 116, 16);
+	    panelParking.add(lblPrkngNum);
+	    
+	    
+	    ParkingForm form = new ParkingForm(txtPrkngRol, tipoCombo, txtPrkngNum);
 	    return panelParking;
+	}
+	
+	public List<Parking> getAllParkingsFromForm() {
+	    List<Parking> parkings = new ArrayList<>();
+
+	    int qty = (int) spinnerParking.getValue(); // cantidad indicada por el usuario
+	    boolean inCondo = chckbxInCondo.isSelected();
+	    String rol = txtPrkngRol.getText();
+	    Integer condoId = null;
+	    Integer parkingNum = txtPrkngNum.getText().isEmpty() ? null : Integer.parseInt(txtPrkngNum.getText());
+
+	    if (comboCondo.getSelectedItem() instanceof CondoOption) {
+	        condoId = ((CondoOption) comboCondo.getSelectedItem()).getId();
+	    }
+
+	    for (int i = 0; i < qty; i++) {
+	        Parking p = new Parking();
+	        p.setRolSII(rol);
+	        p.setInCondo(inCondo);
+	        p.setCondoId(inCondo ? condoId : null); // si no está en condominio, deja null
+	        parkings.add(p);
+	    }
+
+	    return parkings;
 	}
 	
 	
