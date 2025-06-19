@@ -4,29 +4,25 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 public class ParkingForm {
-    private JTextField txtRol;
+    private JTextField txtPrkngRol;
     private JComboBox<String> tipoCombo;
-    private JTextField txtNum;
+    private JTextField txtPrkngNum;
 
     public ParkingForm(JTextField txtRol, JComboBox<String> tipoCombo, JTextField txtNum) {
-        this.txtRol = txtRol;
+        this.txtPrkngRol = txtRol;
         this.tipoCombo = tipoCombo;
-        this.txtNum = txtNum;
+        this.txtPrkngNum = txtNum;
     }
 
     public String getRol() {
-        return txtRol.getText();
+        return txtPrkngRol.getText();
     }
 
     public String getTipo() {
         return (String) tipoCombo.getSelectedItem();
     }
 
-    public Integer getNumero() {
-        try {
-            return Integer.parseInt(txtNum.getText());
-        } catch (NumberFormatException e) {
-            return null;
-        }
+    public String getNum() {
+        return txtPrkngNum.getText();
     }
 }

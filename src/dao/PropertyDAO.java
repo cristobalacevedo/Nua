@@ -146,7 +146,7 @@ public class PropertyDAO {
 	        }
 	        System.out.println("Insertando " + parkings.size() + " estacionamientos para Flat ID = " + propertyId);
 	        for (Parking p : parkings) {
-	            System.out.println(" -> Parking: flatId=" + p.getFlatId() + ", inCondo=" + p.isInCondo() + ", condoId=" + p.getCondoId());
+	            System.out.println(" -> Parking: parkingPropertyId:" + p.getId() + "flatId=" + p.getFlatId() + ", inCondo=" + p.isInCondo() + ", condoId=" + p.getCondoId() + ", size=" + p.getSize() + ", rolSII=" + p.getRolSII() + ", streetName=" + p.getStreetName() + ", num1=" + p.getNum1() + ", num2=" + p.getNum2() + ", townId=" + p.getTownId() + ", regionId=" + p.getRegionId());
 	        }
 	        parkingDAO.insertParkingInFlat(parkings); // Insertarlos desde tu DAO
 	        conn.commit();

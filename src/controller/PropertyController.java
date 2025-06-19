@@ -160,7 +160,7 @@ public class PropertyController {
 		        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
 		        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
 		        data.setNum1(num1.trim()); // num1 could be null, but we trim it to avoid leading/trailing spaces
-		        data.setNum2(num2 != null ? num2.trim() : null); // num2 could be null
+		        data.setNum2(num2.trim());  // num2 could be null
 		        data.setRoomQty(roomQty); // 2
 		        data.setBathQty(bathQty); // 3
 		        data.setFloorQty(floorQty); // 4
@@ -235,7 +235,7 @@ public class PropertyController {
 		        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
 		        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
 		        data.setNum1(num1.trim()); // num1 could be null, but we trim it to avoid leading/trailing spaces
-		        data.setNum2(num2 != null ? num2.trim() : null); // num2 could be null
+		        data.setNum2(num2.trim()); // num2 could be null
 		        data.setRoomQty(roomQty); // 2
 		        data.setBathQty(bathQty); // 3
 		        data.setFloorQty(floorQty); // 4
@@ -299,7 +299,7 @@ public class PropertyController {
 	        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
 	        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
 	        data.setNum1(num1.trim()); // num1 could be null, but we trim it to avoid leading/trailing spaces
-	        data.setNum2(num2 != null ? num2.trim() : null); // num2 could be null
+	        data.setNum2(num2.trim()); // num2 could be null, but we trim it to avoid leading/trailing spaces
 	        data.setInCondo(inCondo); 
 	        data.setCondoId(inCondo && selectedCondo != null ? selectedCondo.getId() : null);
 	        

@@ -801,8 +801,8 @@ public class PropertyPanel extends JPanel {
 								    (TownOption) comboTown.getSelectedItem(),
 								    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
 								    (CondoOption) comboCondo.getSelectedItem(),
-								    // ADDRESS
 								    
+								    // ADDRESS
 								    txtRol.getText(),
 								    txtAddress.getText(),
 								    txtNum1.getText(),
@@ -868,7 +868,7 @@ public class PropertyPanel extends JPanel {
 								    txtRol.getText(),
 								    txtAddress.getText(),
 								    txtNum1.getText(),
-								    txtNum2.isVisible() ? txtNum2.getText() : null,
+								    txtNum2.getText(),
 								    (String) comboRegion.getSelectedItem(),
 								    (int) spinnerRoom.getValue(), //2
 								    (int) spinnerBath.getValue(), //3 
@@ -893,7 +893,7 @@ public class PropertyPanel extends JPanel {
 								    txtRol.getText(),
 								    txtAddress.getText(),
 								    txtNum1.getText(),
-								    txtNum2.isVisible() ? txtNum2.getText() : null,
+								    txtNum2.getText(),
 								    (String) comboRegion.getSelectedItem(),
 								    (int) spinnerRoom.getValue(), //2
 								    (int) spinnerBath.getValue(), //3 
@@ -975,7 +975,7 @@ public class PropertyPanel extends JPanel {
 				        System.out.println("Tamaño: " + txtSize.getText());
 				        System.out.println("Dirección: " + txtAddress.getText());
 				        System.out.println("Número 1: " + txtNum1.getText());
-				        System.out.println("Número 2: " + (txtNum2.isVisible() ? txtNum2.getText() : "N/A"));
+				        System.out.println("Número 2: " + txtNum2.getText());
 				        System.out.println("Región: " + comboRegion.getSelectedItem());
 				        System.out.println("Comuna: " + comboTown.getSelectedItem());
 				        System.out.println("Tipo de propiedad: " + comboPropertyType.getSelectedItem());
@@ -1137,13 +1137,21 @@ public class PropertyPanel extends JPanel {
 
 	    for (ParkingForm form : parkingForms) {
 	        String rol = form.getRol();
-	        Integer num = form.getNumero(); // Si necesitas usarlo
+	        String num = form.getNum(); // Si necesitas usarlo
 	        String tipo = form.getTipo();   // Si lo quieres guardar
 
 	        if (rol != null && !rol.isEmpty()) {
+	        	//THIS GOES TO THE PARKING TABLE, AND THEN TO THE DAO (DB)
 	            Parking p = new Parking();
 	            p.setRolSII(rol);
 	            p.setPropertyTypeId(4);
+	            p.setStreetName(txtAddress.getText());
+	            p.setNum1(txtNum1.getText());
+	            p.setNum2(num);
+				p.setTownId(comboTown.getSelectedItem() instanceof TownOption
+						? ((TownOption) comboTown.getSelectedItem()).getId()
+						: null);
+				p.setRegionId(RegionDAO.getRegionIDByName((String) comboRegion.getSelectedItem()));
 	            p.setInCondo(inCondo);
 	            p.setCondoId(inCondo ? condoId : null);
 	            p.setFlatId(null);
@@ -1273,6 +1281,7 @@ public class PropertyPanel extends JPanel {
 	public void isFlat() {
 		cleanFields(); // Clear all fields before setting flat-specific fields
 		txtNum2.setVisible(true); // Show address number 2 field for flats
+		lblAddressNum2.setText("Depto:"); // SPANISH for "Apartment Address"
 		txtBldngFloor.setVisible(true); // Show building floor text field for flats
 		lblAddressNum2.setVisible(true); // Show label for address number 2
 		lblLocationTitle.setText("Dirección del Departamento"); // SPANISH for "Apartment Address"
