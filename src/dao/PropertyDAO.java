@@ -157,7 +157,7 @@ public class PropertyDAO {
 	        e.printStackTrace();
 	        return false;
 	    } finally {
-	        conn.setAutoCommit(true); // 👈 Muy importante restaurar auto-commit
+	        conn.setAutoCommit(true);  // IMPORTANT: Restore auto-commit to default state
 	    }
 	}
     
@@ -177,7 +177,7 @@ public class PropertyDAO {
 	        e.printStackTrace();
 	        return false;
 	    } finally {
-	        conn.setAutoCommit(true); // 👈 Muy importante restaurar auto-commit
+	        conn.setAutoCommit(true); // IMPORTANT: Restore auto-commit to default state
 	    }
 	}
 	
@@ -199,6 +199,7 @@ public class PropertyDAO {
     }
 	
 	private int insertFlatAddress(Flat data) throws SQLException {
+		System.out.println("\nNUM_2 que llega: " + data.getNum2());
         String sql = "INSERT INTO address (st_name, num_1, num_2, town_id, town_region_id, town_region_country_id) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming country_id is always 1 for simplicity (CHILE)
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, data.getStreetName());

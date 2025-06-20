@@ -126,6 +126,7 @@ public class PropertyPanel extends JPanel {
 	private JTextField txtBldngFloor;
 	public JTextField txtPrkngRol;
 	public JTextField txtPrkngNum;
+	private JPanel panel_1;
 	
 	
 	public PropertyPanel(Container contentPane, Menu menu) {
@@ -449,12 +450,12 @@ public class PropertyPanel extends JPanel {
 		
 		lblParkingQty = new JLabel("Estacionamientos:"); // SPANISH for "Parking Spots"
 		lblParkingQty.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18)); 
-		lblParkingQty.setBounds(680, 171, 153, 30);
+		lblParkingQty.setBounds(35, 315, 153, 30);
 		add(lblParkingQty);
 		
 		lblHasStorage = new JLabel("Bodega:"); // SPANISH for "Storage"
 		lblHasStorage.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18)); 
-		lblHasStorage.setBounds(680, 195, 81, 30);
+		lblHasStorage.setBounds(35, 444, 81, 30);
 		add(lblHasStorage);
 		
 		// -- END ROOM, BATH, FLOOR, PARKING, STORAGE -- //
@@ -662,14 +663,14 @@ public class PropertyPanel extends JPanel {
 		
 		spinnerParking = new JSpinner();
 		spinnerParking.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		spinnerParking.setBounds(829, 171, 46, 30);
+		spinnerParking.setBounds(185, 316, 46, 30);
 		// Set the spinner to have a minimum value of 0 and a maximum value of 4
 		spinnerParking.setModel(new javax.swing.SpinnerNumberModel(0, 0, 4, 1)); // Minimum 0, Maximum 4, Step 1
 		add(spinnerParking);
 		
 		spinnerStorage = new JSpinner();
 		spinnerStorage.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		spinnerStorage.setBounds(748, 198, 46, 30);
+		spinnerStorage.setBounds(103, 447, 46, 30);
 		// Set the spinner to have a minimum value of 0 and a maximum value of 3
 		spinnerStorage.setModel(new javax.swing.SpinnerNumberModel(0, 0, 3, 1)); // Minimum 0, Maximum 3, Step 1
 		add(spinnerStorage);
@@ -786,34 +787,73 @@ public class PropertyPanel extends JPanel {
 		// -- SAVE BUTTON -- //	
 		
 		btnSave.addActionListener(e -> {
+			
+			LandlordOption LandlordName = ((LandlordOption) comboLandlord.getSelectedItem());
+			TownOption TownName = (TownOption) comboTown.getSelectedItem();
+			PropertyTypeOption PropertyTypeName = (PropertyTypeOption) comboPropertyType.getSelectedItem();
+			CondoOption CondoName = (CondoOption) comboCondo.getSelectedItem();
+			
+			String rol = txtRol.getText();
+			String address = txtAddress.getText();
+			String num1 = txtNum1.getText();
+			String num2 = txtNum2.isVisible() ? txtNum2.getText() : null; // Check if txtNum2 is visible before getting its text
+			String region = (String) comboRegion.getSelectedItem();
+			
+			int roomQty = (int) spinnerRoom.getValue(); // Get the value from spinnerRoom
+			int bathQty = (int) spinnerBath.getValue(); // Get the value from spinnerBath
+			String bldngFloorText = txtBldngFloor.getText();
+			int bldngFloor = 0;
+			int floorQty = (int) spinnerFloor.getValue(); // Get the value from spinnerFloor
+			int storageQty = (int) spinnerStorage.getValue(); // Get the value from spinnerStorage
+			int parkingQty = (int) spinnerParking.getValue(); // Get the value from spinnerParking
+			
+			boolean hasGarden = chckbxGarden.isSelected(); // Get the value from chckbxGarden
+			boolean hasPatio = chckbxPatio.isSelected(); // Get the value from chckbxPatio
+			boolean hasPool = chckbxPool.isSelected(); // Get the value from chckbxPool
+			boolean hasBBQ = chckbxBBQ.isSelected(); // Get the value from chckbxBBQ
+			boolean hasTerrace = chckbxTerrace.isSelected(); // Get the value from chckbxTerrace
+			boolean hasLaundry = chckbxLaundry.isSelected(); // Get the value from chckbxLaundry
+			boolean hasBalcony = chckbxBalcony.isSelected(); // Get the value from chckbxBalcony
+			boolean hasBldngLift = chckbxBldngLift.isSelected(); // Get the value from chckbxBldngLift
+			boolean hasBldngPool = chckbxBldngPool.isSelected(); // Get the value from chckbxBldngPool
+			boolean hasBldngBBQ = chckbxBldngBBQ.isSelected(); // Get the value from chckbxBldngBBQ
+			boolean hasBldngGym = chckbxBldngGym.isSelected(); // Get the value from chckbxBldngGym
+			boolean hasBldngLaundry = chckbxBldngLaundry.isSelected(); // Get the value from chckbxBldngLaundry
+			boolean inCondo = chckbxInCondo.isSelected(); // Get the value from chckbxInCondo
+			
+			List<Parking> parkings = getAllParkingsFromForm();
+			PropertyTypeOption selectedType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
+			
 			// If is House:
 			if (comboPropertyType.getSelectedItem() instanceof PropertyTypeOption) {
-				PropertyTypeOption selectedType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
+				
 				if (selectedType.getValue().equals("House")) {
+					contentPane.repaint();
 					isHouse(); // Call the method to show house fields
 					PropertyController controller = new PropertyController();
+					
 
 					   	boolean success = false;
 						try {
 							success = controller.saveHouse(
 									// LANDLORD, TOWN, PROPERTY TYPE
-									(LandlordOption) comboLandlord.getSelectedItem(),
-								    (TownOption) comboTown.getSelectedItem(),
-								    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
-								    (CondoOption) comboCondo.getSelectedItem(),
+									LandlordName,
+								    TownName,
+								    PropertyTypeName,
+								    CondoName,
 								    
 								    // ADDRESS
-								    txtRol.getText(),
-								    txtAddress.getText(),
-								    txtNum1.getText(),
-								    txtNum2.isVisible() ? txtNum2.getText() : null,	
-								    (String) comboRegion.getSelectedItem(),
+								    rol,
+								    address,
+								    num1,
+								    num2,	
+								    region,
 								    
 								    // DATA
-								    (int) spinnerRoom.getValue(),
-								    (int) spinnerBath.getValue(),
-								    (int) spinnerFloor.getValue(),
-								    (int) spinnerParking.getValue(),
+								    roomQty, //1,
+								    bathQty, //2,
+								    floorQty, //3,
+								    parkingQty, //4,
 								    (int) spinnerStorage.getValue(),
 								    chckbxGarden.isSelected(),
 								    chckbxPatio.isSelected(),
@@ -831,18 +871,16 @@ public class PropertyPanel extends JPanel {
 
 					    if (success) {
 					        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
-					     //   cleanFields();
+					        cleanFields();
 					    } else {
 					    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
 					        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
 					    }
 				} else if (selectedType.getValue().equals("Flat")) {
 					isFlat(); // Call the method to show flat fields
+					
 					PropertyController controller = new PropertyController();
-					List<Parking> parkings = getAllParkingsFromForm();
-					// Converts txtBldngFloor to INTEGER
-					String bldngFloorText = txtBldngFloor.getText();
-					int bldngFloor = 0;
+	
 					if (!bldngFloorText.isEmpty()) {
 						try {
 							bldngFloor = Integer.parseInt(bldngFloorText); // Convert to integer
@@ -855,94 +893,88 @@ public class PropertyPanel extends JPanel {
 						bldngFloor = 0; // Default value if the text field is empty
 					}
 					
-					   	boolean success = false;
+					   	//boolean success = false;
 						try {
 						// if spinnerParking is more than 0, then it is a parking lot
-							if ((int) spinnerParking.getValue() > 0) {
+							if (parkingQty > 0) {
 							
-								success = controller.saveFlatParking(
-								    (LandlordOption) comboLandlord.getSelectedItem(),
-								    (TownOption) comboTown.getSelectedItem(),
-								    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
-								    (CondoOption) comboCondo.getSelectedItem(),
-								    txtRol.getText(),
-								    txtAddress.getText(),
-								    txtNum1.getText(),
-								    txtNum2.getText(),
-								    (String) comboRegion.getSelectedItem(),
-								    (int) spinnerRoom.getValue(), //2
-								    (int) spinnerBath.getValue(), //3 
-								    bldngFloor, //4
-								    (int) spinnerStorage.getValue(), //5
-								    (int) spinnerParking.getValue(), //6
-								    chckbxBalcony.isSelected(), //7
-							        chckbxBldngLift.isSelected(), //8
-							        chckbxBldngPool.isSelected(), //9
-							        chckbxBldngBBQ.isSelected(), //10
-							        chckbxBldngGym.isSelected(), //11
-							        chckbxBldngLaundry.isSelected(), //12
-								    chckbxInCondo.isSelected(), //13
-								    parkings //14
-							);
-						} else {
-							success = controller.saveFlatNoParking(
-									(LandlordOption) comboLandlord.getSelectedItem(),
-								    (TownOption) comboTown.getSelectedItem(),
-								    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
-								    (CondoOption) comboCondo.getSelectedItem(),
-								    txtRol.getText(),
-								    txtAddress.getText(),
-								    txtNum1.getText(),
-								    txtNum2.getText(),
-								    (String) comboRegion.getSelectedItem(),
-								    (int) spinnerRoom.getValue(), //2
-								    (int) spinnerBath.getValue(), //3 
-								    bldngFloor, //4
-								    (int) spinnerStorage.getValue(), //5
-								    (int) spinnerParking.getValue(), //6
-								    chckbxBalcony.isSelected(), //7
-							        chckbxBldngLift.isSelected(), //8
-							        chckbxBldngPool.isSelected(), //9
-							        chckbxBldngBBQ.isSelected(), //10
-							        chckbxBldngGym.isSelected(), //11
-							        chckbxBldngLaundry.isSelected(), //12
-								    chckbxInCondo.isSelected() //13
-							);
+								boolean success = controller.saveFlatParking(
+										LandlordName, TownName, PropertyTypeName, CondoName, rol, address, num1, num2, region,
+										roomQty, //2
+										bathQty, //3 
+										bldngFloor, //4
+										storageQty, //5
+										parkingQty, //6
+										hasBalcony, //7
+								    	hasBldngLift, //8
+								    	hasBldngPool, //9
+								    	hasBldngBBQ, //10
+								    	hasBldngGym, //11
+								    	hasBldngLaundry, //12
+								    	inCondo, //13
+								    	parkings //14
+										);
+								if (success) {
+							    	//logFlatDetails(); // Log flat data for debugging
+							        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+							        System.out.println("Rol: " + txtRol.getText());
+							        System.out.println("Tamaño: " + txtSize.getText());
+							        System.out.println("Dirección: " + txtAddress.getText());
+							        System.out.println("Número 1: " + num1);
+							        System.out.println("Número 2: " + num2);
+							        cleanFields(); // Set cleanFields to true if saving is successful
+							    } else {
+							    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
+							        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
+							    }
+							} else {
+								boolean success = controller.saveFlatNoParking(
+										LandlordName, TownName, PropertyTypeName, CondoName, rol, address, num1, num2, region,
+										roomQty, //2
+										bathQty, //3 
+										bldngFloor, //4
+										storageQty, //5
+										parkingQty, //6
+										hasBalcony, //7
+										hasBldngLift, //8
+										hasBldngPool, //9
+										hasBldngBBQ, //10
+										hasBldngGym, //11
+										hasBldngLaundry, //12
+										inCondo //13
+										);
+								if (success) {
+							    	//logFlatDetails(); // Log flat data for debugging
+							        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+							        System.out.println("Rol: " + txtRol.getText());
+							        System.out.println("Tamaño: " + txtSize.getText());
+							        System.out.println("Dirección: " + txtAddress.getText());
+							        System.out.println("Número 1: " + num1);
+							        System.out.println("Número 2: " + num2);
+							        cleanFields(); // Set cleanFields to true if saving is successful
+							    } else {
+							    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
+							        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
+							    }
 						}
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
-
-					    if (success) {
-					        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
-					        System.out.println("Rol: " + txtRol.getText());
-					        System.out.println("Tamaño: " + txtSize.getText());
-					        System.out.println("Dirección: " + txtAddress.getText());
-					        System.out.println("Número 1: " + txtNum1.getText());
-					        System.out.println("Número 2: " + (txtNum2.isVisible() ? txtNum2.getText() : "N/A"));
-					        System.out.println("Región: " + comboRegion.getSelectedItem());
-					        System.out.println("Comuna: " + comboTown.getSelectedItem());
-					        System.out.println("Tipo de propiedad: " + comboPropertyType.getSelectedItem());
-					        System.out.println("En Condominio: " + chckbxInCondo.isSelected());
-					        System.out.println("Condominio: " + comboCondo.getSelectedItem());
-					        System.out.println("Habitaciones: " + spinnerRoom.getValue());
-					        System.out.println("Baños: " + spinnerBath.getValue());
-					        System.out.println("Piso: " + bldngFloor);
-					        System.out.println("Bodega: " + spinnerStorage.getValue());
-					        System.out.println("Estacionamientos: " + spinnerParking.getValue());
-					        System.out.println("Balcony: " + chckbxBalcony.isSelected());
-					        System.out.println("BldngLift: " + chckbxBldngLift.isSelected());
-					        System.out.println("BldngPool: " + chckbxBldngPool.isSelected());
-					        System.out.println("BldngBBQ: " + chckbxBldngBBQ.isSelected());
-					        System.out.println("BldngGym: " + chckbxBldngGym.isSelected());
-					        System.out.println("BldngLaundry: " + chckbxBldngLaundry.isSelected());
-					        
-					       cleanFields();
-					    } else {
-					    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
-					        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
-					    }
+//					    if (success) {
+//					    	//logFlatDetails(); // Log flat data for debugging
+//					        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+//					        System.out.println("Rol: " + txtRol.getText());
+//					        System.out.println("Tamaño: " + txtSize.getText());
+//					        System.out.println("Dirección: " + txtAddress.getText());
+//					        System.out.println("Número 1: " + txtNum1.getText());
+//					        System.out.println("Número 2: " + txtNum2.getText());
+//					        cleanFields(); // Set cleanFields to true if saving is successful
+//					    } else {
+//					    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
+//					        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
+//					    }
+					    
 				} else if (selectedType.getValue().equals("Storage")) {
 					isStorage(); // Call the method to show storage fields
 					
@@ -981,7 +1013,7 @@ public class PropertyPanel extends JPanel {
 				        System.out.println("Tipo de propiedad: " + comboPropertyType.getSelectedItem());
 				        System.out.println("En Condominio: " + chckbxInCondo.isSelected());
 				        System.out.println("Condominio: " + comboCondo.getSelectedItem());
-				        
+				         
 				       cleanFields();
 				    } else {
 				    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
@@ -992,6 +1024,7 @@ public class PropertyPanel extends JPanel {
 				} else if (selectedType.getValue().equals("Office")) {
 					isOffice(); // Call the method to show office fields
 				}
+				
 			}
 //		    PropertyController controller = new PropertyController();
 //
@@ -1032,7 +1065,8 @@ public class PropertyPanel extends JPanel {
 //		    } else {
 //		    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
 //		        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
-//		    }
+//		    
+			
 		});
 
 		// -- END SAVE BUTTON -- //
@@ -1050,7 +1084,7 @@ public class PropertyPanel extends JPanel {
 		panelEstacionamientos = new JPanel();
 		panelEstacionamientos.setLayout(null); // uno debajo del otro
 		//panelEstacionamientos.setOpaque(false); // para que no se vea gris si no quieres
-		panelEstacionamientos.setBounds(922, 190, 270, 110); // o lo que necesites
+		panelEstacionamientos.setBounds(35, 356, 570, 85); // o lo que necesites
 		panelEstacionamientos.setBackground(new Color(187, 187, 187)); // Fondo blanco para el panel de estacionamientos
 		panelEstacionamientos.setVisible(false); // por si acaso se agregó oculto
 		//panelEstacionamientos.setOpaque(true);  // para que el fondo blanco se aplique
@@ -1058,27 +1092,38 @@ public class PropertyPanel extends JPanel {
 		add(panelEstacionamientos);
 		setComponentZOrder(panelEstacionamientos, 0);
 		
-		spinnerParking.addChangeListener(e -> {  
-		    int count = (Integer) spinnerParking.getValue();  
+		spinnerParking.addChangeListener(e -> {
+		    PropertyTypeOption currentType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
 
-		    panelEstacionamientos.removeAll(); // 💡 solo vacía los formularios, no todo el contentPane
-		    panelEstacionamientos.setBounds(922, 110, 270, 150 * count); 
-		    panelEstacionamientos.setVisible(true);
-		    parkingForms.clear();
-		    for (int i = 0; i < count; i++) {
-		        JPanel miniForm = createParking(i + 1);
-		        miniForm.setBounds(0, i * 137, 270, 135); // Adjust the position of each mini form when adding it
-		        System.out.println("Adding parking form " + (i + 1)); // Debugging output
-		        panelEstacionamientos.add(miniForm);
-		        
+		    if (currentType != null && (currentType.getValue().equals("Flat") || currentType.getValue().equals("Office"))) {
+		        int count = (Integer) spinnerParking.getValue();
+
+		        panelEstacionamientos.removeAll();
+		        panelEstacionamientos.setBounds(35, 356, 578 * count, 85);
+		        panelEstacionamientos.setVisible(true);
+		        parkingForms.clear();
+
+		        for (int i = 0; i < count; i++) {
+		            JPanel miniForm = createParking(i + 1);
+		            miniForm.setBounds(i * 130, 0, 170, 90); // <------ AQUÍ ES
+		            panelEstacionamientos.add(miniForm);
+		            
+		        }
+
+		        panelEstacionamientos.revalidate();
+		        panelEstacionamientos.repaint();
+		    } else {
+		        // Oculta los formularios si no corresponde
+		        panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+		        parkingForms.clear();
+		        panelEstacionamientos.removeAll();
+		        panelEstacionamientos.repaint();
 		    }
-
-		    panelEstacionamientos.revalidate();
-		    panelEstacionamientos.repaint();
 		});
-		
-		// --- END ACTION LISTENERS --- //
-
+        
+        panel_1 = new JPanel();
+        panel_1.setBounds(35, 486, 578, 85);
+        add(panel_1);
 	} // END OF  PropertiesPanel constructor
 	
 	// ---------------------- //
@@ -1098,7 +1143,7 @@ public class PropertyPanel extends JPanel {
 	    
 	    txtPrkngRol = new JTextField(10);
 	    txtPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-	    txtPrkngRol.setBounds(140, 64, 116, 30);
+	    txtPrkngRol.setBounds(20, 30, 30, 30);
 	    panelParking.add(txtPrkngRol);
 	    
 	    txtPrkngNum = new JTextField(10);
@@ -1143,6 +1188,9 @@ public class PropertyPanel extends JPanel {
 	        if (rol != null && !rol.isEmpty()) {
 	        	//THIS GOES TO THE PARKING TABLE, AND THEN TO THE DAO (DB)
 	            Parking p = new Parking();
+	            p.setLandlordId(comboLandlord.getSelectedItem() instanceof LandlordOption
+	            		? ((LandlordOption) comboLandlord.getSelectedItem()).getId()
+	            		: null);
 	            p.setRolSII(rol);
 	            p.setPropertyTypeId(4);
 	            p.setStreetName(txtAddress.getText());
@@ -1163,10 +1211,63 @@ public class PropertyPanel extends JPanel {
 	    return parkings;
 	}
 
+	private void logHouseDetails() {
+		System.out.println("Rol: " + txtRol.getText());
+		System.out.println("Dirección: " + txtAddress.getText());
+		System.out.println("Número 1: " + txtNum1.getText());
+		System.out.println("Número 2: " + txtNum2.getText());
+		System.out.println("Región: " + comboRegion.getSelectedItem());
+		System.out.println("Comuna: " + comboTown.getSelectedItem());
+		System.out.println("Tipo de propiedad: " + comboPropertyType.getSelectedItem());
+		System.out.println("En Condominio: " + chckbxInCondo.isSelected());
+		System.out.println("Condominio: " + comboCondo.getSelectedItem());
+		System.out.println("Habitaciones: " + spinnerRoom.getValue());
+		System.out.println("Baños: " + spinnerBath.getValue());
+		System.out.println("Piso: " + spinnerFloor.getValue());
+		System.out.println("Estacionamientos: " + spinnerParking.getValue());
+		System.out.println("Bodega: " + spinnerStorage.getValue());
+		System.out.println("Jardín: " + chckbxGarden.isSelected());
+		System.out.println("Patio: " + chckbxPatio.isSelected());
+		System.out.println("Piscina: " + chckbxPool.isSelected());
+		System.out.println("BBQ: " + chckbxBBQ.isSelected());
+		System.out.println("Terraza: " + chckbxTerrace.isSelected());
+		System.out.println("Lavandería: " + chckbxLaundry.isSelected());
+		System.out.println("Balcón: " + chckbxBalcony.isSelected());
+	}
+	
+	public void logFlatDetails() {
+		 System.out.println("Rol: " + txtRol.getText());
+		 System.out.println("Tamaño: " + txtSize.getText());
+		 System.out.println("Dirección: " + txtAddress.getText());
+		 System.out.println("Número 1: " + txtNum1.getText());
+		 System.out.println("Número 2: " + txtNum2.getText());
+		 System.out.println("Región: " + comboRegion.getSelectedItem());
+		 System.out.println("Comuna: " + comboTown.getSelectedItem());
+		 System.out.println("Tipo de propiedad: " + comboPropertyType.getSelectedItem());
+		 System.out.println("En Condominio: " + chckbxInCondo.isSelected());
+		 System.out.println("Condominio: " + comboCondo.getSelectedItem());
+		 System.out.println("Habitaciones: " + spinnerRoom.getValue());
+		 System.out.println("Baños: " + spinnerBath.getValue());
+		 System.out.println("Piso: " + txtBldngFloor.getText());
+		 System.out.println("Bodega: " + spinnerStorage.getValue());
+		 System.out.println("Estacionamientos: " + spinnerParking.getValue());
+		 System.out.println("Balcony: " + chckbxBalcony.isSelected());
+		 System.out.println("BldngLift: " + chckbxBldngLift.isSelected());
+		 System.out.println("BldngPool: " + chckbxBldngPool.isSelected());     
+		 System.out.println("BldngBBQ: " + chckbxBldngBBQ.isSelected());
+		 System.out.println("BldngGym: " + chckbxBldngGym.isSelected());
+	     System.out.println("BldngLaundry: " + chckbxBldngLaundry.isSelected());
+	}
 	
 	
-	public void cleanFields() {
-		//comboLandlord.setSelectedIndex(0); // Reset landlord selection
+	
+	
+	private void cleanFields() {
+		panelEstacionamientos.setVisible(false); // Hide parking panel
+		parkingForms.clear(); // Clear parking forms
+		panelEstacionamientos.removeAll(); // Remove all components from parking panel
+		panelEstacionamientos.repaint(); // Repaint parking panel
+		comboLandlord.setSelectedIndex(0); // Reset landlord selection
 		//comboPropertyType.setSelectedIndex(0); // Reset property type selection
 		//comboRegion.setSelectedIndex(0); // Reset region selection
 		//comboTown.removeAllItems(); // Clear towns
@@ -1230,6 +1331,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isHouse() {
+		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+	    parkingForms.clear();
+	    panelEstacionamientos.removeAll();
+	    panelEstacionamientos.repaint();
 		cleanFields(); // Clear all fields before setting house-specific fields
 		txtNum2.setVisible(false); // Hide address number 2 field for houses
 		txtBldngFloor.setVisible(false); // Hide building floor text field for houses
@@ -1332,6 +1437,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isStorage() {
+		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+	    parkingForms.clear();
+	    panelEstacionamientos.removeAll();
+	    panelEstacionamientos.repaint();
 		cleanFields(); // Clear all fields before setting storage-specific fields
 		txtNum2.setVisible(false); // Hide address number 2 field for storage
 		txtBldngFloor.setVisible(false); // Hide building floor text field for storage
@@ -1382,6 +1491,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isParking() {
+		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+	    parkingForms.clear();
+	    panelEstacionamientos.removeAll();
+	    panelEstacionamientos.repaint();
 		cleanFields(); // Clear all fields before setting parking-specific fields
 		txtNum2.setVisible(false); // Hide address number 2 field for parking
 		txtBldngFloor.setVisible(false); // Hide building floor text field for parking
@@ -1432,6 +1545,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isLand() {
+		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+	    parkingForms.clear();
+	    panelEstacionamientos.removeAll();
+	    panelEstacionamientos.repaint();
 		cleanFields(); // Clear all fields before setting land-specific fields
 		txtNum2.setVisible(false); // Hide address number 2 field for land
 		txtBldngFloor.setVisible(false); // Hide building floor text field for land
@@ -1482,6 +1599,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isOffice() {
+		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+	    parkingForms.clear();
+	    panelEstacionamientos.removeAll();
+	    panelEstacionamientos.repaint();
 		cleanFields(); // Clear all fields before setting office-specific fields
 		txtBldngFloor.setVisible(true); // Show building floor text field for office
 		txtNum2.setVisible(true); // Show address number 2 field for office
