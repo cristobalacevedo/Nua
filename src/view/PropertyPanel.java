@@ -850,19 +850,19 @@ public class PropertyPanel extends JPanel {
 								    region,
 								    
 								    // DATA
-								    roomQty, //1,
-								    bathQty, //2,
-								    floorQty, //3,
-								    parkingQty, //4,
-								    (int) spinnerStorage.getValue(),
-								    chckbxGarden.isSelected(),
-								    chckbxPatio.isSelected(),
-								    chckbxPool.isSelected(),
-								    chckbxBBQ.isSelected(),
-								    chckbxBalcony.isSelected(),
-								    chckbxTerrace.isSelected(),
-								    chckbxLaundry.isSelected(),
-								    chckbxInCondo.isSelected()
+								    roomQty, //1
+								    bathQty, //2
+								    floorQty, //3
+								    parkingQty, //4
+								    storageQty, //5
+								    hasGarden, //6
+								    hasPatio, //7
+								    hasPool, //8
+								    hasBBQ,	 //9
+								    hasBalcony, //10
+								    hasTerrace, //11
+								    hasLaundry, //12
+								    inCondo //13
 							);
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
@@ -916,7 +916,7 @@ public class PropertyPanel extends JPanel {
 										);
 								if (success) {
 							    	//logFlatDetails(); // Log flat data for debugging
-							        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+							        Popup.showSuccess("\nPropiedad insertada correctamente."); // Show success message if saving is successful
 							        System.out.println("Rol: " + txtRol.getText());
 							        System.out.println("Tamaño: " + txtSize.getText());
 							        System.out.println("Dirección: " + txtAddress.getText());
@@ -1084,7 +1084,7 @@ public class PropertyPanel extends JPanel {
 		panelEstacionamientos = new JPanel();
 		panelEstacionamientos.setLayout(null); // uno debajo del otro
 		//panelEstacionamientos.setOpaque(false); // para que no se vea gris si no quieres
-		panelEstacionamientos.setBounds(35, 356, 570, 85); // o lo que necesites
+		panelEstacionamientos.setBounds(35, 356, 570, 90); // o lo que necesites
 		panelEstacionamientos.setBackground(new Color(187, 187, 187)); // Fondo blanco para el panel de estacionamientos
 		panelEstacionamientos.setVisible(false); // por si acaso se agregó oculto
 		//panelEstacionamientos.setOpaque(true);  // para que el fondo blanco se aplique
@@ -1099,13 +1099,13 @@ public class PropertyPanel extends JPanel {
 		        int count = (Integer) spinnerParking.getValue();
 
 		        panelEstacionamientos.removeAll();
-		        panelEstacionamientos.setBounds(35, 356, 578 * count, 85);
+		        panelEstacionamientos.setBounds(40, 356, 570, 90);
 		        panelEstacionamientos.setVisible(true);
 		        parkingForms.clear();
 
 		        for (int i = 0; i < count; i++) {
 		            JPanel miniForm = createParking(i + 1);
-		            miniForm.setBounds(i * 130, 0, 170, 90); // <------ AQUÍ ES
+		            miniForm.setBounds(i * 143, 0, 140, 90); // <------ AQUÍ ES
 		            panelEstacionamientos.add(miniForm);
 		            
 		        }
@@ -1133,37 +1133,37 @@ public class PropertyPanel extends JPanel {
 	public JPanel createParking(int numero) {
 	    JPanel panelParking = new JPanel();
 	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + numero));
-	    panelParking.setBackground(Color.WHITE);
+	    panelParking.setBackground(Color.LIGHT_GRAY);
 	    panelParking.setLayout(null);
 	    
 	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"}); // SPANISH for "Covered", "Uncovered"
 	    tipoCombo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-	    tipoCombo.setBounds(140, 28, 116, 30);
-	    panelParking.add(tipoCombo);
+	    tipoCombo.setBounds(50, 28, 116, 30);
+	   // panelParking.add(tipoCombo);
 	    
 	    txtPrkngRol = new JTextField(10);
 	    txtPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-	    txtPrkngRol.setBounds(20, 30, 30, 30);
+	    txtPrkngRol.setBounds(65, 20, 60, 30);
 	    panelParking.add(txtPrkngRol);
 	    
 	    txtPrkngNum = new JTextField(10);
 	    txtPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-	    txtPrkngNum.setBounds(140, 100, 116, 30);
+	    txtPrkngNum.setBounds(65, 50, 60, 30);
 	    panelParking.add(txtPrkngNum);
 
 	    JLabel lblPrkngType = new JLabel("Tipo:");
 	    lblPrkngType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblPrkngType.setBounds(14, 28, 116, 16);
-	    panelParking.add(lblPrkngType);
+	    lblPrkngType.setBounds(20, 28, 116, 16);
+	   // panelParking.add(lblPrkngType);
 	   
 	    JLabel lblPrkngRol = new JLabel("ROL:");
 	    lblPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblPrkngRol.setBounds(14, 64, 116, 16);
+	    lblPrkngRol.setBounds(20, 25, 116, 16);
 	    panelParking.add(lblPrkngRol);
 	    
-	    JLabel lblPrkngNum = new JLabel("Número:");
+	    JLabel lblPrkngNum = new JLabel("Nº:");
 	    lblPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblPrkngNum.setBounds(14, 100, 116, 16);
+	    lblPrkngNum.setBounds(20, 55, 116, 16);
 	    panelParking.add(lblPrkngNum);
 	    
 	    
@@ -1267,14 +1267,14 @@ public class PropertyPanel extends JPanel {
 		parkingForms.clear(); // Clear parking forms
 		panelEstacionamientos.removeAll(); // Remove all components from parking panel
 		panelEstacionamientos.repaint(); // Repaint parking panel
-		comboLandlord.setSelectedIndex(0); // Reset landlord selection
+		//comboLandlord.setSelectedIndex(0); // Reset landlord selection
 		//comboPropertyType.setSelectedIndex(0); // Reset property type selection
 		//comboRegion.setSelectedIndex(0); // Reset region selection
 		//comboTown.removeAllItems(); // Clear towns
 		//comboTown.addItem("Seleccione una Comuna"); // SPANISH for "Select a Town"
 		//txtAddress.setText(""); // Clear address text field
 		//txtNum1.setText(""); // Clear address number 1 text field
-		txtNum2.setText(""); // Clear address number 2 text field
+		//txtNum2.setText(""); // Clear address number 2 text field
 		
 		// Reset other fields if needed (e.g., room quantity, bath quantity, etc.)
 		//spinnerRoom.setValue(0); // Reset room quantity spinner
