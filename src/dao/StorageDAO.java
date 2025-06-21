@@ -1,23 +1,23 @@
 package dao;
 
-import java.sql.Types;
-import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.List;
 
-import model.Parking;
+import model.Storage;
 
-public class ParkingDAO {
+public class StorageDAO {
 	 private final Connection conn;
 
-	    public ParkingDAO(Connection conn) {
+	    public StorageDAO(Connection conn) {
 	        this.conn = conn;
 	    }
 
-	    public void insertParking(int propertyId, Parking data) throws SQLException {
+	    public void insertStorage(int propertyId, Storage data) throws SQLException {
 	        String sql = """
-	            INSERT INTO parking (
+	            INSERT INTO storage (
 	                property_id, incondo, condo_id
 	            ) VALUES (?, ?, ?)
 	        """;
@@ -31,19 +31,19 @@ public class ParkingDAO {
 	        }
 	    }
 	    
-	    public void insertParkingInFlat(List<Parking> parkings) throws SQLException {
+	    public void insertParkingInFlat(List<Storage> storages) throws SQLException {
 	        String sql = """
-	        		INSERT INTO parking (
+	        		INSERT INTO storage (
 	        		property_id, flat_id, incondo, condo_id
 	        		) VALUES (?, ?, ?, ?)
 	        		""";
 
 	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-	            for (Parking parking : parkings) {
-	            	stmt.setInt(1, parking.getId()); // ✅ property_id del parking
-	                stmt.setInt(2, parking.getFlatId());
-	                stmt.setInt(3, parking.isInCondo() ? 1 : 0); // Estaba mal el índice antes
-	                stmt.setObject(4, parking.getCondoId(), Types.INTEGER);
+	            for (Storage storage : storages) {
+	            	stmt.setInt(1, storage.getId()); // ✅ property_id del parking
+	                stmt.setInt(2, storage.getFlatId());
+	                stmt.setInt(3, storage.isInCondo() ? 1 : 0); // Estaba mal el índice antes
+	                stmt.setObject(4, storage.getCondoId(), Types.INTEGER);
 	                stmt.addBatch();
 	            }
 
@@ -51,19 +51,19 @@ public class ParkingDAO {
 	        }
 	    }
 	    
-	    public void insertParkingInOffice(List<Parking> parkings) throws SQLException {
+	    public void insertParkingInOffice(List<Storage> storages) throws SQLException {
 	        String sql = """
-	        		INSERT INTO parking (
+	        		INSERT INTO storages (
 	        		property_id, office_id, incondo, condo_id
 	        		) VALUES (?, ?, ?, ?)
 	        		""";
 
 	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-	            for (Parking parking : parkings) {
-	            	stmt.setInt(1, parking.getId()); // ✅ property_id del parking
-	                stmt.setInt(2, parking.getOfficeId());
-	                stmt.setInt(3, parking.isInCondo() ? 1 : 0); // Estaba mal el índice antes
-	                stmt.setObject(4, parking.getCondoId(), Types.INTEGER);
+	            for (Storage storage : storages) {
+	            	stmt.setInt(1, storage.getId()); // ✅ property_id del parking
+	                stmt.setInt(2, storage.getOfficeId());
+	                stmt.setInt(3, storage.isInCondo() ? 1 : 0); // Estaba mal el índice antes
+	                stmt.setObject(4, storage.getCondoId(), Types.INTEGER);
 	                stmt.addBatch();
 	            }
 

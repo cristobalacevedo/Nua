@@ -5,6 +5,7 @@ import dao.RegionDAO;
 import model.Flat;
 import model.House;
 import model.Parking;
+import model.Storage;
 import utils.CondoOption;
 import utils.LandlordOption;
 import utils.PropertyTypeOption;
@@ -45,8 +46,8 @@ public class PropertyController {
             boolean hasBalcony,
             boolean hasTerrace,
             boolean hasLaundry,
-            boolean inCondo
-          
+            boolean inCondo,
+            int size
     		) throws SQLException {
         // Validaciones
         		if (selectedLandlord == null || selectedLandlord.getId() == -1) {
@@ -76,7 +77,7 @@ public class PropertyController {
         		data.setPropertyTypeId(1); // 1 = House
         		data.setRolSII(rolSII.trim());
         		data.setLandlordId(selectedLandlord.getId());
-        		data.setSize(0); // Puedes recibirlo como parámetro si usas el tamaño
+        		data.setSize(size); // Puedes recibirlo como parámetro si usas el tamaño
 
         		data.setTownId(selectedTown.getId());
         		data.setRegionId(RegionDAO.getRegionIDByName(regionName)); 
@@ -102,8 +103,8 @@ public class PropertyController {
 
 		        return dao.insertCompleteHouse(data);
     	}
-
-	public boolean saveFlatParking(
+    
+	public boolean saveFlatStorageAndParking(
 			LandlordOption selectedLandlord,
 	        TownOption selectedTown,
 	        PropertyTypeOption selectedType,
@@ -125,7 +126,9 @@ public class PropertyController {
 	        boolean buildingHasGym,
 	        boolean buildingHasLaundry,
 	        boolean inCondo,
-	        List<Parking> parkings
+	        List<Parking> parkings,
+	        List<Storage> storages,
+	        int size
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
@@ -155,7 +158,85 @@ public class PropertyController {
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
 		        data.setLandlordId(selectedLandlord.getId());
-		        data.setSize(0); // Puedes recibirlo como parámetro si usas el tamaño
+		        data.setSize(size); // Puedes recibirlo como parámetro si usas el tamaño
+		        data.setTownId(selectedTown.getId());
+		        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
+		        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
+		        data.setNum1(num1.trim()); // num1 could be null, but we trim it to avoid leading/trailing spaces
+		        data.setNum2(num2.trim());  // num2 could be null
+		        data.setRoomQty(roomQty); // 2
+		        data.setBathQty(bathQty); // 3
+		        data.setFloorQty(floorQty); // 4
+		        data.setHasStorage(storageQty > 0); //5
+		        data.setHasParking(parkingQty); //6
+		        data.setHasBalcony(hasBalcony); //7
+		        data.setBuildingHasLift(buildingHasLift); //8
+		        data.setBuildingHasPool(buildingHasPool); //9
+		        data.setBuildingHasGym(buildingHasGym); //10
+		        data.setBuildingHasLaundry(buildingHasLaundry); //11
+		        data.setBuildingHasBBQ(buildingHasBBQ); //12
+		        
+		        data.setInCondo(inCondo); //13
+		        data.setCondoId(inCondo && selectedCondo != null ? selectedCondo.getId() : null);
+		        
+		        return dao.insertCompleteFlatParkingStorage(data, parkings, storages);
+		}
+    
+    
+	public boolean saveFlatParking(
+			LandlordOption selectedLandlord,
+	        TownOption selectedTown,
+	        PropertyTypeOption selectedType,
+	        CondoOption selectedCondo,
+	        String rolSII,
+	        String street,
+	        String num1,
+	        String num2,
+	        String regionName,
+	        int roomQty,
+	        int bathQty,
+	        int floorQty,
+	        int storageQty,
+	        int parkingQty,
+	        boolean hasBalcony,
+	        boolean buildingHasLift,
+	        boolean buildingHasPool,
+	        boolean buildingHasBBQ,
+	        boolean buildingHasGym,
+	        boolean buildingHasLaundry,
+	        boolean inCondo,
+	        List<Parking> parkings,
+	        int size
+			) throws SQLException {
+	        // Validaciones
+				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
+		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            return false;
+		        }
+	
+		        if (selectedTown == null || selectedTown.getId() == -1) {
+		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            return false;
+		        }
+	
+		        if (selectedType == null || selectedType.getValue().isEmpty()) {
+		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            return false;
+		        }
+	
+		        if (rolSII == null || rolSII.trim().isEmpty()
+		                || street == null || street.trim().isEmpty()
+		                || num1 == null || num1.trim().isEmpty()) {
+		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            return false;
+		        }
+		        
+		        // Crear objeto Flat
+		        Flat data = new Flat();
+		        data.setPropertyTypeId(2); // 2 = Flat
+		        data.setRolSII(rolSII.trim());
+		        data.setLandlordId(selectedLandlord.getId());
+		        data.setSize(size); // Puedes recibirlo como parámetro si usas el tamaño
 		        data.setTownId(selectedTown.getId());
 		        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
 		        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
@@ -179,7 +260,7 @@ public class PropertyController {
 		        return dao.insertCompleteFlatParking(data, parkings);
 		}
 	
-	public boolean saveFlatNoParking(
+	public boolean saveFlatNoSP(
 			LandlordOption selectedLandlord,
 	        TownOption selectedTown,
 	        PropertyTypeOption selectedType,
@@ -200,7 +281,8 @@ public class PropertyController {
 	        boolean buildingHasBBQ,
 	        boolean buildingHasGym,
 	        boolean buildingHasLaundry,
-	        boolean inCondo
+	        boolean inCondo,
+	        int size
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
@@ -230,7 +312,7 @@ public class PropertyController {
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
 		        data.setLandlordId(selectedLandlord.getId());
-		        data.setSize(0); // Puedes recibirlo como parámetro si usas el tamaño
+		        data.setSize(size); // Puedes recibirlo como parámetro si usas el tamaño
 		        data.setTownId(selectedTown.getId());
 		        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
 		        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
@@ -251,7 +333,7 @@ public class PropertyController {
 		        data.setInCondo(inCondo); //13
 		        data.setCondoId(inCondo && selectedCondo != null ? selectedCondo.getId() : null);
 		        
-		        return dao.insertCompleteFlatNoParking(data);
+		        return dao.insertCompleteFlatNoSP(data);
 		}
 
 	public boolean saveParking(
@@ -264,7 +346,8 @@ public class PropertyController {
 	        String num1,
 	        String num2,
 	        String regionName,
-			boolean inCondo
+			boolean inCondo,
+			int size
 			) throws SQLException {
         // Validaciones
 			if (selectedLandlord == null || selectedLandlord.getId() == -1) {
@@ -294,7 +377,7 @@ public class PropertyController {
 	        data.setPropertyTypeId(4); // 4 = Parking
 	        data.setRolSII(rolSII.trim());
 	        data.setLandlordId(selectedLandlord.getId());
-	        data.setSize(0); // Puedes recibirlo como parámetro si usas el tamaño
+	        data.setSize(size); // Puedes recibirlo como parámetro si usas el tamaño
 	        data.setTownId(selectedTown.getId());
 	        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
 	        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
@@ -306,4 +389,138 @@ public class PropertyController {
 	        
 	        return dao.insertCompleteParking(data);
 	}
+	
+	public boolean saveStorage(
+			LandlordOption selectedLandlord,
+	        TownOption selectedTown,
+	        PropertyTypeOption selectedType,
+	        CondoOption selectedCondo,
+	        String rolSII,
+	        String street,
+	        String num1,
+	        String num2,
+	        String regionName,
+			boolean inCondo,
+			int size
+			) throws SQLException {
+		// Validaciones
+			if (selectedLandlord == null || selectedLandlord.getId() == -1) {
+	            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+	            return false;
+	        }
+
+	        if (selectedTown == null || selectedTown.getId() == -1) {
+	            Popup.show("Debe seleccionar una comuna válida.", "error");
+	            return false;
+	        }
+
+	        if (selectedType == null || selectedType.getValue().isEmpty()) {
+	            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+	            return false;
+	        }
+
+	        if (rolSII == null || rolSII.trim().isEmpty()
+	                || street == null || street.trim().isEmpty()
+	                || num1 == null || num1.trim().isEmpty()) {
+	            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+	            return false;
+	        }
+	        
+	        // Crear objeto Storage
+	        Storage data = new Storage();
+	        data.setPropertyTypeId(3); // 3 = Storage
+	        data.setRolSII(rolSII.trim());
+	        data.setLandlordId(selectedLandlord.getId());
+	        data.setSize(size); // Puedes recibirlo como parámetro si usas el tamaño
+	        data.setTownId(selectedTown.getId());
+	        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
+	        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
+	        data.setNum1(num1.trim()); // num1 could be null, but we trim it to avoid leading/trailing spaces
+	        
+	        // NUM 2 COULD BE NULL
+	        data.setNum2(num2 != null ? num2.trim() : null); // num2 could be null
+	        
+	        
+	        data.setInCondo(inCondo); 
+	        data.setCondoId(inCondo && selectedCondo != null ? selectedCondo.getId() : null);
+	        
+	        return dao.insertCompleteStorage(data);
+	}
+
+	public boolean saveFlatStorage(
+			LandlordOption selectedLandlord,
+	        TownOption selectedTown,
+	        PropertyTypeOption selectedType,
+	        CondoOption selectedCondo,
+	        String rolSII,
+	        String street,
+	        String num1,
+	        String num2,
+	        String regionName,
+	        int roomQty,
+	        int bathQty,
+	        int floorQty,
+	        int storageQty,
+	        int parkingQty,
+	        boolean hasBalcony,
+	        boolean buildingHasLift,
+	        boolean buildingHasPool,
+	        boolean buildingHasBBQ,
+	        boolean buildingHasGym,
+	        boolean buildingHasLaundry,
+	        boolean inCondo,
+	        List<Storage> storages,
+	        int size
+			) throws SQLException {
+	        // Validaciones
+				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
+		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            return false;
+		        }
+	
+		        if (selectedTown == null || selectedTown.getId() == -1) {
+		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            return false;
+		        }
+	
+		        if (selectedType == null || selectedType.getValue().isEmpty()) {
+		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            return false;
+		        }
+	
+		        if (rolSII == null || rolSII.trim().isEmpty()
+		                || street == null || street.trim().isEmpty()
+		                || num1 == null || num1.trim().isEmpty()) {
+		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            return false;
+		        }
+		        
+		        // Crear objeto Flat
+		        Flat data = new Flat();
+		        data.setPropertyTypeId(2); // 2 = Flat
+		        data.setRolSII(rolSII.trim());
+		        data.setLandlordId(selectedLandlord.getId());
+		        data.setSize(size); // Puedes recibirlo como parámetro si usas el tamaño
+		        data.setTownId(selectedTown.getId());
+		        data.setRegionId(RegionDAO.getRegionIDByName(regionName));
+		        data.setStreetName(street.trim()); // street could be null, but we trim it to avoid leading/trailing spaces
+		        data.setNum1(num1.trim()); // num1 could be null, but we trim it to avoid leading/trailing spaces
+		        data.setNum2(num2.trim());  // num2 could be null
+		        data.setRoomQty(roomQty); // 2
+		        data.setBathQty(bathQty); // 3
+		        data.setFloorQty(floorQty); // 4
+		        data.setHasStorage(storageQty > 0); //5
+		        data.setHasParking(parkingQty); //6
+		        data.setHasBalcony(hasBalcony); //7
+		        data.setBuildingHasLift(buildingHasLift); //8
+		        data.setBuildingHasPool(buildingHasPool); //9
+		        data.setBuildingHasGym(buildingHasGym); //10
+		        data.setBuildingHasLaundry(buildingHasLaundry); //11
+		        data.setBuildingHasBBQ(buildingHasBBQ); //12
+		        
+		        data.setInCondo(inCondo); //13
+		        data.setCondoId(inCondo && selectedCondo != null ? selectedCondo.getId() : null);
+		        
+		        return dao.insertCompleteFlatStorage(data, storages);
+		}
 }

@@ -22,6 +22,8 @@ import utils.TownOption;
 import model.House;
 import model.Parking;
 import model.ParkingForm;
+import model.Storage;
+import model.StorageForm;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -122,11 +124,16 @@ public class PropertyPanel extends JPanel {
 	private JSeparator separator;
 	//private JPanel panelParking;
 	private List<ParkingForm> parkingForms = new ArrayList<>();
-	private JPanel panelEstacionamientos;
+	private List<StorageForm> storageForms = new ArrayList<>();
+	private JPanel panel_Parking;
+	private JPanel panel_Storage;
 	private JTextField txtBldngFloor;
-	public JTextField txtPrkngRol;
-	public JTextField txtPrkngNum;
-	private JPanel panel_1;
+	private JTextField txtPrkngRol;
+	private JTextField txtPrkngNum;
+	private JTextField txtStorageRol;
+	private JTextField txtStorageNum;
+	private JTextField txtStorageSize;
+	
 	
 	
 	public PropertyPanel(Container contentPane, Menu menu) {
@@ -792,7 +799,7 @@ public class PropertyPanel extends JPanel {
 			TownOption TownName = (TownOption) comboTown.getSelectedItem();
 			PropertyTypeOption PropertyTypeName = (PropertyTypeOption) comboPropertyType.getSelectedItem();
 			CondoOption CondoName = (CondoOption) comboCondo.getSelectedItem();
-			
+			int size = Integer.parseInt(txtSize.getText()); // Get the size from the text field, or null if empty
 			String rol = txtRol.getText();
 			String address = txtAddress.getText();
 			String num1 = txtNum1.getText();
@@ -822,6 +829,7 @@ public class PropertyPanel extends JPanel {
 			boolean inCondo = chckbxInCondo.isSelected(); // Get the value from chckbxInCondo
 			
 			List<Parking> parkings = getAllParkingsFromForm();
+			List<Storage> storages = getAllStoragesFromForm();
 			PropertyTypeOption selectedType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
 			
 			// If is House:
@@ -862,7 +870,8 @@ public class PropertyPanel extends JPanel {
 								    hasBalcony, //10
 								    hasTerrace, //11
 								    hasLaundry, //12
-								    inCondo //13
+								    inCondo, //13
+								    size
 							);
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
@@ -893,10 +902,43 @@ public class PropertyPanel extends JPanel {
 						bldngFloor = 0; // Default value if the text field is empty
 					}
 					
-					   	//boolean success = false;
+					   	// If spinnerParking and spinnerStorage are both more than 0, then it is a flat with parking and storage
 						try {
-						// if spinnerParking is more than 0, then it is a parking lot
-							if (parkingQty > 0) {
+							if (parkingQty > 0 && storageQty > 0) {
+								boolean success = controller.saveFlatStorageAndParking(
+										LandlordName, TownName, PropertyTypeName, CondoName, rol, address, num1, num2, region,
+										roomQty, //2
+										bathQty, //3 
+										bldngFloor, //4
+										storageQty, //5
+										parkingQty, //6
+										hasBalcony, //7
+										hasBldngLift, //8
+										hasBldngPool, //9
+										hasBldngBBQ, //10
+										hasBldngGym, //11
+										hasBldngLaundry, //12
+										inCondo, //13
+										parkings,
+										storages,
+										size
+										);
+								if (success) {
+							    	//logFlatDetails(); // Log flat data for debugging
+							        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+							        System.out.println("Rol: " + txtRol.getText());
+							        System.out.println("Tamaño: " + txtSize.getText());
+							        System.out.println("Dirección: " + txtAddress.getText());
+							        System.out.println("Número 1: " + num1);
+							        System.out.println("Número 2: " + num2);
+							        cleanFields(); // Set cleanFields to true if saving is successful
+							    } else {
+							    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
+							        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
+							    }
+						
+						// if only spinnerParking is more than 0, then it is a flat with parking
+						} else if (parkingQty > 0 && storageQty == 0) {
 							
 								boolean success = controller.saveFlatParking(
 										LandlordName, TownName, PropertyTypeName, CondoName, rol, address, num1, num2, region,
@@ -912,14 +954,15 @@ public class PropertyPanel extends JPanel {
 								    	hasBldngGym, //11
 								    	hasBldngLaundry, //12
 								    	inCondo, //13
-								    	parkings //14
+								    	parkings, //14
+								    	size
 										);
 								if (success) {
 							    	//logFlatDetails(); // Log flat data for debugging
-							        Popup.showSuccess("\nPropiedad insertada correctamente."); // Show success message if saving is successful
-							        System.out.println("Rol: " + txtRol.getText());
-							        System.out.println("Tamaño: " + txtSize.getText());
-							        System.out.println("Dirección: " + txtAddress.getText());
+							        Popup.showSuccess("Departamento creado correctamente:"); // Show success message if saving is successful
+							        System.out.println("Rol: " + rol);
+							        System.out.println("Tamaño: " + size);
+							        System.out.println("Dirección: " + address);
 							        System.out.println("Número 1: " + num1);
 							        System.out.println("Número 2: " + num2);
 							        cleanFields(); // Set cleanFields to true if saving is successful
@@ -927,8 +970,8 @@ public class PropertyPanel extends JPanel {
 							    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
 							        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
 							    }
-							} else {
-								boolean success = controller.saveFlatNoParking(
+							} else if (parkingQty == 0 && storageQty > 0) {
+								boolean success = controller.saveFlatStorage(
 										LandlordName, TownName, PropertyTypeName, CondoName, rol, address, num1, num2, region,
 										roomQty, //2
 										bathQty, //3 
@@ -941,7 +984,9 @@ public class PropertyPanel extends JPanel {
 										hasBldngBBQ, //10
 										hasBldngGym, //11
 										hasBldngLaundry, //12
-										inCondo //13
+										inCondo, //13
+										storages,
+										size
 										);
 								if (success) {
 							    	//logFlatDetails(); // Log flat data for debugging
@@ -956,7 +1001,41 @@ public class PropertyPanel extends JPanel {
 							    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
 							        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
 							    }
+								
+						// If both storage & parking are 0, then it is a flat without parking or storage
+						} else if (parkingQty == 0 && storageQty == 0) { // 
+							boolean success = controller.saveFlatNoSP(
+									LandlordName, TownName, PropertyTypeName, CondoName, rol, address, num1, num2, region,
+									roomQty, //2
+									bathQty, //3 
+									bldngFloor, //4
+									storageQty, //5
+									parkingQty, //6
+									hasBalcony, //7
+									hasBldngLift, //8
+									hasBldngPool, //9
+									hasBldngBBQ, //10
+									hasBldngGym, //11
+									hasBldngLaundry, //12
+									inCondo, //13
+									size
+									);
+							if (success) {
+						    	//logFlatDetails(); // Log flat data for debugging
+						        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+						        System.out.println("Rol: " + txtRol.getText());
+						        System.out.println("Tamaño: " + txtSize.getText());
+						        System.out.println("Dirección: " + txtAddress.getText());
+						        System.out.println("Número 1: " + num1);
+						        System.out.println("Número 2: " + num2);
+						        cleanFields(); // Set cleanFields to true if saving is successful
+						    } else {
+						    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
+						        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
+						    }
+							
 						}
+							
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -976,25 +1055,13 @@ public class PropertyPanel extends JPanel {
 //					    }
 					    
 				} else if (selectedType.getValue().equals("Storage")) {
-					isStorage(); // Call the method to show storage fields
-					
-				} else if (selectedType.getValue().equals("Parking")) {
 					PropertyController controller = new PropertyController();
-					isParking(); // Call the method to show parking fields
+					isStorage(); // Call the method to show storage fields
 					
 					boolean success = false;
 					try {
-						success = controller.saveParking(
-						    (LandlordOption) comboLandlord.getSelectedItem(),
-						    (TownOption) comboTown.getSelectedItem(),
-						    (PropertyTypeOption) comboPropertyType.getSelectedItem(),
-						    (CondoOption) comboCondo.getSelectedItem(),
-						    txtRol.getText(),
-						    txtAddress.getText(),
-						    txtNum1.getText(),
-						    txtNum2.isVisible() ? txtNum2.getText() : null,
-						    (String) comboRegion.getSelectedItem(),			
-						    chckbxInCondo.isSelected()
+						success = controller.saveStorage(
+						    LandlordName, TownName, PropertyTypeName, CondoName, rol, address, num1, num2, region, inCondo, size
 						);
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
@@ -1003,6 +1070,42 @@ public class PropertyPanel extends JPanel {
 
 				    if (success) {
 				        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+				        // DEBUGGING
+				        System.out.println("\nSTORAGE CREATED");
+				        System.out.println("Rol: " + txtRol.getText());
+				        System.out.println("Tamaño: " + txtSize.getText());
+				        System.out.println("Dirección: " + txtAddress.getText());
+				        System.out.println("Número 1: " + txtNum1.getText());
+				        System.out.println("Número 2: " + txtNum2.getText());
+				        System.out.println("Región: " + comboRegion.getSelectedItem());
+				        System.out.println("Comuna: " + comboTown.getSelectedItem());
+				        System.out.println("Tipo de propiedad: " + comboPropertyType.getSelectedItem());
+				        System.out.println("En Condominio: " + chckbxInCondo.isSelected());
+				        System.out.println("Condominio: " + comboCondo.getSelectedItem());
+				         
+				       cleanFields();
+				    } else {
+				    	Popup.show("Error al guardar la propiedad.", "error"); // Show error message if saving fails
+				        System.out.println("Error al guardar la propiedad."); // Log error if saving fails
+				    }
+				} else if (selectedType.getValue().equals("Parking")) {
+					PropertyController controller = new PropertyController();
+					isParking(); // Call the method to show parking fields
+					
+					boolean success = false;
+					try {
+						success = controller.saveParking(
+						    LandlordName, TownName, PropertyTypeName, CondoName, rol, address, num1, num2, region, inCondo, size
+						);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				    if (success) {
+				        Popup.showSuccess("Propiedad insertada correctamente."); // Show success message if saving is successful
+				        // DEBUGGING
+				        System.out.println("\nPARKING CREATED");
 				        System.out.println("Rol: " + txtRol.getText());
 				        System.out.println("Tamaño: " + txtSize.getText());
 				        System.out.println("Dirección: " + txtAddress.getText());
@@ -1081,16 +1184,26 @@ public class PropertyPanel extends JPanel {
 				
 		// -- END BACK BUTTON -- //
 	
-		panelEstacionamientos = new JPanel();
-		panelEstacionamientos.setLayout(null); // uno debajo del otro
-		//panelEstacionamientos.setOpaque(false); // para que no se vea gris si no quieres
-		panelEstacionamientos.setBounds(35, 356, 570, 90); // o lo que necesites
-		panelEstacionamientos.setBackground(new Color(187, 187, 187)); // Fondo blanco para el panel de estacionamientos
-		panelEstacionamientos.setVisible(false); // por si acaso se agregó oculto
+		panel_Parking = new JPanel();
+		panel_Parking.setLayout(null); 
+		//panelEstacionamientos.setOpaque(false);
+		panel_Parking.setBounds(35, 356, 570, 90);
+		panel_Parking.setBackground(new Color(187, 187, 187)); 
+		panel_Parking.setVisible(false); // Initially hidden, only shown when Flat or Office is selected
 		//panelEstacionamientos.setOpaque(true);  // para que el fondo blanco se aplique
 		//panelEstacionamientos.setBorder(BorderFactory.createLineBorder(Color.RED));
-		add(panelEstacionamientos);
-		setComponentZOrder(panelEstacionamientos, 0);
+		add(panel_Parking);
+		setComponentZOrder(panel_Parking, 0);
+		
+		
+		panel_Storage = new JPanel();
+		panel_Storage.setLayout(null);
+        panel_Storage.setBounds(35, 486, 578, 90);
+        panel_Storage.setBackground(new Color(187, 187, 187)); 
+        panel_Storage.setVisible(false); // Initially hidden, only shown when Flat or Office is selected
+        add(panel_Storage);
+        setComponentZOrder(panel_Storage, 0);
+       
 		
 		spinnerParking.addChangeListener(e -> {
 		    PropertyTypeOption currentType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
@@ -1098,41 +1211,67 @@ public class PropertyPanel extends JPanel {
 		    if (currentType != null && (currentType.getValue().equals("Flat") || currentType.getValue().equals("Office"))) {
 		        int count = (Integer) spinnerParking.getValue();
 
-		        panelEstacionamientos.removeAll();
-		        panelEstacionamientos.setBounds(40, 356, 570, 90);
-		        panelEstacionamientos.setVisible(true);
+		        panel_Parking.removeAll();
+		        panel_Parking.setBounds(40, 356, 570, 90);
+		        panel_Parking.setVisible(true);
 		        parkingForms.clear();
 
 		        for (int i = 0; i < count; i++) {
 		            JPanel miniForm = createParking(i + 1);
 		            miniForm.setBounds(i * 143, 0, 140, 90); // <------ AQUÍ ES
-		            panelEstacionamientos.add(miniForm);
+		            panel_Parking.add(miniForm);
 		            
 		        }
 
-		        panelEstacionamientos.revalidate();
-		        panelEstacionamientos.repaint();
+		        panel_Parking.revalidate();
+		        panel_Parking.repaint();
 		    } else {
 		        // Oculta los formularios si no corresponde
-		        panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+		        panel_Parking.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
 		        parkingForms.clear();
-		        panelEstacionamientos.removeAll();
-		        panelEstacionamientos.repaint();
+		        panel_Parking.removeAll();
+		        panel_Parking.repaint();
 		    }
 		});
         
-        panel_1 = new JPanel();
-        panel_1.setBounds(35, 486, 578, 85);
-        add(panel_1);
+        spinnerStorage.addChangeListener(e -> {
+			PropertyTypeOption currentType = (PropertyTypeOption) comboPropertyType.getSelectedItem();
+
+			if (currentType != null && (currentType.getValue().equals("Flat") || currentType.getValue().equals("Office"))) {
+				int count = (Integer) spinnerStorage.getValue();
+
+				panel_Storage.removeAll();
+				panel_Storage.setBounds(40, 486, 578, 90);
+				panel_Storage.setVisible(true);
+				storageForms.clear();
+
+				for (int i = 0; i < count; i++) {
+					JPanel miniForm = createStorage(i + 1);
+					miniForm.setBounds(i * 193, 0, 190, 90); // <------ AQUÍ ES
+					panel_Storage.add(miniForm);
+				}
+
+				panel_Storage.revalidate();
+				panel_Storage.repaint();
+			} else {
+				// Oculta los formularios si no corresponde
+				panel_Storage.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+				storageForms.clear();
+				panel_Storage.removeAll();
+				panel_Storage.repaint();
+			}
+		});
+		
+		
 	} // END OF  PropertiesPanel constructor
 	
 	// ---------------------- //
 	
 	// --- AUXILIARY METHODS --- //
 	
-	public JPanel createParking(int numero) {
+	public JPanel createParking(int parkingQty) {
 	    JPanel panelParking = new JPanel();
-	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + numero));
+	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + parkingQty)); // SPANISH for "Parking #"
 	    panelParking.setBackground(Color.LIGHT_GRAY);
 	    panelParking.setLayout(null);
 	    
@@ -1173,6 +1312,50 @@ public class PropertyPanel extends JPanel {
 	    return panelParking;
 	}
 	
+	public JPanel createStorage(int storageQty) {
+		JPanel panelStorage = new JPanel();
+		panelStorage.setBorder(BorderFactory.createTitledBorder("Bodega #" + storageQty));
+		panelStorage.setBackground(Color.LIGHT_GRAY);
+		panelStorage.setLayout(null);
+		
+		txtStorageRol = new JTextField(10);
+		txtStorageRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+		txtStorageRol.setBounds(65, 20, 60, 30);
+		txtStorageRol.setColumns(10);
+		panelStorage.add(txtStorageRol);
+		
+		txtStorageNum = new JTextField(10);
+		txtStorageNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+		txtStorageNum.setBounds(50, 50, 60, 30);
+		txtStorageNum.setColumns(10);
+		panelStorage.add(txtStorageNum);
+		
+		txtStorageSize = new JTextField(10);
+		txtStorageSize.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+		txtStorageSize.setBounds(65, 80, 60, 30);
+		txtStorageSize.setColumns(10);
+		panelStorage.add(txtStorageSize);
+		
+		JLabel lblStorageRol = new JLabel("ROL:");
+		lblStorageRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+		lblStorageRol.setBounds(20, 25, 116, 16);
+		panelStorage.add(lblStorageRol);
+		
+		JLabel lblStorageNum = new JLabel("Nº:");
+		lblStorageNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+		lblStorageNum.setBounds(20, 55, 116, 16);
+		panelStorage.add(lblStorageNum);
+		
+		JLabel lblStorageSize = new JLabel("Tamaño:");
+		lblStorageSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+		lblStorageSize.setBounds(20, 55, 116, 16);
+		panelStorage.add(lblStorageSize);
+		
+		StorageForm form = new StorageForm(txtStorageRol, txtStorageNum, txtStorageSize);
+		storageForms.add(form); // ✅ agregamos el formulario a la lista
+		return panelStorage;
+	}
+	
 	public List<Parking> getAllParkingsFromForm() {
 	    List<Parking> parkings = new ArrayList<>();
 	    boolean inCondo = chckbxInCondo.isSelected();
@@ -1211,6 +1394,45 @@ public class PropertyPanel extends JPanel {
 	    return parkings;
 	}
 
+	public List<Storage> getAllStoragesFromForm() {
+		List<Storage> storages = new ArrayList<>();
+		boolean inCondo = chckbxInCondo.isSelected();
+		Integer condoId = comboCondo.getSelectedItem() instanceof CondoOption
+				? ((CondoOption) comboCondo.getSelectedItem()).getId()
+				: null;
+		
+		
+		for (StorageForm form : storageForms) {
+			String rol = form.getRol();
+			String num = form.getNum();
+			int size = Integer.parseInt(form.getSize()); // Get the size from the text field, or 0 if empty
+			
+			if (rol != null && !rol.isEmpty()) {
+				Storage s = new Storage();
+				s.setLandlordId(comboLandlord.getSelectedItem() instanceof LandlordOption
+	            		? ((LandlordOption) comboLandlord.getSelectedItem()).getId()
+	            		: null);
+	            s.setRolSII(rol);
+	            s.setPropertyTypeId(3);
+	            s.setStreetName(txtAddress.getText());
+	            s.setNum1(txtNum1.getText());
+	            s.setNum2(num);
+	            s.setSize(size);
+				s.setTownId(comboTown.getSelectedItem() instanceof TownOption
+						? ((TownOption) comboTown.getSelectedItem()).getId()
+						: null);
+				s.setRegionId(RegionDAO.getRegionIDByName((String) comboRegion.getSelectedItem()));
+	            s.setInCondo(inCondo);
+	            s.setCondoId(inCondo ? condoId : null);
+	            s.setFlatId(null);
+	            // Puedes guardar el tipo o número si tu modelo Parking lo permite
+	            storages.add(s);
+			}
+		}
+		
+		return storages;
+	}
+	
 	private void logHouseDetails() {
 		System.out.println("Rol: " + txtRol.getText());
 		System.out.println("Dirección: " + txtAddress.getText());
@@ -1263,10 +1485,10 @@ public class PropertyPanel extends JPanel {
 	
 	
 	private void cleanFields() {
-		panelEstacionamientos.setVisible(false); // Hide parking panel
+		panel_Parking.setVisible(false); // Hide parking panel
 		parkingForms.clear(); // Clear parking forms
-		panelEstacionamientos.removeAll(); // Remove all components from parking panel
-		panelEstacionamientos.repaint(); // Repaint parking panel
+		panel_Parking.removeAll(); // Remove all components from parking panel
+		panel_Parking.repaint(); // Repaint parking panel
 		//comboLandlord.setSelectedIndex(0); // Reset landlord selection
 		//comboPropertyType.setSelectedIndex(0); // Reset property type selection
 		//comboRegion.setSelectedIndex(0); // Reset region selection
@@ -1331,10 +1553,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isHouse() {
-		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+		panel_Parking.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
 	    parkingForms.clear();
-	    panelEstacionamientos.removeAll();
-	    panelEstacionamientos.repaint();
+	    panel_Parking.removeAll();
+	    panel_Parking.repaint();
 		cleanFields(); // Clear all fields before setting house-specific fields
 		txtNum2.setVisible(false); // Hide address number 2 field for houses
 		txtBldngFloor.setVisible(false); // Hide building floor text field for houses
@@ -1437,10 +1659,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isStorage() {
-		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+		panel_Parking.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
 	    parkingForms.clear();
-	    panelEstacionamientos.removeAll();
-	    panelEstacionamientos.repaint();
+	    panel_Parking.removeAll();
+	    panel_Parking.repaint();
 		cleanFields(); // Clear all fields before setting storage-specific fields
 		txtNum2.setVisible(false); // Hide address number 2 field for storage
 		txtBldngFloor.setVisible(false); // Hide building floor text field for storage
@@ -1491,10 +1713,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isParking() {
-		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+		panel_Parking.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
 	    parkingForms.clear();
-	    panelEstacionamientos.removeAll();
-	    panelEstacionamientos.repaint();
+	    panel_Parking.removeAll();
+	    panel_Parking.repaint();
 		cleanFields(); // Clear all fields before setting parking-specific fields
 		txtNum2.setVisible(false); // Hide address number 2 field for parking
 		txtBldngFloor.setVisible(false); // Hide building floor text field for parking
@@ -1545,10 +1767,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isLand() {
-		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+		panel_Parking.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
 	    parkingForms.clear();
-	    panelEstacionamientos.removeAll();
-	    panelEstacionamientos.repaint();
+	    panel_Parking.removeAll();
+	    panel_Parking.repaint();
 		cleanFields(); // Clear all fields before setting land-specific fields
 		txtNum2.setVisible(false); // Hide address number 2 field for land
 		txtBldngFloor.setVisible(false); // Hide building floor text field for land
@@ -1599,10 +1821,10 @@ public class PropertyPanel extends JPanel {
 	}
 	
 	public void isOffice() {
-		panelEstacionamientos.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
+		panel_Parking.setVisible(false); // AÑADIR ESTOS PARA OTROS TIPOS DE PROPIEDADES
 	    parkingForms.clear();
-	    panelEstacionamientos.removeAll();
-	    panelEstacionamientos.repaint();
+	    panel_Parking.removeAll();
+	    panel_Parking.repaint();
 		cleanFields(); // Clear all fields before setting office-specific fields
 		txtBldngFloor.setVisible(true); // Show building floor text field for office
 		txtNum2.setVisible(true); // Show address number 2 field for office

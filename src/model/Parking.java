@@ -2,7 +2,7 @@ package model;
 
 public class Parking extends Estate {
 	private boolean inCondo;
-	private Integer condoId, flatId;
+	private Integer condoId, flatId, officeId;
 	private Integer id;
 
 	public Parking(Integer flatId, boolean inCondo, Integer condoId,
@@ -13,8 +13,9 @@ public class Parking extends Estate {
 		
 		// PARKING
 		this.flatId = null; // Default value, can be set later
+		this.officeId = null; // Default value, can be set later
 		this.inCondo = inCondo;
-		this.condoId = condoId; // Default value, can be set later
+		this.condoId = condoId; 
 	}
 
 	public Parking() {
@@ -22,6 +23,14 @@ public class Parking extends Estate {
 	}
 
 	// GETTERS
+	
+	public int getId() {
+		return id;
+	}
+
+	public Integer getOfficeId() {
+		return officeId;
+	}
 
 	public Integer getFlatId() {
 		return flatId;
@@ -40,6 +49,10 @@ public class Parking extends Estate {
 	public void setFlatId(Integer flatId) {
 		this.flatId = flatId;
 	}
+	
+	public void setOfficeId(Integer officeId) {
+		this.officeId = officeId;
+	}
 
 	public void setInCondo(boolean inCondo) {
 		this.inCondo = inCondo;
@@ -48,21 +61,12 @@ public class Parking extends Estate {
 	public void setCondoId(Integer condoId) {
 		this.condoId = condoId;
 	}
-
 	
 	public void setRol(String rol) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void setId(int parkingPropertyId) {
 		this.id = parkingPropertyId; // Assuming id is inherited from Estate
 	}
-
-
-	public int getId() {
-		return id;
-	}
-	
-	
 }
