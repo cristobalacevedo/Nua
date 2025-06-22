@@ -1,13 +1,13 @@
 package model;
 
 public class Flat extends Estate {
-	private int roomQty, bathQty, floorQty;
-	int hasParking;
-	private boolean hasBalcony, hasStorage;
+	private int roomQty, bathQty, floor;
+	private int hasParking, hasStorage;
+	private boolean hasBalcony;
 	private boolean inCondo, buildingHasLift, buildingHasPool, buildingHasGym, buildingHasLaundry, buildingHasBBQ;
     private Integer condoId;
 
-	public Flat(int roomQty, int bathQty, int floorQty, boolean hasStorage, int hasParking, boolean hasBalcony,
+	public Flat(int roomQty, int bathQty, int floor, int hasStorage, int hasParking, boolean hasBalcony,
 			boolean buildingHasLift, boolean buildingHasPool,
 			boolean buildingHasGym, boolean buildingHasLaundry, boolean buildingHasBBQ,
 			String streetName, String num1, String num2, int townId, int regionId, int landlordId,
@@ -18,7 +18,7 @@ public class Flat extends Estate {
 		// FLAT
 		this.roomQty = roomQty;
 		this.bathQty = bathQty;
-		this.floorQty = floorQty;
+		this.floor = floor;
 		this.hasStorage = hasStorage;
 		this.hasParking = hasParking;
 		this.hasBalcony = hasBalcony;
@@ -47,8 +47,8 @@ public class Flat extends Estate {
         return bathQty;
     }
 	
-	public int getFloorQty() {
-        return floorQty;
+	public int getFloor() {
+        return floor;
     }
 	
 	public int isHasParking() {
@@ -59,7 +59,7 @@ public class Flat extends Estate {
 		return hasBalcony;
 	}
 	
-	public boolean isHasStorage() {
+	public int isHasStorage() {
 		return hasStorage;
 	}
 	
@@ -101,8 +101,8 @@ public class Flat extends Estate {
 		this.bathQty = bathQty;
 	}
 	
-	public void setFloorQty(int floorQty) {
-		this.floorQty = floorQty;
+	public void setFloor(int floor) {
+		this.floor = floor;
 	}
 	
 	public void setHasParking(int hasParking) {
@@ -113,7 +113,7 @@ public class Flat extends Estate {
 		this.hasBalcony = hasBalcony;
 	}
 	
-	public void setHasStorage(boolean hasStorage) {
+	public void setHasStorage(int hasStorage) {
 		this.hasStorage = hasStorage;
 	}
 	
@@ -147,7 +147,7 @@ public class Flat extends Estate {
 	
 	@Override
 	public String toString() {
-		return "Flat{" + "roomQty=" + roomQty + ", bathQty=" + bathQty + ", floorQty=" + floorQty + ", hasParking="
+		return "Flat{" + "roomQty=" + roomQty + ", bathQty=" + bathQty + ", floorQty=" + floor + ", hasParking="
 				+ hasParking + ", hasBalcony=" + hasBalcony + ", hasStorage=" + hasStorage + ", inCondo=" + inCondo
 				+ ", buildingHasLift=" + buildingHasLift + ", buildingHasPool=" + buildingHasPool + ", buildingHasGym="
 				+ buildingHasGym + ", buildingHasLaundry=" + buildingHasLaundry + ", buildingHasBBQ=" + buildingHasBBQ

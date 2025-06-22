@@ -27,8 +27,8 @@ public class FlatDAO {
 	            stmt.setInt(1, propertyId);
 	            stmt.setInt(2, data.getRoomQty());
 	            stmt.setInt(3, data.getBathQty());
-	            stmt.setInt(4, data.getFloorQty());
-	            stmt.setInt(5, data.isHasStorage() ? 1 : 0);
+	            stmt.setInt(4, data.getFloor());
+	            stmt.setInt(5, data.isHasStorage());
 	            stmt.setInt(6, data.isHasParking());
 	            stmt.setInt(7, data.isHasBalcony() ? 1 : 0);
 	            stmt.setInt(8, data.isBuildingHasLift() ? 1 : 0);

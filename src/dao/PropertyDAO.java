@@ -11,6 +11,8 @@ import java.util.List;
 import db.DBConnection;
 import model.Flat;
 import model.House;
+import model.Land;
+import model.Office;
 import model.Parking;
 import model.Storage;
 
@@ -20,14 +22,17 @@ public class PropertyDAO {
     private FlatDAO flatDAO;	    
     private StorageDAO storageDAO;
     private ParkingDAO parkingDAO;
-//  private LandDAO landDAO;
+    private LandDAO landDAO;
+    private OfficeDAO officeDAO;
        
     public PropertyDAO() {
             this.conn = DBConnection.getConnection();
             this.houseDAO = new HouseDAO(conn);
             this.flatDAO = new FlatDAO(conn);
-            this.parkingDAO = new ParkingDAO(conn);
             this.storageDAO = new StorageDAO(conn);
+            this.parkingDAO = new ParkingDAO(conn);
+            this.landDAO = new LandDAO(conn);
+            this.officeDAO = new OfficeDAO(conn);
       }
     
 
@@ -35,7 +40,7 @@ public class PropertyDAO {
         this.conn = conn;
         this.houseDAO = new HouseDAO(conn);
         this.flatDAO = new FlatDAO(conn);
-//        this.landDAO = new LandDAO(conn);
+        this.landDAO = new LandDAO(conn);
 //        this.storageDAO = new StorageDAO(conn);
         this.parkingDAO = new ParkingDAO(conn);
     }
@@ -77,7 +82,7 @@ public class PropertyDAO {
 		return typeID;
 	}
 	
-	// --- HOUSE ---
+	// --- HOUSE METHODS ---
 	
 	public boolean insertCompleteHouse(House data) throws SQLException {
 	    try {
@@ -131,7 +136,9 @@ public class PropertyDAO {
         }
     }
     
-    // --- FLAT ---
+    // --- END HOUSE METHODS ---
+    
+    // --- FLAT METHODS ---
     
     public boolean insertCompleteFlatParkingStorage(Flat data, List<Parking> parkings, List<Storage> storages) throws SQLException {
     	try {
@@ -299,8 +306,9 @@ public class PropertyDAO {
         }
     }
 
+	// --- END FLAT METHODS ---
 
-	// --- PARKING ---
+	// --- PARKING METHODS ---
 	
 	public boolean insertCompleteParking(Parking data) throws SQLException {
 	    try {
@@ -354,6 +362,9 @@ public class PropertyDAO {
         }
     }
 
+	// --- END PARKING METHODS ---
+	
+	// --- STORAGE METHODS ---
 
 	public boolean insertCompleteStorage(Storage data) throws SQLException {
 	    try {
@@ -407,7 +418,232 @@ public class PropertyDAO {
         }
     }
 
+	//  --- END STORAGE METHODS ---
 
+	// --- LAND METHODS ---	
+	
+	public boolean insertCompleteLand(Land data) throws SQLException {
+	    try {
+	        conn.setAutoCommit(false);
+
+	        int addressId = insertLandAddress(data);
+	        int propertyId = insertLandProperty(data, addressId);
+	        landDAO.insertLand(propertyId, data); 
+	        
+	        conn.commit();
+	        return true;
+
+	    } catch (SQLException e) {
+	        conn.rollback();
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+	private int insertLandAddress(Land data) throws SQLException {
+        String sql = "INSERT INTO address (st_name, num_1, num_2, town_id, town_region_id, town_region_country_id) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming country_id is always 1 for simplicity (CHILE)
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, data.getStreetName());
+            stmt.setString(2, data.getNum1());
+            stmt.setString(3, data.getNum2());
+            stmt.setInt(4, data.getTownId());
+            stmt.setInt(5, data.getRegionId());
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (!rs.next()) throw new SQLException("No se pudo obtener ID de dirección.");
+                return rs.getInt(1);
+            }
+        }
+    }
+
+    private int insertLandProperty(Land data, int addressId) throws SQLException {
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, data.getLandlordId());
+            stmt.setInt(2, data.getPropertyTypeId());
+            stmt.setInt(3, addressId);
+            stmt.setInt(4, data.getSize());
+            stmt.setString(5, data.getRolSII());
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (!rs.next()) throw new SQLException("No se pudo obtener ID de propiedad.");
+                return rs.getInt(1);
+            }
+        }
+    }
+    
+    // --- END LAND METHODS ---
+
+    // --- OFFICE METHODS ---
+    
+    public boolean insertCompleteOfficeParkingStorage(Office data, List<Parking> parkings, List<Storage> storages) throws SQLException {
+    	try {
+	        conn.setAutoCommit(false);
+
+	        int addressId = insertOfficeAddress(data);
+	        int propertyId = insertOfficeProperty(data, addressId);
+	        officeDAO.insertOffice(propertyId, data);
+	        
+	        for (Parking p : parkings) {
+	        	int parkingAddressId = insertParkingAddress(p);
+	            int parkingPropertyId = insertParkingProperty(p, parkingAddressId);
+	            p.setId(parkingPropertyId); // opcional
+	            p.setFlatId(propertyId); // Relacionar flat con los estacionamientos
+	        }
+	        System.out.println("Insertando " + parkings.size() + " estacionamientos para Flat ID = " + propertyId);
+	        for (Parking p : parkings) {
+	            System.out.println(" -> Parking: parkingPropertyId:" + p.getId() + "flatId=" + p.getFlatId() + ", inCondo=" + p.isInCondo() + ", condoId=" + p.getCondoId() + ", size=" + p.getSize() + ", rolSII=" + p.getRolSII() + ", streetName=" + p.getStreetName() + ", num1=" + p.getNum1() + ", num2=" + p.getNum2() + ", townId=" + p.getTownId() + ", regionId=" + p.getRegionId());
+	        }
+	        parkingDAO.insertParkingInFlat(parkings); // Insertarlos desde tu DAO
+	        
+	        
+	        for (Storage s : storages) {
+	        	int storageAddressId = insertStorageAddress(s);
+	            int storagePropertyId = insertStorageProperty(s, storageAddressId);
+	            s.setId(storagePropertyId); // opcional
+	            s.setFlatId(propertyId); // Relacionar flat con los estacionamientos
+	        }
+	        System.out.println("Insertando " + storages.size() + " storage para Flat ID = " + propertyId);
+	        for (Storage s : storages) {
+	            System.out.println(" -> Storage: storagePropertyId:" + s.getId() + "flatId=" + s.getFlatId() + ", inCondo=" + s.isInCondo() + ", condoId=" + s.getCondoId() + ", size=" + s.getSize() + ", rolSII=" + s.getRolSII() + ", streetName=" + s.getStreetName() + ", num1=" + s.getNum1() + ", num2=" + s.getNum2() + ", townId=" + s.getTownId() + ", regionId=" + s.getRegionId());
+	        }
+	        storageDAO.insertParkingInFlat(storages); // Insertarlos desde tu DAO
+	        
+	        conn.commit();
+	        return true;
+
+	    } catch (SQLException e) {
+	        conn.rollback();
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        conn.setAutoCommit(true);  // IMPORTANT: Restore auto-commit to default state
+	    }
+	}
+    
+    public boolean insertCompleteOfficeStorage(Office data, List<Storage> storages) throws SQLException {
+    	try {
+	        conn.setAutoCommit(false);
+
+	        int addressId = insertOfficeAddress(data);
+	        int propertyId = insertOfficeProperty(data, addressId);
+	        officeDAO.insertOffice(propertyId, data); 
+	        
+	        for (Storage s : storages) {
+	        	int storageAddressId = insertStorageAddress(s);
+	            int storagePropertyId = insertStorageProperty(s, storageAddressId);
+	            s.setId(storagePropertyId); // opcional
+	            s.setFlatId(propertyId); // Relacionar flat con los estacionamientos
+	        }
+	        
+	        System.out.println("Insertando " + storages.size() + " storage para Flat ID = " + propertyId);
+	        for (Storage s : storages) {
+	            System.out.println(" -> Storage: storagePropertyId:" + s.getId() + "flatId=" + s.getFlatId() + ", inCondo=" + s.isInCondo() + ", condoId=" + s.getCondoId() + ", size=" + s.getSize() + ", rolSII=" + s.getRolSII() + ", streetName=" + s.getStreetName() + ", num1=" + s.getNum1() + ", num2=" + s.getNum2() + ", townId=" + s.getTownId() + ", regionId=" + s.getRegionId());
+	        }
+	        
+	        storageDAO.insertParkingInFlat(storages); // Insertarlos desde tu DAO
+	        
+	        conn.commit();
+	        return true;
+
+	    } catch (SQLException e) {
+	        conn.rollback();
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        conn.setAutoCommit(true);  // IMPORTANT: Restore auto-commit to default state
+	    }
+	}
+    
+    public boolean insertCompleteOfficeParking(Office data, List<Parking> parkings) throws SQLException {
+	    try {
+	        conn.setAutoCommit(false);
+
+	        int addressId = insertOfficeAddress(data);
+	        int propertyId = insertOfficeProperty(data, addressId);
+	        officeDAO.insertOffice(propertyId, data); 
+	        
+	        for (Parking p : parkings) {
+	        	int parkingAddressId = insertParkingAddress(p);
+	            int parkingPropertyId = insertParkingProperty(p, parkingAddressId);
+	            p.setId(parkingPropertyId); // opcional
+	            p.setFlatId(propertyId); // Relacionar flat con los estacionamientos
+	        }
+	        
+	        System.out.println("Insertando " + parkings.size() + " estacionamientos para Flat ID = " + propertyId);
+	        for (Parking p : parkings) {
+	            System.out.println(" -> Parking: parkingPropertyId:" + p.getId() + "flatId=" + p.getFlatId() + ", inCondo=" + p.isInCondo() + ", condoId=" + p.getCondoId() + ", size=" + p.getSize() + ", rolSII=" + p.getRolSII() + ", streetName=" + p.getStreetName() + ", num1=" + p.getNum1() + ", num2=" + p.getNum2() + ", townId=" + p.getTownId() + ", regionId=" + p.getRegionId());
+	        }
+	        
+	        parkingDAO.insertParkingInFlat(parkings); // Insertarlos desde tu DAO
+	        conn.commit();
+	        return true;
+
+	    } catch (SQLException e) {
+	        conn.rollback();
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        conn.setAutoCommit(true);  // IMPORTANT: Restore auto-commit to default state
+	    }
+	}
+    
+    public boolean insertCompleteOfficeNoSP(Office data) throws SQLException {
+	    try {
+	        conn.setAutoCommit(false);
+
+	        int addressId = insertOfficeAddress(data);
+	        int propertyId = insertOfficeProperty(data, addressId);
+	        officeDAO.insertOffice(propertyId, data); 
+	        
+	        conn.commit();
+	        return true;
+
+	    } catch (SQLException e) {
+	        conn.rollback();
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        conn.setAutoCommit(true); // IMPORTANT: Restore auto-commit to default state
+	    }
+	}
+	
+	private int insertOfficeProperty(Office data, int addressId) throws SQLException {
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, data.getLandlordId());
+            stmt.setInt(2, data.getPropertyTypeId());
+            stmt.setInt(3, addressId);
+            stmt.setInt(4, data.getSize());
+            stmt.setString(5, data.getRolSII());
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (!rs.next()) throw new SQLException("No se pudo obtener ID de propiedad.");
+                return rs.getInt(1);
+            }
+        }
+    }
+	
+	private int insertOfficeAddress(Office data) throws SQLException {
+		System.out.println("\nNUM_2 que llega: " + data.getNum2());
+        String sql = "INSERT INTO address (st_name, num_1, num_2, town_id, town_region_id, town_region_country_id) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming country_id is always 1 for simplicity (CHILE)
+        try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, data.getStreetName());
+            stmt.setString(2, data.getNum1());
+            stmt.setString(3, data.getNum2());
+            stmt.setInt(4, data.getTownId());
+            stmt.setInt(5, data.getRegionId());
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (!rs.next()) throw new SQLException("No se pudo obtener ID de dirección.");
+                return rs.getInt(1);
+            }
+        }
+    }
 	
 }
 
