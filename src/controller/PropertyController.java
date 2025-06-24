@@ -9,14 +9,19 @@ import model.Office;
 import model.Parking;
 import model.Storage;
 import utils.CondoOption;
+//import utils.FieldValidator;
 import utils.LandlordOption;
 import utils.PropertyTypeOption;
 import utils.TownOption;
 import view.Popup;
 
 import java.sql.SQLException;
+//import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import javax.swing.JTextField;
 
 public class PropertyController {
 
@@ -51,14 +56,15 @@ public class PropertyController {
             boolean hasTerrace,
             boolean hasLaundry,
             boolean inCondo,
-            int size
+            String sizeText
     		) throws SQLException {
+
         // Validaciones
         		if (selectedLandlord == null || selectedLandlord.getId() == -1) {
         			Popup.show("Debe seleccionar un propietario válido.", "error"); 
         			return false;
         		}
-
+			
         		if (selectedTown == null || selectedTown.getId() == -1) {
         			Popup.show("Debe seleccionar una comuna válida.", "error");
         			return false;
@@ -75,8 +81,19 @@ public class PropertyController {
         			Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
         			return false;
         		 }
-
-        // Crear objeto House
+        		
+        		int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("El tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("El tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+        		// Create House object
         		House data = new House();
         		data.setPropertyTypeId(1); // 1 = House
         		data.setRolSII(rolSII.trim());
@@ -136,7 +153,7 @@ public class PropertyController {
 	        boolean inCondo,
 	        List<Parking> parkings,
 	        List<Storage> storages,
-	        int size
+	        String sizeText
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
@@ -161,7 +178,19 @@ public class PropertyController {
 		            return false;
 		        }
 		        
-		        // Crear objeto Flat
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("El tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("El tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+		        // Create Flat object
 		        Flat data = new Flat();
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
@@ -213,32 +242,44 @@ public class PropertyController {
 	        boolean buildingHasLaundry,
 	        boolean inCondo,
 	        List<Storage> storages,
-	        int size
+	        String sizeText
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 		            return false;
 		        }
 	
 		        if (selectedTown == null || selectedTown.getId() == -1) {
-		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 		            return false;
 		        }
 	
 		        if (selectedType == null || selectedType.getValue().isEmpty()) {
-		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 		            return false;
 		        }
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
 		                || num1 == null || num1.trim().isEmpty()) {
-		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
 		        
-		        // Crear objeto Flat
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+		        // Create Flat object
 		        Flat data = new Flat();
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
@@ -291,32 +332,44 @@ public class PropertyController {
 	        boolean buildingHasLaundry,
 	        boolean inCondo,
 	        List<Parking> parkings,
-	        int size
+	        String sizeText
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 		            return false;
 		        }
 	
 		        if (selectedTown == null || selectedTown.getId() == -1) {
-		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 		            return false;
 		        }
 	
 		        if (selectedType == null || selectedType.getValue().isEmpty()) {
-		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 		            return false;
 		        }
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
 		                || num1 == null || num1.trim().isEmpty()) {
-		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
 		        
-		        // Crear objeto Flat
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+		        // Create Flat object
 		        Flat data = new Flat();
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
@@ -369,32 +422,44 @@ public class PropertyController {
 	        boolean buildingHasGym,
 	        boolean buildingHasLaundry,
 	        boolean inCondo,
-	        int size
+	        String sizeText
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 		            return false;
 		        }
 	
 		        if (selectedTown == null || selectedTown.getId() == -1) {
-		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 		            return false;
 		        }
 	
 		        if (selectedType == null || selectedType.getValue().isEmpty()) {
-		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 		            return false;
 		        }
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
 		                || num1 == null || num1.trim().isEmpty()) {
-		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
 		        
-		        // Crear objeto Flat
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+		        // Create Flat object
 		        Flat data = new Flat();
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
@@ -438,32 +503,44 @@ public class PropertyController {
 		        String num2,
 		        String regionName,
 				boolean inCondo,
-				int size
+				String sizeText
 				) throws SQLException {
 			// Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 		            return false;
 		        }
 
 		        if (selectedTown == null || selectedTown.getId() == -1) {
-		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 		            return false;
 		        }
 
 		        if (selectedType == null || selectedType.getValue().isEmpty()) {
-		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 		            return false;
 		        }
 
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
 		                || num1 == null || num1.trim().isEmpty()) {
-		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
 		        
-		        // Crear objeto Storage
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+		        // Create Storage object
 		        Storage data = new Storage();
 		        data.setPropertyTypeId(3); // 3 = Storage
 		        data.setRolSII(rolSII.trim());
@@ -499,32 +576,44 @@ public class PropertyController {
 	        String num2,
 	        String regionName,
 			boolean inCondo,
-			int size
+			String sizeText
 			) throws SQLException {
         // Validaciones
 			if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-	            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+	            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 	            return false;
 	        }
 
 	        if (selectedTown == null || selectedTown.getId() == -1) {
-	            Popup.show("Debe seleccionar una comuna válida.", "error");
+	            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 	            return false;
 	        }
 
 	        if (selectedType == null || selectedType.getValue().isEmpty()) {
-	            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+	            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 	            return false;
 	        }
 
 	        if (rolSII == null || rolSII.trim().isEmpty()
 	                || street == null || street.trim().isEmpty()
 	                || num1 == null || num1.trim().isEmpty()) {
-	            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+	            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 	            return false;
 	        }
 	        
-	        // Crear objeto Parking
+	        int size; // Inicializar tamaño
+    		try {
+    		    size = Integer.parseInt(sizeText.trim());
+    		    if (size <= 0) {
+    		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+    		        return false;
+    		    }
+    		} catch (NumberFormatException e) {
+    		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+    		    return false;
+    		}
+	        
+	        // Create Parking object
 	        Parking data = new Parking();
 	        data.setPropertyTypeId(4); // 4 = Parking
 	        data.setRolSII(rolSII.trim());
@@ -569,31 +658,44 @@ public class PropertyController {
             boolean hasTerrace,
             boolean hasLaundry,
             boolean inCondo,
-            int size
+            String sizeText
     		) throws SQLException {
         // Validaciones
         		if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-        			Popup.show("Debe seleccionar un propietario válido.", "error"); // SPANISH for "You must select a valid landlord."
+        			Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); // SPANISH for "You must select a valid landlord."
         			return false;
         		}
 
         		if (selectedTown == null || selectedTown.getId() == -1) {
-        			Popup.show("Debe seleccionar una comuna válida.", "error"); // SPANISH for "You must select a valid town."
+        			Popup.show("ERROR: Debe seleccionar una comuna válida.", "error"); // SPANISH for "You must select a valid town."
         			return false;
         		}	
 
         		if (selectedType == null || selectedType.getValue().isEmpty()) {
-        			Popup.show("Debe seleccionar un tipo de propiedad válido.", "error"); // SPANISH for "You must select a valid property type."
+        			Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error"); // SPANISH for "You must select a valid property type."
         			return false;
         		}
 
         		if (rolSII == null || rolSII.trim().isEmpty()
         				|| street == null || street.trim().isEmpty()
         				|| num1 == null || num1.trim().isEmpty()) {
-        			Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error"); // SPANISH for "Complete all required fields for address and SII role."
+        			Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error"); // SPANISH for "Complete all required fields for address and SII role."
         			return false;
         		 }
+        		
+        		int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
 
+        		// Create Land object
         		Land data = new Land();
         		data.setPropertyTypeId(5); // 5 = Land
         		data.setRolSII(rolSII.trim());
@@ -649,32 +751,44 @@ public class PropertyController {
 	        boolean inCondo,
 	        List<Parking> parkings,
 	        List<Storage> storages,
-	        int size
+	        String sizeText
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 		            return false;
 		        }
 	
 		        if (selectedTown == null || selectedTown.getId() == -1) {
-		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 		            return false;
 		        }
 	
 		        if (selectedType == null || selectedType.getValue().isEmpty()) {
-		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 		            return false;
 		        }
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
 		                || num1 == null || num1.trim().isEmpty()) {
-		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
 		        
-		        // Crear objeto Flat
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+		        // Create Office object
 		        Office data = new Office();
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
@@ -715,32 +829,44 @@ public class PropertyController {
 	        boolean buildingHasLift,
 	        boolean inCondo,
 	        List<Storage> storages,
-	        int size
+	        String sizeText
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 		            return false;
 		        }
 	
 		        if (selectedTown == null || selectedTown.getId() == -1) {
-		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 		            return false;
 		        }
 	
 		        if (selectedType == null || selectedType.getValue().isEmpty()) {
-		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 		            return false;
 		        }
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
 		                || num1 == null || num1.trim().isEmpty()) {
-		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
 		        
-		        // Crear objeto Flat
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+		        // Create Office object
 		        Office data = new Office();
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
@@ -782,32 +908,44 @@ public class PropertyController {
 	        boolean buildingHasLift,
 	        boolean inCondo,
 	        List<Parking> parkings,
-	        int size
+	        String sizeText
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 		            return false;
 		        }
 	
 		        if (selectedTown == null || selectedTown.getId() == -1) {
-		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 		            return false;
 		        }
 	
 		        if (selectedType == null || selectedType.getValue().isEmpty()) {
-		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 		            return false;
 		        }
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
 		                || num1 == null || num1.trim().isEmpty()) {
-		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
 		        
-		        // Crear objeto Flat
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+        		// Create Office object
 		        Office data = new Office();
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());
@@ -849,32 +987,44 @@ public class PropertyController {
 	        int parkingQty,
 	        boolean buildingHasLift,
 	        boolean inCondo,
-	        int size
+	        String sizeText
 			) throws SQLException {
 	        // Validaciones
 				if (selectedLandlord == null || selectedLandlord.getId() == -1) {
-		            Popup.show("Debe seleccionar un propietario válido.", "error"); 
+		            Popup.show("ERROR: Debe seleccionar un propietario válido.", "error"); 
 		            return false;
 		        }
 	
 		        if (selectedTown == null || selectedTown.getId() == -1) {
-		            Popup.show("Debe seleccionar una comuna válida.", "error");
+		            Popup.show("ERROR: Debe seleccionar una comuna válida.", "error");
 		            return false;
 		        }
 	
 		        if (selectedType == null || selectedType.getValue().isEmpty()) {
-		            Popup.show("Debe seleccionar un tipo de propiedad válido.", "error");
+		            Popup.show("ERROR: Debe seleccionar un tipo de propiedad válido.", "error");
 		            return false;
 		        }
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
 		                || num1 == null || num1.trim().isEmpty()) {
-		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
+		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
 		        
-		        // Crear objeto Flat
+		        int size; // Inicializar tamaño
+        		try {
+        		    size = Integer.parseInt(sizeText.trim());
+        		    if (size <= 0) {
+        		        Popup.show("ERROR: Tamaño debe ser mayor a cero.", "error");
+        		        return false;
+        		    }
+        		} catch (NumberFormatException e) {
+        		    Popup.show("ERROR: Tamaño debe ser un número válido.", "error");
+        		    return false;
+        		}
+		        
+		        // Create Office object
 		        Office data = new Office();
 		        data.setPropertyTypeId(2); // 2 = Flat
 		        data.setRolSII(rolSII.trim());

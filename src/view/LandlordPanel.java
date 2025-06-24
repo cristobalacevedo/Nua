@@ -35,6 +35,7 @@ import javax.swing.text.AbstractDocument;
 import controller.LandlordController;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 
 // FALTA VALIDAR :
 // CTRL V EN RUT, YA QUE IGUAL LLEGAN CARACTERES NO VÁLIDOS --- READY
@@ -586,12 +587,14 @@ public class LandlordPanel extends JPanel {
 		// -- SAVE BUTTON ACTION LISTENER -- //
 		
 		btnSave.addActionListener(e -> {
-		    Map<String, JTextField> fields = new LinkedHashMap<>();
+		    Map<String, JComponent> fields = new LinkedHashMap<>();
 		    fields.put("RUT", txtRut);
 		    fields.put("Nombre", txtName);
 		    fields.put("Apellido", txtSurname);
 		    fields.put("Email", txtEmail);
 		    fields.put("Teléfono", txtPhone);
+		    fields.put("Banco", comboBank);
+		    fields.put("Tipo de Cuenta", comboType);
 		    fields.put("N° (Número de Cuenta)", txtNum);
 
 		    if (!FieldValidator.validField(fields)) return;
@@ -712,12 +715,14 @@ public class LandlordPanel extends JPanel {
 		btnUpdate.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        // Reunir los campos
-		        Map<String, JTextField> campos = new LinkedHashMap<>();
+		        Map<String, JComponent> campos = new LinkedHashMap<>();
 		        campos.put("RUT", txtRut);
 		        campos.put("Nombre", txtName);
 		        campos.put("Apellido", txtSurname);
 		        campos.put("Email", txtEmail);
 		        campos.put("Teléfono", txtPhone);
+		        campos.put("Banco", comboBank);
+		        campos.put("Tipo de Cuenta", comboType);
 		        campos.put("N° (Número de Cuenta)", txtNum);
 
 		        if (!FieldValidator.validField(campos)) return;
