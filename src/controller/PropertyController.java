@@ -173,10 +173,21 @@ public class PropertyController {
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
-		                || num1 == null || num1.trim().isEmpty()) {
+		                || num1 == null || num1.trim().isEmpty()
+		                || num2 == null || num2.trim().isEmpty()) {
 		            Popup.show("Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
+		        
+		        if (parkings == null || parkings.isEmpty()) {
+					Popup.show("ERROR: Debe agregar los datos de al menos un estacionamiento.", "error");
+					return false;
+				}
+				
+				if (storages == null || storages.isEmpty()) {
+					Popup.show("ERROR: Debe agregar los datos de al menos una bodega.", "error");
+					return false;
+				}
 		        
 		        int size; // Inicializar tamaño
         		try {
@@ -262,10 +273,17 @@ public class PropertyController {
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
-		                || num1 == null || num1.trim().isEmpty()) {
+		                || num1 == null || num1.trim().isEmpty()
+		                || num2 == null || num2.trim().isEmpty()) {
 		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
+				
+				if (storages == null || storages.isEmpty()) {
+					Popup.show("ERROR: Debe agregar los datos de al menos una bodega.", "error");
+					return false;
+				}
+		        
 		        
 		        int size; // Inicializar tamaño
         		try {
@@ -352,10 +370,16 @@ public class PropertyController {
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
-		                || num1 == null || num1.trim().isEmpty()) {
+		                || num1 == null || num1.trim().isEmpty()
+				        || num2 == null || num2.trim().isEmpty()) {
 		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
+		        
+		        if (parkings == null || parkings.isEmpty()) {
+					Popup.show("ERROR: Debe agregar los datos de al menos un estacionamiento.", "error");
+					return false;
+				}
 		        
 		        int size; // Inicializar tamaño
         		try {
@@ -442,7 +466,8 @@ public class PropertyController {
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
-		                || num1 == null || num1.trim().isEmpty()) {
+		                || num1 == null || num1.trim().isEmpty()
+				        || num2 == null || num2.trim().isEmpty()) {
 		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
@@ -771,10 +796,21 @@ public class PropertyController {
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
-		                || num1 == null || num1.trim().isEmpty()) {
+		                || num1 == null || num1.trim().isEmpty()
+		                || num2 == null || num2.trim().isEmpty()) {
 		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
+		        
+				if (parkings == null || parkings.isEmpty()) {
+					Popup.show("ERROR: Debe agregar los datos de al menos un estacionamiento.", "error");
+					return false;
+				}
+				
+				if (storages == null || storages.isEmpty()) {
+					Popup.show("ERROR: Debe agregar los datos de al menos una bodega.", "error");
+					return false;
+				}
 		        
 		        int size; // Inicializar tamaño
         		try {
@@ -849,7 +885,8 @@ public class PropertyController {
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
-		                || num1 == null || num1.trim().isEmpty()) {
+		                || num1 == null || num1.trim().isEmpty()
+		                || num2 == null || num2.trim().isEmpty()) {
 		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
@@ -928,7 +965,8 @@ public class PropertyController {
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
-		                || num1 == null || num1.trim().isEmpty()) {
+		                || num1 == null || num1.trim().isEmpty()
+		                || num2 == null || num2.trim().isEmpty()) {
 		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }
@@ -1007,7 +1045,8 @@ public class PropertyController {
 	
 		        if (rolSII == null || rolSII.trim().isEmpty()
 		                || street == null || street.trim().isEmpty()
-		                || num1 == null || num1.trim().isEmpty()) {
+		                || num1 == null || num1.trim().isEmpty()
+		                || num2 == null || num2.trim().isEmpty()) {
 		            Popup.show("ERROR: Complete todos los campos requeridos de dirección y rol SII.", "error");
 		            return false;
 		        }

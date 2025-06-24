@@ -1481,6 +1481,8 @@ public class PropertyPanel extends JPanel {
 	// ---------------------- //
 	
 	// --- AUXILIARY METHODS --- //
+	// This section contains methods to create parking and storage panels, and to retrieve data from the forms. 
+	// Also methods to clean fields and log data for debugging.
 	
 	public JPanel createParking(int parkingQty) {
 	    JPanel panelParking = new JPanel();
@@ -1548,6 +1550,7 @@ public class PropertyPanel extends JPanel {
 		txtStorageSize.setBounds(170, 50, 45, 30);
 		txtStorageSize.setColumns(10);
 		panelStorage.add(txtStorageSize);
+		((AbstractDocument) txtStorageSize.getDocument()).setDocumentFilter(new NumberDocumentFilter(2));
 		
 		JLabel lblStorageRol = new JLabel("ROL:");
 		lblStorageRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
@@ -1559,10 +1562,11 @@ public class PropertyPanel extends JPanel {
 		lblStorageNum.setBounds(20, 55, 116, 16);
 		panelStorage.add(lblStorageNum);
 		
-		JLabel lblStorageSize = new JLabel("Superficie:");
+		JLabel lblStorageSize = new JLabel("Superficie m²:");
 		lblStorageSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
 		lblStorageSize.setBounds(97, 55, 126, 18);
 		panelStorage.add(lblStorageSize);
+		
 		
 		StorageForm form = new StorageForm(txtStorageRol, txtStorageNum, txtStorageSize);
 		storageForms.add(form); // ✅ agregamos el formulario a la lista
@@ -1618,9 +1622,18 @@ public class PropertyPanel extends JPanel {
 		for (StorageForm form : storageForms) {
 			String rol = form.getRol();
 			String num = form.getNum();
-			int size = Integer.parseInt(form.getSize()); // Get the size from the text field, or 0 if empty
+			String sizeTextStorage = form.getSize(); // Get the size from the text field, or 0 if empty
+			
+			
+			
 			
 			if (rol != null && !rol.isEmpty()) {
+				
+				int size; // Initialize size
+				size = Integer.parseInt(sizeTextStorage.trim());
+	    					
+				// Ensure rol is not empty and size is greater than 0
+				//THIS GOES TO THE STORAGE TABLE, AND THEN TO THE DAO (DB)
 				Storage s = new Storage();
 				s.setLandlordId(comboLandlord.getSelectedItem() instanceof LandlordOption
 	            		? ((LandlordOption) comboLandlord.getSelectedItem()).getId()
@@ -1698,14 +1711,14 @@ public class PropertyPanel extends JPanel {
 	
 	
 	private void cleanFields() {
-		panel_Parking.setVisible(false); // Hide parking panel
-		parkingForms.clear(); // Clear parking forms
-		panel_Parking.removeAll(); // Remove all components from parking panel
-		panel_Parking.repaint(); // Repaint parking panel
-		panel_Storage.setVisible(false); // Hide parking panel
-		storageForms.clear(); // Clear parking forms
-		panel_Storage.removeAll(); // Remove all components from parking panel
-		panel_Storage.repaint(); // Repaint parking panel
+//		panel_Parking.setVisible(false); // Hide parking panel
+//		parkingForms.clear(); // Clear parking forms
+//		panel_Parking.removeAll(); // Remove all components from parking panel
+//		panel_Parking.repaint(); // Repaint parking panel
+//		panel_Storage.setVisible(false); // Hide parking panel
+//		storageForms.clear(); // Clear parking forms
+//		panel_Storage.removeAll(); // Remove all components from parking panel
+//		panel_Storage.repaint(); // Repaint parking panel
 		//comboLandlord.setSelectedIndex(0); // Reset landlord selection
 		//comboPropertyType.setSelectedIndex(0); // Reset property type selection
 		//comboRegion.setSelectedIndex(0); // Reset region selection
