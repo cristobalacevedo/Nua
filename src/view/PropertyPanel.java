@@ -1618,14 +1618,10 @@ public class PropertyPanel extends JPanel {
 				? ((CondoOption) comboCondo.getSelectedItem()).getId()
 				: null;
 		
-		
 		for (StorageForm form : storageForms) {
 			String rol = form.getRol();
 			String num = form.getNum();
 			String sizeTextStorage = form.getSize(); // Get the size from the text field, or 0 if empty
-			
-			
-			
 			
 			if (rol != null && !rol.isEmpty()) {
 				

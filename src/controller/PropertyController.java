@@ -179,15 +179,50 @@ public class PropertyController {
 		            return false;
 		        }
 		        
+//		        if (parkings == null || parkings.isEmpty()) {
+//		        	for (int i = 0; i < parkings.size(); i++) {
+//					    Parking p = parkings.get(i);
+//					    System.out.println("Parking #" + (i + 1) + ": " + p.getRolSII() + ", " + p.getStreetName() + ", " + p.getNum2());
+//					    if (p.getRolSII() == null || p.getRolSII().trim().isEmpty()
+//					        || p.getStreetName().trim().isEmpty()
+//					        || p.getNum2() == null || p.getNum2().trim().isEmpty()
+//					        || (p.isInCondo() && p.getCondoId() == null)) {
+//
+//					        Popup.show("Datos incompletos en estacionamiento #" + (i + 1) + ".", "error");
+//					        return false;
+//					    }
+//					}
+//					//Popup.show("ERROR: Debe agregar los datos de al menos un estacionamiento.", "error");
+//					//return false;
+//				}
+			
 		        if (parkings == null || parkings.isEmpty()) {
-					Popup.show("ERROR: Debe agregar los datos de al menos un estacionamiento.", "error");
-					return false;
-				}
+		            Popup.show("Debe agregar al menos un estacionamiento.", "error");
+		            return false;
+		        }
+
+		        // Validar cada parking
+		        for (int i = 0; i < parkings.size(); i++) {
+		            Parking p = parkings.get(i);
+
+		            if (p.getRolSII() == null || p.getRolSII().trim().isEmpty()
+		                || p.getStreetName() == null || p.getStreetName().trim().isEmpty()
+		                || p.getNum2() == null || p.getNum2().trim().isEmpty()
+		                || (p.isInCondo() && p.getCondoId() == null)) {
+
+		                Popup.show("Datos incompletos en estacionamiento #" + (i + 1) + ".", "error");
+		                return false;
+		            }
+		        }
+
+				
 				
 				if (storages == null || storages.isEmpty()) {
 					Popup.show("ERROR: Debe agregar los datos de al menos una bodega.", "error");
 					return false;
 				}
+				
+
 		        
 		        int size; // Inicializar tamaño
         		try {
