@@ -63,12 +63,12 @@ public class Menu extends JFrame {
 		
 		// Rentals Button		
 		btnRentals.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 18));
-		btnRentals.setBounds(100, 220, 176, 56);
+		btnRentals.setBounds(100, 300, 176, 56);
 		contentPane.add(btnRentals);
 		
 		// Tenants Button
 		btnTenants.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 18));
-		btnTenants.setBounds(100, 300, 176, 56);
+		btnTenants.setBounds(100, 220, 176, 56);
 		contentPane.add(btnTenants);
 		
 		// Reports Button
@@ -110,21 +110,21 @@ public class Menu extends JFrame {
 			}
 		});
 		
+		// Tenants Button Action
+				btnTenants.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						isMenuActive = false;
+						// Show the TenantsPanel when button is clicked
+						showPanel.show(contentPane, new TenantsPanel(contentPane, Menu.this)); 
+					}
+				});
+		
 		// Rentals Button Action
 		btnRentals.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the RentalsPanel when button is clicked
 				showPanel.show(contentPane, new RentalsPanel(contentPane, Menu.this)); 
-			}
-		});
-		
-		// Tenants Button Action
-		btnTenants.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				isMenuActive = false;
-				// Show the TenantsPanel when button is clicked
-				showPanel.show(contentPane, new TenantsPanel(contentPane, Menu.this)); 
 			}
 		});
 		
