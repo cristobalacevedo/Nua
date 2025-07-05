@@ -7,9 +7,9 @@ public class Office extends Estate{
 
 	public Office(int floor, int hasStorage, int hasParking, boolean buildingHasLift,
 			String streetName, String num1, String num2, int townId, int regionId, int landlordId,
-			int propertyTypeId, int size, String rolSII, boolean inCondo, Integer condoId) {
+			int propertyTypeId, int size, String rolSII, int available, boolean inCondo, Integer condoId) {
 		// ADDRESS and PROPERTY
-		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII);
+		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII, available);
 		
 		// OFFICE
 		this.floor = floor;

@@ -11,9 +11,9 @@ public class Flat extends Estate {
 			boolean buildingHasLift, boolean buildingHasPool,
 			boolean buildingHasGym, boolean buildingHasLaundry, boolean buildingHasBBQ,
 			String streetName, String num1, String num2, int townId, int regionId, int landlordId,
-			int propertyTypeId, int size, String rolSII, boolean inCondo, Integer condoId) {
+			int propertyTypeId, int size, String rolSII, int available, boolean inCondo, Integer condoId) {
 		// ADDRESS and PROPERTY
-		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII);
+		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII, available);
 		
 		// FLAT
 		this.roomQty = roomQty;

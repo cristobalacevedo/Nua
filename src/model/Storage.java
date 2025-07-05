@@ -7,9 +7,9 @@ public class Storage extends Estate {
 
 	public Storage(Integer flatId, boolean inCondo, Integer condoId,
 				   String streetName, String num1, String num2, int townId, int regionId, int landlordId,
-				   int propertyTypeId, int size, String rolSII) {
+				   int propertyTypeId, int size, String rolSII, int available) {
 		// ADDRESS and PROPERTY
-		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII);
+		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII, available);
 		
 		// PARKING
 		this.flatId = null; // Default value, can be set later

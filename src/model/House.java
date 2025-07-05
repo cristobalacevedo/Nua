@@ -8,12 +8,12 @@ public class House extends Estate {
 
     // Constructor with all fields
 	public House(String streetName, String num1, String num2, int townId, int regionId, int landlordId,
-			int propertyTypeId, int size, String rolSII, int roomQty, int bathQty, int floorQty, boolean hasParking, boolean hasGarden,
+			int propertyTypeId, int size, String rolSII, int available, int roomQty, int bathQty, int floorQty, boolean hasParking, boolean hasGarden,
 			boolean hasPatio, boolean hasPool, boolean hasStorage, boolean hasBBQ, boolean hasBalcony, boolean hasTerrace, boolean hasLaundry, boolean inCondo, Integer condoId,
 			Integer condoPlatformId) {
 		
 		// ADDRESS and PROPERTY
-		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII);
+		super(streetName, num1, num2, townId, regionId, landlordId, propertyTypeId, size, rolSII, available);
 		
 		// HOUSE
 		this.roomQty = roomQty;

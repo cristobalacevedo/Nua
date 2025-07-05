@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import db.DBConnection;
+import model.AvailablePropertyView;
+import model.Estate;
 import model.Flat;
 import model.House;
 import model.Land;
@@ -63,6 +65,35 @@ public class PropertyDAO {
 
 		return propertyTypes;
 	}
+	
+	public List<AvailablePropertyView> getAllAvailable() {
+	    List<AvailablePropertyView> list = new ArrayList<>();
+	    String sql = "SELECT * FROM all_available_properties";
+
+	    try (
+	        Connection conn = DBConnection.getConnection();
+	        PreparedStatement stmt = conn.prepareStatement(sql);
+	        ResultSet rs = stmt.executeQuery()
+	    ) {
+	        while (rs.next()) {
+	            AvailablePropertyView apv = new AvailablePropertyView(
+	                rs.getString("Dueño"),
+	                rs.getString("Tipo"),
+	                rs.getString("ROL_SII"),
+	                rs.getInt("Tamaño"),
+	                rs.getString("Comuna"),
+	                rs.getString("Dirección"),
+	                rs.getString("Disponibilidad")
+	            );
+	            list.add(apv);
+	        }
+	    } catch (SQLException e) {
+	    	e.printStackTrace();
+	    }
+
+	    return list;
+	}
+
 	
 	public static int getTypeIDByName(String typeName) {
 		int typeID = -1; // Default value if not found

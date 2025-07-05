@@ -12,6 +12,7 @@ public class RentalsPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnBack = new JButton("Atrás"); // SPANISH
+	private JButton btnShowAA = new JButton("Propiedades Disponibles");
 
 	public RentalsPanel(Container contentPane, Menu menu) {
 		setBackground(Color.GREEN);
@@ -25,12 +26,28 @@ public class RentalsPanel extends JPanel {
 		btnBack.setBounds(50, 600, 100, 30);
 		add(btnBack);
 				
+		// All Available Button
+		btnShowAA.setBounds(200, 600, 200, 30);
+		add(btnShowAA);
+		
+		
+		
+		// All Available Button ActionListener
+		btnShowAA.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showMiniFrame.show(new AvailablePropertiesList()); // Show the LandlordsList Frame when the button is clicked
+			}
+		});
+		
+		
 		// Back Button ActionListener
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showPanel.show(contentPane, menu.MenuClone());// Show the MenuPanel when back button is clicked
 			}
 		});
+		
+		
 				
 	}
 }
