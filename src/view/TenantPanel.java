@@ -32,9 +32,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.awt.event.ActionEvent;
+import javax.swing.JTabbedPane;
 
 // This class represents the Tenants panel in the application.
-public class TenantsPanel extends JPanel {
+public class TenantPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnBack = new JButton("Atrás"); // SPANISH
@@ -64,7 +65,7 @@ public class TenantsPanel extends JPanel {
 	private JComboBox<String> comboType;
 	
 
-	public TenantsPanel(Container contentPane, Menu menu) {
+	public TenantPanel(Container contentPane, Menu menu) {
 		setBackground(new Color(187, 187, 187));
 		setForeground(Color.BLACK);
 		setName("TenantPanel"); 
@@ -81,7 +82,7 @@ public class TenantsPanel extends JPanel {
 		
 		txtRut = new JTextField();
 		txtRut.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtRut.setBounds(302, 164, 270, 30);
+		txtRut.setBounds(228, 163, 270, 30);
 		add(txtRut);
 		txtRut.setColumns(10);
 		
@@ -223,7 +224,7 @@ public class TenantsPanel extends JPanel {
 		
 		txtName = new JTextField();
 		txtName.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtName.setBounds(302, 206, 270, 30);
+		txtName.setBounds(228, 205, 270, 30);
 		add(txtName);
 		txtName.setColumns(10);
 		
@@ -233,7 +234,7 @@ public class TenantsPanel extends JPanel {
 		
 		txtSurname = new JTextField();
 		txtSurname.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtSurname.setBounds(302, 245, 270, 30);
+		txtSurname.setBounds(228, 244, 270, 30);
 		add(txtSurname);
 		txtSurname.setColumns(10);
 		
@@ -243,7 +244,7 @@ public class TenantsPanel extends JPanel {
 		
 		txtEmail = new JTextField();
 		txtEmail.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtEmail.setBounds(302, 286, 270, 30);
+		txtEmail.setBounds(228, 285, 270, 30);
 		add(txtEmail);
 		txtEmail.setColumns(10);
 		
@@ -253,7 +254,7 @@ public class TenantsPanel extends JPanel {
 		
 		txtPhone = new JTextField();
 		txtPhone.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtPhone.setBounds(302, 328, 270, 30);
+		txtPhone.setBounds(228, 327, 270, 30);
 		add(txtPhone);
 		txtPhone.setColumns(10);
 		
@@ -284,7 +285,7 @@ public class TenantsPanel extends JPanel {
 	
 		txtNum = new JTextField();
 		txtNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		txtNum.setBounds(689, 249, 270, 30);
+		txtNum.setBounds(602, 249, 270, 30);
 		add(txtNum);
 		txtNum.setColumns(10);
 		
@@ -310,7 +311,7 @@ public class TenantsPanel extends JPanel {
 		lblPersonalData = new JLabel("Datos Personales"); // SPANISH for "Personal Data"
 		lblPersonalData.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
 		lblPersonalData.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPersonalData.setBounds(267, 113, 242, 39);
+		lblPersonalData.setBounds(178, 113, 242, 39);
 		add(lblPersonalData);
 		
 		// -- END PERSONAL DATA TITLE --
@@ -319,7 +320,7 @@ public class TenantsPanel extends JPanel {
 		
 		lblRut = new JLabel("RUT:"); // SPANISH for "RUT"
 		lblRut.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblRut.setBounds(211, 164, 43, 30);
+		lblRut.setBounds(137, 163, 43, 30);
 		add(lblRut);
 		
 		// -- END RUT --
@@ -328,7 +329,7 @@ public class TenantsPanel extends JPanel {
 		
 		lblName = new JLabel("Nombre:"); // SPANISH for "Name"
 		lblName.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblName.setBounds(211, 205, 92, 30);
+		lblName.setBounds(137, 204, 92, 30);
 		add(lblName);
 		
 		// -- END NAME --
@@ -337,7 +338,7 @@ public class TenantsPanel extends JPanel {
 		
 		lblSurname = new JLabel("Apellido:"); // SPANISH for "Surname"
 		lblSurname.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblSurname.setBounds(211, 245, 92, 30);
+		lblSurname.setBounds(137, 244, 92, 30);
 		add(lblSurname);
 		
 		// -- END SURNAME --
@@ -346,7 +347,7 @@ public class TenantsPanel extends JPanel {
 		
 		lblEmail = new JLabel("e-mail:"); // SPANISH for "Email"
 		lblEmail.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblEmail.setBounds(211, 286, 92, 30);
+		lblEmail.setBounds(137, 285, 92, 30);
 		add(lblEmail);
 		
 		// -- END EMAIL --
@@ -355,7 +356,7 @@ public class TenantsPanel extends JPanel {
 		
 		lblPhone = new JLabel("Teléfono:"); // SPANISH for "Phone"
 		lblPhone.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblPhone.setBounds(211, 328, 92, 30);
+		lblPhone.setBounds(137, 327, 92, 30);
 		add(lblPhone);
 		
 		// -- END PHONE --
@@ -365,22 +366,22 @@ public class TenantsPanel extends JPanel {
 		lblBankData = new JLabel("Datos Bancarios"); // SPANISH for "Bank Data"
 		lblBankData.setHorizontalAlignment(SwingConstants.CENTER);
 		lblBankData.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
-		lblBankData.setBounds(670, 113, 242, 39);
+		lblBankData.setBounds(583, 113, 242, 39);
 		add(lblBankData);
 		
 		lblBank = new JLabel("Banco:"); // SPANISH for "Bank"
 		lblBank.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblBank.setBounds(622, 164, 64, 30);
+		lblBank.setBounds(535, 164, 64, 30);
 		add(lblBank);
 		
 		lblType = new JLabel("Tipo:"); // SPANISH for "Account Type"
 		lblType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblType.setBounds(622, 206, 77, 30);
+		lblType.setBounds(535, 206, 77, 30);
 		add(lblType);
 		
 		lblNum = new JLabel("Nº : "); // SPANISH for "Account Number"
 		lblNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblNum.setBounds(622, 245, 64, 30);
+		lblNum.setBounds(535, 245, 64, 30);
 		add(lblNum);
 		
 		// -- END BANK DATA -- //
@@ -395,7 +396,7 @@ public class TenantsPanel extends JPanel {
 		
 		comboBank = new JComboBox<String>();
 		comboBank.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		comboBank.setBounds(689, 164, 270, 30);
+		comboBank.setBounds(602, 164, 270, 30);
 		add(comboBank);
 		
 		comboBank.addItem("Seleccione Banco..."); // SPANISH for "Select..."
@@ -413,7 +414,7 @@ public class TenantsPanel extends JPanel {
 		
 		comboType = new JComboBox<String>();
 		comboType.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		comboType.setBounds(689, 206, 270, 30);
+		comboType.setBounds(602, 206, 270, 30);
 		add(comboType);
 		
 		comboType.addItem("Seleccione Tipo de Cuenta..."); // SPANISH for "Select Account Type..."
@@ -433,7 +434,7 @@ public class TenantsPanel extends JPanel {
 		separator.setForeground(Color.GRAY);
 		separator.setBackground(Color.GRAY);
 		separator.setOrientation(SwingConstants.VERTICAL);
-		separator.setBounds(598, 164, 12, 233);
+		separator.setBounds(513, 163, 12, 233);
 		add(separator);
 		
 		// --- END SEPARATORS --- //
@@ -456,7 +457,7 @@ public class TenantsPanel extends JPanel {
 		btnSave.setForeground(new Color(255, 255, 255));
 		btnSave.setBackground(new Color(0, 153, 0));
 		btnSave.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 22));
-		btnSave.setBounds(537, 404, 125, 58);
+		btnSave.setBounds(452, 407, 125, 58);
 		add(btnSave);
 		
 		// -- END SAVE BUTTON -- //
@@ -479,7 +480,7 @@ public class TenantsPanel extends JPanel {
 		btnUpdate.setForeground(Color.WHITE);
 		btnUpdate.setBackground(new Color(51, 153, 255));
 		btnUpdate.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 22));
-		btnUpdate.setBounds(531, 404, 142, 58);
+		btnUpdate.setBounds(446, 407, 142, 58);
 		btnUpdate.setVisible(false); // Initially hidden until a landlord is selected for update
 		add(btnUpdate);
 		
@@ -586,6 +587,19 @@ public class TenantsPanel extends JPanel {
 		    fields.put("Banco", comboBank);
 		    fields.put("Tipo de Cuenta", comboType);
 		    fields.put("N° (Número de Cuenta)", txtNum);
+		    
+		    JSeparator separator_1 = new JSeparator();
+		    separator_1.setOrientation(SwingConstants.VERTICAL);
+		    separator_1.setForeground(Color.GRAY);
+		    separator_1.setBackground(Color.GRAY);
+		    separator_1.setBounds(890, 163, 12, 233);
+		    add(separator_1);
+		    
+		    JLabel lblAval = new JLabel("Aval");
+		    lblAval.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
+		    lblAval.setHorizontalAlignment(SwingConstants.CENTER);
+		    lblAval.setBounds(988, 117, 77, 30);
+		    add(lblAval);
 
 		    if (!FieldValidator.validField(fields)) return;
 		    

@@ -115,7 +115,7 @@ public class Menu extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						isMenuActive = false;
 						// Show the TenantsPanel when button is clicked
-						showPanel.show(contentPane, new TenantsPanel(contentPane, Menu.this)); 
+						showPanel.show(contentPane, new TenantPanel(contentPane, Menu.this)); 
 					}
 				});
 		
@@ -216,7 +216,7 @@ public class Menu extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				isMenuActive = false;
 				// Show the TenantsPanel when button is clicked
-				showPanel.show(contentPane, new TenantsPanel(contentPane, Menu.this)); 
+				showPanel.show(contentPane, new TenantPanel(contentPane, Menu.this)); 
 			}
 		});
 		
