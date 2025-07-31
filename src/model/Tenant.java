@@ -12,13 +12,27 @@ public class Tenant extends Person {
 		this.hasAval = hasAval; // Default value, can be set later if needed
 	}
 	
-	// GETTERS
+	public Tenant(String rut, String name, String surname, String email, String phone, String type,
+			boolean isActive, boolean isRenting, String aval_id) {
+		super(rut, name, surname, email, phone, type);
+	}
 	
-	public boolean isActive() {
+	
+	public Tenant(String rut, String name, String surname, String email, String phone, String type,
+			boolean isActive, boolean isRenting, String aval_id, String bankName, String typeAccount, String numAccount) {
+		super(rut, name, surname, email, phone, type, bankName, typeAccount, numAccount);
+		this.isActive = isActive;
+		this.isRenting = isRenting;
+	}
+	
+	// GETTERS
+
+
+	public boolean getIsActive() {
 		return isActive;
 	}
 	
-	public boolean isRenting() {
+	public boolean getIsRenting() {
 		return isRenting;
 	}
 	
@@ -26,7 +40,7 @@ public class Tenant extends Person {
 		return "tenant"; // Overriding to return a fixed type for Tenant
 	}
 
-	public boolean hasAval() {
+	public boolean getHasAval() {
 		return hasAval;
 	}
 	

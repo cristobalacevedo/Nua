@@ -10,11 +10,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.text.AbstractDocument;
 
-import controller.LandlordController;
+import controller.TenantController;
 import dao.BankDAO;
-import dao.LandlordDAO;
+import dao.TenantDAO;
 import db.DBConnection;
-import model.Landlord;
+import model.Tenant;
 import utils.FieldValidator;
 import utils.PhoneDocumentFilter;
 import utils.RUTDocumentFilter;
@@ -65,15 +65,15 @@ public class TenantPanel extends JPanel {
 	private JButton btnSave;
 	private JButton btnDelete;
 	private JButton btnUpdate;
-	private JButton btnShowLL;
-	private Landlord actualLandlord; // Holds the currently selected landlord for updates or deletions
+	private JButton btnShowTL;
+	private Tenant actualTenant; // Holds the currently selected landlord for updates or deletions
 	private JComboBox<String> comboBank;
 	private JComboBox<String> comboType;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
+	private JTextField txtRutAval;
+	private JTextField txtNameAval;
+	private JTextField txtEmailAval;
+	private JTextField txtPhoneAval;
+	private JTextField txtSurnameAval;
 	
 
 	public TenantPanel(Container contentPane, Menu menu) {
@@ -137,13 +137,13 @@ public class TenantPanel extends JPanel {
 
 		        // Buscar solo si es válido
 		        if (RUTValidator.isValid(formattedRut)) {
-		            actualLandlord = LandlordDAO.getByRut2(formattedRut); // usar RUT limpio para búsqueda
+		            actualTenant = TenantDAO.getByRut2(formattedRut); // usar RUT limpio para búsqueda
 
-		            if (actualLandlord != null) {
-		                txtName.setText(actualLandlord.getName());
-		                txtSurname.setText(actualLandlord.getSurname());
-		                txtEmail.setText(actualLandlord.getEmail());
-		                txtPhone.setText(actualLandlord.getPhone());
+		            if (actualTenant != null) {
+		                txtName.setText(actualTenant.getName());
+		                txtSurname.setText(actualTenant.getSurname());
+		                txtEmail.setText(actualTenant.getEmail());
+		                txtPhone.setText(actualTenant.getPhone());
 		                
 //		             // Normalización defensiva por si hay errores de mayúsculas
 //		                String bankName = actualLandlord.getBankName();
@@ -176,21 +176,21 @@ public class TenantPanel extends JPanel {
 //		                }
 //		              
 		                
-		                comboBank.setSelectedItem(actualLandlord.getBankName()); // Set selected bank
-		                comboType.setSelectedItem(actualLandlord.getAccountType()); // Set selected account type
-		                txtNum.setText(actualLandlord.getAccountNum()); // Set account number
+		                comboBank.setSelectedItem(actualTenant.getBankName()); // Set selected bank
+		                comboType.setSelectedItem(actualTenant.getAccountType()); // Set selected account type
+		                txtNum.setText(actualTenant.getAccountNum()); // Set account number
 		                showEditButton();
 		                btnSave.setVisible(false);
-		                System.out.println("\nRUT Found	: " + actualLandlord.getRut());
-		                System.out.println("Bank		: " + actualLandlord.getBankName());
-		                System.out.println("Account Type	: " + actualLandlord.getAccountType());
-		                System.out.println("N°    		: " + actualLandlord.getAccountNum());
+		                System.out.println("\nRUT Found	: " + actualTenant.getRut());
+		                System.out.println("Bank		: " + actualTenant.getBankName());
+		                System.out.println("Account Type	: " + actualTenant.getAccountType());
+		                System.out.println("N°    		: " + actualTenant.getAccountNum());
 		            } else {
 		                cleanFields();
 		                hideEditButtons();
 		                btnSave.setVisible(true);
-		                actualLandlord = null;
-		                System.out.println("RUT Not Found: " + formattedRut);
+		                actualTenant = null;
+		                System.out.println("RUT Not Found as 'Tenant': " + formattedRut);
 		            }
 		        } else {
 		            cleanFields();
@@ -302,6 +302,44 @@ public class TenantPanel extends JPanel {
 		
 		// -- END BANK NUMBER -- //
 		
+		// -- AVAL TEXT FIELDS -- //
+		
+		txtRutAval = new JTextField();
+	    txtRutAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+	    txtRutAval.setColumns(10);
+	    txtRutAval.setBounds(945, 163, 242, 30);
+	    add(txtRutAval);
+	    
+	    txtNameAval = new JTextField();
+	    txtNameAval.setText("");
+	    txtNameAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+	    txtNameAval.setColumns(10);
+	    txtNameAval.setBounds(945, 205, 242, 30);
+	    add(txtNameAval);
+	    
+	    txtSurnameAval = new JTextField();
+	    txtSurnameAval.setText("");
+	    txtSurnameAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+	    txtSurnameAval.setColumns(10);
+	    txtSurnameAval.setBounds(945, 244, 242, 30);
+	    add(txtSurnameAval);
+	    
+	    txtEmailAval = new JTextField();
+	    txtEmailAval.setText("");
+	    txtEmailAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+	    txtEmailAval.setColumns(10);
+	    txtEmailAval.setBounds(945, 285, 242, 30);
+	    add(txtEmailAval);
+	    
+	    txtPhoneAval = new JTextField();
+	    txtPhoneAval.setText("");
+	    txtPhoneAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+	    txtPhoneAval.setColumns(10);
+	    txtPhoneAval.setBounds(945, 327, 242, 30);
+	    add(txtPhoneAval);
+		
+	    // -- END AVAL TEXT FIELDS -- //
+	    
 		// --- END TEXT FIELDS --- //
 		
 		// --------------------- //
@@ -407,6 +445,37 @@ public class TenantPanel extends JPanel {
 		
 		// -- END BANK DATA -- //
 		
+		// --- AVAL LABELS --- //
+		
+	    lblRutAval = new JLabel("RUT:");
+	    lblRutAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+	    lblRutAval.setBounds(859, 163, 43, 30);
+	    add(lblRutAval);
+	    
+	    lblNameAval = new JLabel("Nombre:");
+	    lblNameAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+	    lblNameAval.setBounds(859, 204, 92, 30);
+	    add(lblNameAval);
+	    
+	    lblSurnameAval = new JLabel("Apellido:");
+	    lblSurnameAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+	    lblSurnameAval.setBounds(859, 244, 92, 30);
+	    add(lblSurnameAval);
+	    
+	    lblEmailAval = new JLabel("e-mail:");
+	    lblEmailAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+	    lblEmailAval.setBounds(859, 285, 92, 30);
+	    add(lblEmailAval);
+	    
+	    lblPhoneAval = new JLabel("Teléfono:");
+	    lblPhoneAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+	    lblPhoneAval.setBounds(859, 327, 92, 30);
+	    add(lblPhoneAval);
+	    
+	    // -- END AVAL LABELS -- //
+	    
+	    
+		
 		// --- END LABELS --- //
 		
 		// ---------------------
@@ -458,16 +527,14 @@ public class TenantPanel extends JPanel {
 		separator.setBounds(480, 163, 12, 233);
 		add(separator);
 		
-		 JSeparator separator_1 = new JSeparator();
-		    separator_1.setOrientation(SwingConstants.VERTICAL);
-		    separator_1.setForeground(Color.GRAY);
-		    separator_1.setBackground(Color.GRAY);
-		    separator_1.setBounds(837, 163, 12, 233);
-		    add(separator_1);
+		JSeparator separator_1 = new JSeparator();
+		separator_1.setOrientation(SwingConstants.VERTICAL);
+		separator_1.setForeground(Color.GRAY);
+		separator_1.setBackground(Color.GRAY);
+		separator_1.setBounds(837, 163, 12, 233);
+		add(separator_1);
 		    
-		    
-		
-		
+		   
 		// --- END SEPARATORS --- //
 		
 		// --------------------- //
@@ -517,12 +584,12 @@ public class TenantPanel extends JPanel {
 		
 		// -- END UPDATE BUTTON -- //
 		
-		// -- SHOW LANDLORDS LIST BUTTON -- //
+		// -- SHOW TENANTS LIST BUTTON -- //
 		
-		btnShowLL = new JButton("Ver Listado");
-		btnShowLL.setBounds(39, 43, 142, 45);
-		btnShowLL.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 20));
-		add(btnShowLL);
+		btnShowTL = new JButton("Ver Listado");
+		btnShowTL.setBounds(39, 43, 142, 45);
+		btnShowTL.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 20));
+		add(btnShowTL);
 		
 		// -- END SHOW LANDLORDS LIST BUTTON -- //
 		
@@ -618,92 +685,42 @@ public class TenantPanel extends JPanel {
 		    fields.put("Banco", comboBank);
 		    fields.put("Tipo de Cuenta", comboType);
 		    fields.put("N° (Número de Cuenta)", txtNum);
-		    
-		    lblRutAval = new JLabel("RUT:");
-		    lblRutAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		    lblRutAval.setBounds(859, 163, 43, 30);
-		    add(lblRutAval);
-		    
-		    lblNameAval = new JLabel("Nombre:");
-		    lblNameAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		    lblNameAval.setBounds(859, 204, 92, 30);
-		    add(lblNameAval);
-		    
-		    lblSurnameAval = new JLabel("Apellido:");
-		    lblSurnameAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		    lblSurnameAval.setBounds(859, 244, 92, 30);
-		    add(lblSurnameAval);
-		    
-		    JLabel lblEmail_1 = new JLabel("e-mail:");
-		    lblEmail_1.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		    lblEmail_1.setBounds(859, 285, 92, 30);
-		    add(lblEmail_1);
-		    
-		    JLabel lblPhone_1 = new JLabel("Teléfono:");
-		    lblPhone_1.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		    lblPhone_1.setBounds(859, 327, 92, 30);
-		    add(lblPhone_1);
-		    
-		    textField = new JTextField();
-		    textField.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		    textField.setColumns(10);
-		    textField.setBounds(945, 163, 242, 30);
-		    add(textField);
-		    
-		    textField_1 = new JTextField();
-		    textField_1.setText("");
-		    textField_1.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		    textField_1.setColumns(10);
-		    textField_1.setBounds(945, 205, 242, 30);
-		    add(textField_1);
-		    
-		    textField_2 = new JTextField();
-		    textField_2.setText("");
-		    textField_2.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		    textField_2.setColumns(10);
-		    textField_2.setBounds(945, 285, 242, 30);
-		    add(textField_2);
-		    
-		    textField_3 = new JTextField();
-		    textField_3.setText("");
-		    textField_3.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		    textField_3.setColumns(10);
-		    textField_3.setBounds(945, 327, 242, 30);
-		    add(textField_3);
-		    
-		    textField_4 = new JTextField();
-		    textField_4.setText("");
-		    textField_4.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		    textField_4.setColumns(10);
-		    textField_4.setBounds(945, 244, 242, 30);
-		    add(textField_4);
-		    
 		   
 
 		    if (!FieldValidator.validField(fields)) return;
 		    
-		    // Landlord data
+		    // Tenant data
 		    String rut = txtRut.getText().trim();
 		    String name = txtName.getText().trim();
 		    String surname = txtSurname.getText().trim();
 		    String email = txtEmail.getText().trim();
 		    String phone = txtPhone.getText().trim();
-
+		    String aval = (txtRutAval.getText().trim().isEmpty()) ? "" : txtRutAval.getText().trim(); // Optional aval field
 		    // Bank and account data
 		    String selectedBankName = comboBank.getSelectedItem().toString();
 		    String accountType = comboType.getSelectedItem().toString();
 		    String num = txtNum.getText().trim();
 
-		    LandlordController controller = new LandlordController();
+		    TenantController controller = new TenantController();
 
-		    boolean success = controller.saveLandlord(
-		        rut, name, surname, email, phone, selectedBankName, accountType, num);
+		    boolean success = controller.saveTenant(
+		        rut, name, surname, email, phone, aval, selectedBankName, accountType, num);
 
 		    if (success) {
+		    	System.out.println("RUT: " + rut);
+		        System.out.println("Banco: " + selectedBankName);
+		        System.out.println("Tipo de Cuenta: " + accountType);
+		        System.out.println("N°: " + num);
+		           
 		    	System.out.println("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
 		        Popup.showSuccess("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
 		        cleanFields();
 		    } else {
+		    	System.out.println("RUT: " + rut);
+		        System.out.println("Banco: " + selectedBankName);
+		        System.out.println("Tipo de Cuenta: " + accountType);
+		        System.out.println("N°: " + num);
+		        
 		    	System.out.println("Error al guardar arrendador."); // SPANISH for "Error saving landlord"
 		        Popup.show("Error al guardar arrendador.", "error"); // SPANISH for "Error saving landlord"
 		    }
@@ -795,46 +812,46 @@ public class TenantPanel extends JPanel {
 		
 		// -- UPDATE BUTTON ACTION LISTENER -- //
 		
-		btnUpdate.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        // Reunir los campos
-		        Map<String, JComponent> campos = new LinkedHashMap<>();
-		        campos.put("RUT", txtRut);
-		        campos.put("Nombre", txtName);
-		        campos.put("Apellido", txtSurname);
-		        campos.put("Email", txtEmail);
-		        campos.put("Teléfono", txtPhone);
-		        campos.put("Banco", comboBank);
-		        campos.put("Tipo de Cuenta", comboType);
-		        campos.put("N° (Número de Cuenta)", txtNum);
-
-		        if (!FieldValidator.validField(campos)) return;
-
-		        // Obtener valores
-		        String rut = txtRut.getText().trim();
-		        String name = txtName.getText().trim();
-		        String surname = txtSurname.getText().trim();
-		        String email = txtEmail.getText().trim();
-		        String phone = txtPhone.getText().trim();
-		        String accountNum = txtNum.getText().trim();
-		        String selectedBankName = comboBank.getSelectedItem().toString();
-		        String accountType = comboType.getSelectedItem().toString();
-
-		        // Llamar al controlador
-		        LandlordController controller = new LandlordController();
-		        boolean updated = controller.updateLandlord(
-		            rut, name, surname, email, phone, selectedBankName, accountType, accountNum
-		        );
-
-		        if (updated) {
-		            Popup.showSuccess("Arrendador actualizado correctamente.");
-		            cleanFields();
-		            hideEditButtons();
-		        } else {
-		            Popup.show("Error al actualizar arrendador.", "error");
-		        }
-		    }
-		});
+//		btnUpdate.addActionListener(new ActionListener() {
+//		    public void actionPerformed(ActionEvent e) {
+//		        // Reunir los campos
+//		        Map<String, JComponent> campos = new LinkedHashMap<>();
+//		        campos.put("RUT", txtRut);
+//		        campos.put("Nombre", txtName);
+//		        campos.put("Apellido", txtSurname);
+//		        campos.put("Email", txtEmail);
+//		        campos.put("Teléfono", txtPhone);
+//		        campos.put("Banco", comboBank);
+//		        campos.put("Tipo de Cuenta", comboType);
+//		        campos.put("N° (Número de Cuenta)", txtNum);
+//
+//		        if (!FieldValidator.validField(campos)) return;
+//
+//		        // Obtener valores
+//		        String rut = txtRut.getText().trim();
+//		        String name = txtName.getText().trim();
+//		        String surname = txtSurname.getText().trim();
+//		        String email = txtEmail.getText().trim();
+//		        String phone = txtPhone.getText().trim();
+//		        String accountNum = txtNum.getText().trim();
+//		        String selectedBankName = comboBank.getSelectedItem().toString();
+//		        String accountType = comboType.getSelectedItem().toString();
+//
+//		        // Llamar al controlador
+//		        TenantController controller = new TenantController();
+//		        boolean updated = controller.updateTenant(
+//		            rut, name, surname, email, phone, selectedBankName, accountType, accountNum
+//		        );
+//
+//		        if (updated) {
+//		            Popup.showSuccess("Arrendador actualizado correctamente.");
+//		            cleanFields();
+//		            hideEditButtons();
+//		        } else {
+//		            Popup.show("Error al actualizar arrendador.", "error");
+//		        }
+//		    }
+//		});
 		
 		
 //		btnUpdate.addActionListener(new ActionListener() {
@@ -923,8 +940,8 @@ public class TenantPanel extends JPanel {
 		btnDelete.addActionListener(e -> {
 		    String rut = txtRut.getText().trim();
 
-		    LandlordController controller = new LandlordController();
-		    boolean deleted = controller.deleteLandlord(rut);
+		    TenantController controller = new TenantController();
+		    boolean deleted = controller.deleteTenant(rut);
 
 		    if (deleted) {
 		        Popup.showSuccess("Arrendador eliminado con éxito.");
@@ -988,9 +1005,9 @@ public class TenantPanel extends JPanel {
 		
 		// -- UPDATE BUTTON ACTION LISTENER -- //
 		
-		btnShowLL.addActionListener(new ActionListener() {
+		btnShowTL.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showMiniFrame.show(new LandlordsList()); // Show the LandlordsList Frame when the button is clicked
+				showMiniFrame.show(new TenantsList()); // Show the LandlordsList Frame when the button is clicked
 			}
 		});
 		
@@ -1028,19 +1045,19 @@ public class TenantPanel extends JPanel {
 		btnSave.setVisible(true);
 	}
 	
-	private void fillFields(Landlord landlord) {
-	    txtName.setText(landlord.getName());
-	    txtPhone.setText(landlord.getPhone());
-	    txtEmail.setText(landlord.getEmail());
+	private void fillFields(Tenant tenant) {
+	    txtName.setText(tenant.getName());
+	    txtPhone.setText(tenant.getPhone());
+	    txtEmail.setText(tenant.getEmail());
 	}
 	
 	private void searchByRut() {
 	    String rut = txtRut.getText().trim();
 	    if (!rut.isEmpty()) {
-	    	LandlordDAO dao = new LandlordDAO(null);
-	        Landlord landlord = dao.getByRut(rut);
-	        if (landlord != null) {
-	            fillFields(landlord);
+	    	TenantDAO dao = new TenantDAO(null);
+	        Tenant tenant = dao.getByRut(rut);
+	        if (tenant != null) {
+	            fillFields(tenant);
 	        } else {
 	            cleanFields(); // Do not clean RUT field
 	        }
@@ -1060,15 +1077,15 @@ public class TenantPanel extends JPanel {
 	        return;
 	    }
 
-	    LandlordDAO dao = new LandlordDAO(null);
-	    Landlord landlord = dao.getByRut(rut); // debes implementar este método
+	    TenantDAO dao = new TenantDAO(null);
+	    Tenant tenant = dao.getByRut(rut); // debes implementar este método
 
-	    if (landlord != null) {
+	    if (tenant != null) {
 	        // Mostrar datos
-	        txtName.setText(landlord.getName());
-	        txtSurname.setText(landlord.getSurname());
-	        txtEmail.setText(landlord.getEmail());
-	        txtPhone.setText(landlord.getPhone());
+	        txtName.setText(tenant.getName());
+	        txtSurname.setText(tenant.getSurname());
+	        txtEmail.setText(tenant.getEmail());
+	        txtPhone.setText(tenant.getPhone());
 
 	        showEditButton(); // btnUpdate & btnDelete visible, btnSave hidden
 	    } else {
