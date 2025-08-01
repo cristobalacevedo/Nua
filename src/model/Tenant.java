@@ -26,7 +26,23 @@ public class Tenant extends Person {
 	}
 	
 	// GETTERS
+	
 
+	public Tenant(String rut, String name, String surname, String email, String phone, String type, boolean isActive,
+			boolean isRenting, String rutAval, String nameAval, String surnameAval, String emailAval, String phoneAval,
+			String bankName, String accountType, String accountNum, String bankNameAval, String accountTypeAval, String accountNumAval) {
+		super(rut, name, surname, email, phone, type, bankName, accountType, accountNum);
+		this.isActive = isActive;
+		this.isRenting = isRenting;
+	}
+	
+
+	public Tenant(String rut, String name, String surname, String email, String phone, String type, boolean isActive,
+			boolean isRenting, String bankName, String accountType, String accountNum) {
+		super(rut, name, surname, email, phone, type, bankName, accountType, accountNum);
+		this.isActive = isActive;
+		this.isRenting = isRenting;
+	}
 
 	public boolean getIsActive() {
 		return isActive;

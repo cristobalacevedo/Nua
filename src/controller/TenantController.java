@@ -3,6 +3,7 @@ package controller;
 import dao.BankDAO;
 import dao.TenantDAO;
 import dao.PersonDAO;
+import model.Aval;
 import model.Tenant;
 import utils.RUTValidator;
 import view.Popup;
@@ -13,8 +14,7 @@ public class TenantController {
 	private final TenantDAO tenantDAO = new TenantDAO(null);
     private final BankDAO bankDAO = new BankDAO();
 
-    public boolean saveTenant(String rut, String name, String surname, String email,
-                                  String phone, String aval, String bankName, String accountType, String accountNum) {
+    public boolean saveTenant(String rut, String name, String surname, String email, String phone, String bankName, String accountType, String accountNum) {
 
         if (!RUTValidator.isValid(rut)) {
             Popup.show("RUT inválido. Verifica el formato y el dígito verificador.", "error"); // SPANISH for "Invalid RUT. Check the format and the verification digit."
@@ -39,11 +39,48 @@ public class TenantController {
         int bankId = bankDAO.getIdByName(bankName);
 
         Tenant tenant = new Tenant(rut, name, surname, email, phone,
-            "tenant", true, false, aval,
+            "tenant", true, false,
             bankDAO.getBankByName(bankName), accountType, accountNum);
 
-        return tenantDAO.save(tenant, bankId, accountType, accountNum);
+        return tenantDAO.saveTenant(tenant, bankId, accountType, accountNum);
     }
+    
+    public boolean saveTenantAval(String rut, String name, String surname, String email,
+			String phone, String rutAval, String nameAval, String surnameAval, String emailAval, 
+			String phoneAval, String bankName, String accountType, String accountNum, String bankNameAval, String accountTypeAval, String accountNumAval) {
+
+		if (!RUTValidator.isValid(rut)) {
+			Popup.show("RUT inválido. Verifica el formato y el dígito verificador.", "error"); // SPANISH for "Invalid RUT. Check the format and the verification digit."
+			return false;
+		}
+
+		if (PersonDAO.rutExistsInDB(rut)) {
+			Popup.show("El RUT ya está registrado en el sistema.", "error"); // SPANISH for "The RUT is already registered in the system."
+			return false;
+		}
+
+		if (bankName == null || bankName.isEmpty() || bankName.equals("Seleccionar banco")) { // SPANISH for "Select a valid bank"
+			Popup.show("Debe seleccionar un banco válido.", "error"); // SPANISH for "You must select a valid bank."
+			return false;
+		}
+
+		if (accountType == null || accountType.isEmpty() || accountType.equals("Seleccionar tipo")) { // SPANISH for "Select a valid account type"
+			Popup.show("Debe seleccionar un tipo de cuenta válido.", "error"); // SPANISH for "You must select a valid account type."
+			return false;
+		}
+
+		int bankId = bankDAO.getIdByName(bankName);
+		int bankIdAval = bankDAO.getIdByName(bankNameAval);
+        
+		
+		Tenant tenant = new Tenant(rut, name, surname, email, phone,
+				"tenant", true, true,
+				bankDAO.getBankByName(bankName), accountType, accountNum);
+		
+		Aval aval = new Aval(rut, nameAval, surnameAval, emailAval, phoneAval, "aval", true, bankDAO.getBankByName(bankNameAval), accountTypeAval, accountNumAval);
+
+		return tenantDAO.saveTenantAval(tenant, bankId, accountType, accountNum, aval, bankIdAval, accountTypeAval, accountNumAval);
+	}
     
     public boolean updateTenant(String rut, String name, String surname, String email,
             String phone, String aval, String bankName, String accountType, String accountNum) {
@@ -110,7 +147,7 @@ public class TenantController {
 	        );
 
         if (confirm != javax.swing.JOptionPane.YES_OPTION) {
-            return false; // Usuario canceló
+            return false; // User cancelled the deletion
         }
 
         return tenantDAO.delete(rut);

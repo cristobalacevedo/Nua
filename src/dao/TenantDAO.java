@@ -10,6 +10,7 @@ import java.util.List;
 
 import db.DBConnection;
 import model.Tenant;
+import model.Aval;
 import utils.TenantOption;
 
 public class TenantDAO {
@@ -20,7 +21,7 @@ public class TenantDAO {
 	    }
 
 
-	public boolean save(Tenant tenant, int bankId, String accountType, String accountNum) {
+	public boolean saveTenant(Tenant tenant, int bankId, String accountType, String accountNum) {
 	    String insertPersonTenantSQL = "INSERT INTO person (rut, name, surname, email, phone, type) VALUES (?, ?, ?, ?, ?, 'tenant')";
 	    String insertTenantSQL = "INSERT INTO tenant (person_id, isactive, hasrentals, aval_id) VALUES (?, ?, ?, ?)";
 	    String insertBankAccountSQL = "INSERT INTO bankaccount (bank_id, person_id, type, num) VALUES (?, ?, ?, ?)";
@@ -87,6 +88,99 @@ public class TenantDAO {
 //					return true;
 //				}
 	            
+	            conn.commit();
+	            return true;
+	        } else {
+	            conn.rollback();
+	            System.out.println("No se pudo obtener el ID generado para person.");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return false;
+	}
+	
+	public boolean saveTenantAval(Tenant tenant, int bankId, String accountType, String accountNum, Aval aval, int bankIdAval, String accountTypeAval, String accountNumAval) {
+	    String insertPersonTenantSQL = "INSERT INTO person (rut, name, surname, email, phone, type) VALUES (?, ?, ?, ?, ?, 'tenant')";
+	    String insertTenantSQL = "INSERT INTO tenant (person_id, isactive, hasrentals, aval_id) VALUES (?, ?, ?, ?)";
+	    String insertBankAccountSQL = "INSERT INTO bankaccount (bank_id, person_id, type, num) VALUES (?, ?, ?, ?)";
+	    String insertPersonAvalSQL = "INSERT INTO person (rut, name, surname, email, phone, type) VALUES (?, ?, ?, ?, ?, 'aval')";
+        String insertAvalSQL = "INSERT INTO aval (person_id) VALUES (?)";	 
+        String insertBankAccountAvalSQL = "INSERT INTO bankaccount (bank_id, person_id, type, num) VALUES (?, ?, ?, ?)";
+	    try (
+	        Connection conn = DBConnection.getConnection();
+	        PreparedStatement personTenantStmt = conn.prepareStatement(insertPersonTenantSQL, Statement.RETURN_GENERATED_KEYS);
+	        PreparedStatement tenantStmt = conn.prepareStatement(insertTenantSQL);
+	        PreparedStatement bankStmt = conn.prepareStatement(insertBankAccountSQL);
+	    	PreparedStatement personAvalStmt = conn.prepareStatement(insertPersonAvalSQL, Statement.RETURN_GENERATED_KEYS);
+	    	PreparedStatement avalStmt = conn.prepareStatement(insertAvalSQL);
+	    	PreparedStatement bankAvalStmt = conn.prepareStatement(insertBankAccountAvalSQL);
+	    			){
+
+	        conn.setAutoCommit(false);
+
+	        // Insert in person table for aval
+	        personAvalStmt.setString(1, aval.getRut());
+	        personAvalStmt.setString(2, aval.getName());
+	        personAvalStmt.setString(3, aval.getSurname());
+	        personAvalStmt.setString(4, aval.getEmail());
+	        personAvalStmt.setString(5, aval.getPhone());
+	        personAvalStmt.executeUpdate();
+
+	        // Obtain the generated ID for the aval person
+	        ResultSet generatedKeysAval = personAvalStmt.getGeneratedKeys();
+	        if (generatedKeysAval.next()) {
+	            int avalPersonId = generatedKeysAval.getInt(1);
+
+	            // Insert in aval table
+	            avalStmt.setInt(1, avalPersonId);
+//	            avalStmt.setInt(2, aval.getIsActive() ? 1 : 0);
+//	            avalStmt.setInt(3, aval.getIsRenting() ? 1 : 0);
+//	            avalStmt.setInt(4, aval.getHasAval() ? 1 : 0); // Assuming aval_id is nullable
+	            avalStmt.executeUpdate();
+
+	            // Insert bank account for aval
+	            bankAvalStmt.setInt(1, bankId);
+	            bankAvalStmt.setInt(2, avalPersonId);
+	            bankAvalStmt.setString(3, accountType);
+	            bankAvalStmt.setString(4, accountNum);
+	            bankAvalStmt.executeUpdate();
+	            
+	            // Insert in person table for tenant
+	            ResultSet generatedKeysTenant = avalStmt.getGeneratedKeys();
+				if (generatedKeysTenant.next()) {
+					
+					// Obtain the generated aval ID for the tenant person
+					int avalId = generatedKeysTenant.getInt(1);
+					
+					// Insert aval person details
+					personTenantStmt.setString(1, tenant.getRut());
+					personTenantStmt.setString(2, tenant.getName());
+					personTenantStmt.setString(3, tenant.getSurname());
+					personTenantStmt.setString(4, tenant.getEmail());
+					personTenantStmt.setString(5, tenant.getPhone());
+					personTenantStmt.executeUpdate();
+					
+					ResultSet generatedKeysTenantPerson = personTenantStmt.getGeneratedKeys();
+					if (generatedKeysTenantPerson.next()) {
+						
+						// Obtain the generated ID for the tenant person
+						
+						int tenantPersonId = generatedKeysTenantPerson.getInt(1);
+						
+						// Insert in tenant table
+			            tenantStmt.setInt(1, tenantPersonId);
+			            tenantStmt.setInt(2, tenant.getIsActive() ? 1 : 0);
+			            avalStmt.setInt(3, tenant.getIsRenting() ? 1 : 0);
+			            avalStmt.setInt(4, avalId); // Assuming aval_id is nullable
+			            avalStmt.executeUpdate();
+						
+						conn.commit();
+						return true;
+					}
+				}
 	            conn.commit();
 	            return true;
 	        } else {

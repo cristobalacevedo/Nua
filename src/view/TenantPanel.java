@@ -1,6 +1,7 @@
 package view;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -45,6 +46,7 @@ public class TenantPanel extends JPanel {
 	private JTextField txtEmail;
 	private JTextField txtPhone;
 	private JTextField txtNum;
+	private JTextField txtNumAval;
 	private JLabel lblTenants;;
 	private JLabel lblPersonalData;
 	private JLabel lblAval; // SPANISH for "Guarantor"
@@ -62,6 +64,9 @@ public class TenantPanel extends JPanel {
 	private JLabel lblSurnameAval;
 	private JLabel lblEmailAval;
 	private JLabel lblPhoneAval;
+	private JLabel lblBankAval;
+	private JLabel lblTypeAval;
+	private JLabel lblNumAval;
 	private JButton btnSave;
 	private JButton btnDelete;
 	private JButton btnUpdate;
@@ -69,11 +74,15 @@ public class TenantPanel extends JPanel {
 	private Tenant actualTenant; // Holds the currently selected landlord for updates or deletions
 	private JComboBox<String> comboBank;
 	private JComboBox<String> comboType;
+	private JComboBox<String> comboBankAval;
+	private JComboBox<String> comboTypeAval;
+	private JCheckBox chckbxAval; // Checkbox to indicate if an aval is provided
 	private JTextField txtRutAval;
 	private JTextField txtNameAval;
 	private JTextField txtEmailAval;
 	private JTextField txtPhoneAval;
 	private JTextField txtSurnameAval;
+	
 	
 
 	public TenantPanel(Container contentPane, Menu menu) {
@@ -300,6 +309,14 @@ public class TenantPanel extends JPanel {
 		add(txtNum);
 		txtNum.setColumns(10);
 		
+		txtNumAval = new JTextField();
+		txtNumAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+		txtNumAval.setColumns(10);
+		txtNumAval.setBounds(557, 390, 270, 30);
+		txtNumAval.setVisible(false); // Initially hidden until the checkbox is checked
+		((AbstractDocument) txtNumAval.getDocument()).setDocumentFilter(new RUTDocumentFilter()); // Apply the custom document filter to the RUT field for a better user experience and validation experience
+		add(txtNumAval);
+		
 		// -- END BANK NUMBER -- //
 		
 		// -- AVAL TEXT FIELDS -- //
@@ -308,13 +325,112 @@ public class TenantPanel extends JPanel {
 	    txtRutAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 	    txtRutAval.setColumns(10);
 	    txtRutAval.setBounds(945, 163, 242, 30);
+	    txtRutAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(txtRutAval);
+	    
+	    txtRutAval.addKeyListener(new KeyAdapter() {
+			@Override
+		    public void keyReleased(KeyEvent e) {
+		        String inputRut = txtRutAval.getText().toUpperCase();;
+		        //String cleaned = RUTValidator.cleanRUT(input);
+
+		        // No hacer nada si está vacío o es muy corto
+		        if (inputRut.length() < 2) return;
+
+		        // Aplicar formato en tiempo real
+		        String formattedRut = RUTValidator.formatRUT(inputRut).toUpperCase();;
+
+		        // Evitar bucle infinito al volver a escribir sobre el campo
+		        if (!inputRut.equals(formattedRut)) {
+		        	txtRutAval.setText(formattedRut);
+		        	txtRutAval.setCaretPosition(txtRutAval.getText().length()); // Mover cursor al final
+		        }
+
+		        // Buscar solo si es válido
+		        if (RUTValidator.isValid(formattedRut)) {
+		        	actualTenant = TenantDAO.getByRut2(formattedRut); // usar RUT limpio para búsqueda
+
+		            if (actualTenant != null) {
+		                txtNameAval.setText(actualTenant.getName());
+		                txtSurnameAval.setText(actualTenant.getSurname());
+		                txtEmailAval.setText(actualTenant.getEmail());
+		                txtPhoneAval.setText(actualTenant.getPhone());
+		                
+//		             // Normalización defensiva por si hay errores de mayúsculas
+//		                String bankName = actualLandlord.getBankName();
+//		                String accountType = actualLandlord.getAccountType();
+//		                String accountNum = actualLandlord.getAccountNum();
+//
+//		                // Banco
+//		                if (bankName != null) {
+//		                    for (int i = 0; i < comboBank.getItemCount(); i++) {
+//		                        if (comboBank.getItemAt(i).equalsIgnoreCase(bankName)) {
+//		                            comboBank.setSelectedIndex(i);
+//		                            break;
+//		                        }
+//		                    }
+//		                }
+//
+//		                // Tipo de cuenta
+//		                if (accountType != null) {
+//		                    for (int i = 0; i < comboType.getItemCount(); i++) {
+//		                        if (comboType.getItemAt(i).equalsIgnoreCase(accountType)) {
+//		                            comboType.setSelectedIndex(i);
+//		                            break;
+//		                        }
+//		                    }
+//		                }
+//
+//		                // Número de cuenta
+//		                if (accountNum != null) {
+//		                    txtNum.setText(accountNum);
+//		                }
+//		              
+		                
+		                comboBank.setSelectedItem(actualTenant.getBankName()); // Set selected bank
+		                comboType.setSelectedItem(actualTenant.getAccountType()); // Set selected account type
+		                txtNum.setText(actualTenant.getAccountNum()); // Set account number
+		                showEditButton();
+		                btnSave.setVisible(false);
+		                System.out.println("\nRUT Found	: " + actualTenant.getRut());
+		                System.out.println("Bank		: " + actualTenant.getBankName());
+		                System.out.println("Account Type	: " + actualTenant.getAccountType());
+		                System.out.println("N°    		: " + actualTenant.getAccountNum());
+		            } else {
+		                cleanFields();
+		                hideEditButtons();
+		                btnSave.setVisible(true);
+		                actualTenant = null;
+		                System.out.println("RUT Not Found as 'Tenant': " + formattedRut);
+		            }
+		        } else {
+		            cleanFields();
+		            hideEditButtons();
+		            btnSave.setVisible(true);
+		        }
+		    }
+		});
+		
+		txtRutAval.addFocusListener(new FocusAdapter() {
+		    @Override
+		    public void focusLost(FocusEvent e) {
+		        String inputRut = txtRutAval.getText().trim();
+		        String cleanedRut = RUTValidator.cleanRUT(inputRut);
+				if (!cleanedRut.isEmpty() && cleanedRut.length() >= 8) {
+					String formattedRut = RUTValidator.formatRUT(cleanedRut);
+					txtRutAval.setText(formattedRut); // Format the RUT when focus is lost
+				} 		   
+			}
+		});
+	    
+	    
 	    
 	    txtNameAval = new JTextField();
 	    txtNameAval.setText("");
 	    txtNameAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 	    txtNameAval.setColumns(10);
 	    txtNameAval.setBounds(945, 205, 242, 30);
+	    txtNameAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(txtNameAval);
 	    
 	    txtSurnameAval = new JTextField();
@@ -322,6 +438,7 @@ public class TenantPanel extends JPanel {
 	    txtSurnameAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 	    txtSurnameAval.setColumns(10);
 	    txtSurnameAval.setBounds(945, 244, 242, 30);
+	    txtSurnameAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(txtSurnameAval);
 	    
 	    txtEmailAval = new JTextField();
@@ -329,6 +446,7 @@ public class TenantPanel extends JPanel {
 	    txtEmailAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 	    txtEmailAval.setColumns(10);
 	    txtEmailAval.setBounds(945, 285, 242, 30);
+	    txtEmailAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(txtEmailAval);
 	    
 	    txtPhoneAval = new JTextField();
@@ -336,6 +454,7 @@ public class TenantPanel extends JPanel {
 	    txtPhoneAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 	    txtPhoneAval.setColumns(10);
 	    txtPhoneAval.setBounds(945, 327, 242, 30);
+	    txtPhoneAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(txtPhoneAval);
 		
 	    // -- END AVAL TEXT FIELDS -- //
@@ -371,6 +490,7 @@ public class TenantPanel extends JPanel {
 	    lblAval.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
 	    lblAval.setHorizontalAlignment(SwingConstants.CENTER);
 	    lblAval.setBounds(988, 117, 77, 30);
+	    lblAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(lblAval);
 	    
 	    // -- END GUARANTOR TITLE -- //
@@ -443,6 +563,24 @@ public class TenantPanel extends JPanel {
 		lblNum.setBounds(490, 244, 64, 30);
 		add(lblNum);
 		
+		lblBankAval = new JLabel("Banco:");
+		lblBankAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+		lblBankAval.setBounds(490, 305, 64, 30);
+		lblBankAval.setVisible(false); // Initially hidden until the checkbox is checked
+		add(lblBankAval);
+		
+		lblTypeAval = new JLabel("Tipo:");
+		lblTypeAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+		lblTypeAval.setBounds(490, 347, 77, 30);
+		lblTypeAval.setVisible(false); // Initially hidden until the checkbox is checked
+		add(lblTypeAval);
+		
+		lblNumAval = new JLabel("Nº : ");
+		lblNumAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+		lblNumAval.setBounds(490, 386, 64, 30);
+		lblNumAval.setVisible(false); // Initially hidden until the checkbox is checked
+		add(lblNumAval);
+		
 		// -- END BANK DATA -- //
 		
 		// --- AVAL LABELS --- //
@@ -450,26 +588,31 @@ public class TenantPanel extends JPanel {
 	    lblRutAval = new JLabel("RUT:");
 	    lblRutAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
 	    lblRutAval.setBounds(859, 163, 43, 30);
+	    lblRutAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(lblRutAval);
 	    
 	    lblNameAval = new JLabel("Nombre:");
 	    lblNameAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
 	    lblNameAval.setBounds(859, 204, 92, 30);
+	    lblNameAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(lblNameAval);
 	    
 	    lblSurnameAval = new JLabel("Apellido:");
 	    lblSurnameAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
 	    lblSurnameAval.setBounds(859, 244, 92, 30);
+	    lblSurnameAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(lblSurnameAval);
 	    
 	    lblEmailAval = new JLabel("e-mail:");
 	    lblEmailAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
 	    lblEmailAval.setBounds(859, 285, 92, 30);
+	    lblEmailAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(lblEmailAval);
 	    
 	    lblPhoneAval = new JLabel("Teléfono:");
 	    lblPhoneAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
 	    lblPhoneAval.setBounds(859, 327, 92, 30);
+	    lblPhoneAval.setVisible(false); // Initially hidden until the checkbox is checked
 	    add(lblPhoneAval);
 	    
 	    // -- END AVAL LABELS -- //
@@ -498,6 +641,19 @@ public class TenantPanel extends JPanel {
 		    comboBank.addItem(name);
 		}
 		
+		comboBankAval = new JComboBox<String>();
+		comboBankAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+		comboBankAval.setBounds(557, 305, 270, 30);
+		comboBankAval.setVisible(false); // Initially hidden until the checkbox is checked
+		add(comboBankAval);
+		
+		comboBankAval.addItem("Seleccione Banco..."); // SPANISH for "Select Bank..."
+		
+		
+		for (String name : bankNames) {
+		    comboBankAval.addItem(name);
+		}
+		
 		// -- END BANKS -- //
 		
 		// -- ACCOUNT TYPES -- //
@@ -512,6 +668,19 @@ public class TenantPanel extends JPanel {
 		comboType.addItem("Cuenta Vista");
 		comboType.addItem("Cuenta de Ahorro");		
 		
+		comboTypeAval = new JComboBox<String>();
+		comboTypeAval.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
+		comboTypeAval.setBounds(557, 347, 270, 30);
+		comboTypeAval.setVisible(false); // Initially hidden until the checkbox is checked
+		add(comboTypeAval);
+		
+		comboTypeAval.addItem("Seleccione Tipo de Cuenta..."); // SPANISH for "Select Account Type..."
+		comboTypeAval.addItem("Cuenta Corriente");
+		comboTypeAval.addItem("Cuenta Vista");
+		comboTypeAval.addItem("Cuenta de Ahorro");	
+
+		
+		
 		// -- END ACCOUNT TYPES -- //
 		
 		// --- END COMBO BOXES --- //
@@ -524,14 +693,14 @@ public class TenantPanel extends JPanel {
 		separator.setForeground(Color.GRAY);
 		separator.setBackground(Color.GRAY);
 		separator.setOrientation(SwingConstants.VERTICAL);
-		separator.setBounds(480, 163, 12, 233);
+		separator.setBounds(480, 163, 12, 257);
 		add(separator);
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setOrientation(SwingConstants.VERTICAL);
-		separator_1.setForeground(Color.GRAY);
+		separator_1.setForeground(Color.BLUE);
 		separator_1.setBackground(Color.GRAY);
-		separator_1.setBounds(837, 163, 12, 233);
+		separator_1.setBounds(837, 163, 12, 124);
 		add(separator_1);
 		    
 		   
@@ -555,7 +724,7 @@ public class TenantPanel extends JPanel {
 		btnSave.setForeground(new Color(255, 255, 255));
 		btnSave.setBackground(new Color(0, 153, 0));
 		btnSave.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 22));
-		btnSave.setBounds(452, 407, 125, 58);
+		btnSave.setBounds(454, 467, 125, 58);
 		add(btnSave);
 		
 		// -- END SAVE BUTTON -- //
@@ -578,7 +747,7 @@ public class TenantPanel extends JPanel {
 		btnUpdate.setForeground(Color.WHITE);
 		btnUpdate.setBackground(new Color(51, 153, 255));
 		btnUpdate.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD | Font.ITALIC, 22));
-		btnUpdate.setBounds(446, 407, 142, 58);
+		btnUpdate.setBounds(448, 467, 142, 58);
 		btnUpdate.setVisible(false); // Initially hidden until a landlord is selected for update
 		add(btnUpdate);
 		
@@ -594,6 +763,11 @@ public class TenantPanel extends JPanel {
 		// -- END SHOW LANDLORDS LIST BUTTON -- //
 		
 		// --- END BUTTONS --- //
+		
+		chckbxAval = new JCheckBox("Aval");
+		chckbxAval.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+		chckbxAval.setBounds(137, 373, 64, 23);
+	    add(chckbxAval);
 		
 		// --------------------- //
 		
@@ -685,8 +859,7 @@ public class TenantPanel extends JPanel {
 		    fields.put("Banco", comboBank);
 		    fields.put("Tipo de Cuenta", comboType);
 		    fields.put("N° (Número de Cuenta)", txtNum);
-		   
-
+		    
 		    if (!FieldValidator.validField(fields)) return;
 		    
 		    // Tenant data
@@ -695,7 +868,7 @@ public class TenantPanel extends JPanel {
 		    String surname = txtSurname.getText().trim();
 		    String email = txtEmail.getText().trim();
 		    String phone = txtPhone.getText().trim();
-		    String aval = (txtRutAval.getText().trim().isEmpty()) ? "" : txtRutAval.getText().trim(); // Optional aval field
+		   
 		    // Bank and account data
 		    String selectedBankName = comboBank.getSelectedItem().toString();
 		    String accountType = comboType.getSelectedItem().toString();
@@ -703,27 +876,87 @@ public class TenantPanel extends JPanel {
 
 		    TenantController controller = new TenantController();
 
-		    boolean success = controller.saveTenant(
-		        rut, name, surname, email, phone, aval, selectedBankName, accountType, num);
+		    
+		    
+		    // If checkbox is selected, validate the aval fields
+			if (chckbxAval.isSelected()) {
+				Map<String, JComponent> avalFields = new LinkedHashMap<>();
+				avalFields.put("Aval - RUT", txtRutAval);
+				avalFields.put("Aval - Nombre", txtNameAval);
+				avalFields.put("Aval - Apellido", txtSurnameAval);
+				avalFields.put("Aval - Email", txtEmailAval);
+				avalFields.put("Aval - Teléfono", txtPhoneAval);
+				
+				JSeparator separator_2 = new JSeparator();
+				separator_2.setForeground(Color.BLUE);
+				separator_2.setBounds(480, 285, 358, 16);
+				add(separator_2);
 
-		    if (success) {
-		    	System.out.println("RUT: " + rut);
-		        System.out.println("Banco: " + selectedBankName);
-		        System.out.println("Tipo de Cuenta: " + accountType);
-		        System.out.println("N°: " + num);
-		           
-		    	System.out.println("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
-		        Popup.showSuccess("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
-		        cleanFields();
-		    } else {
-		    	System.out.println("RUT: " + rut);
-		        System.out.println("Banco: " + selectedBankName);
-		        System.out.println("Tipo de Cuenta: " + accountType);
-		        System.out.println("N°: " + num);
-		        
-		    	System.out.println("Error al guardar arrendador."); // SPANISH for "Error saving landlord"
-		        Popup.show("Error al guardar arrendador.", "error"); // SPANISH for "Error saving landlord"
-		    }
+				if (!FieldValidator.validField(avalFields))
+					return;
+				
+				// Get aval data
+				String rutAval = txtRutAval.getText().trim();
+				String nameAval = txtNameAval.getText().trim();
+				String surnameAval = txtSurnameAval.getText().trim();
+				String emailAval = txtEmailAval.getText().trim();
+				String phoneAval = txtPhoneAval.getText().trim();
+				
+				// Get bank aval data
+				String selectedBankAvalName = comboBankAval.getSelectedItem().toString();
+				String accountTypeAval = comboTypeAval.getSelectedItem().toString();
+				String numAval = txtNumAval.getText().trim();
+				
+				// Save tenant with aval
+				boolean success = controller.saveTenantAval(rut, name, surname, email, phone, rutAval, nameAval,
+						surnameAval, emailAval, phoneAval, selectedBankName, accountType, num, selectedBankAvalName, accountTypeAval, numAval);
+
+				if (success) {
+					System.out.println("RUT: " + rut);
+					System.out.println("Banco: " + selectedBankName);
+					System.out.println("Tipo de Cuenta: " + accountType);
+					System.out.println("N°: " + num);
+
+					System.out.println("Arrendatario y aval guardados correctamente."); // SPANISH for "Tenant and
+																						// guarantor saved successfully"
+					Popup.showSuccess("Arrendatario y aval guardados correctamente."); // SPANISH for "Tenant and
+																						// guarantor saved successfully"
+					cleanFields();
+				} else {
+					System.out.println("RUT: " + rut);
+					System.out.println("Banco: " + selectedBankName);
+					System.out.println("Tipo de Cuenta: " + accountType);
+					System.out.println("N°: " + num);
+
+					System.out.println("Error al guardar arrendatario y aval."); // SPANISH for "Error saving tenant and
+																					// guarantor"
+					Popup.show("Error al guardar arrendatario y aval.", "error"); // SPANISH for "Error saving tenant
+																					// and guarantor"
+				}
+			} else {
+				// Save tenant without aval
+				boolean success = controller.saveTenant(rut, name, surname, email, phone, selectedBankName, accountType, num);
+				
+				if (success) {
+			    	System.out.println("RUT: " + rut);
+			        System.out.println("Banco: " + selectedBankName);
+			        System.out.println("Tipo de Cuenta: " + accountType);
+			        System.out.println("N°: " + num);
+			           
+			    	System.out.println("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
+			        Popup.showSuccess("Arrendador guardado correctamente."); // SPANISH for "Landlord saved successfully"
+			        cleanFields();
+			    } else {
+			    	System.out.println("RUT: " + rut);
+			        System.out.println("Banco: " + selectedBankName);
+			        System.out.println("Tipo de Cuenta: " + accountType);
+			        System.out.println("N°: " + num);
+			        
+			    	System.out.println("Error al guardar arrendador."); // SPANISH for "Error saving landlord"
+			        Popup.show("Error al guardar arrendador.", "error"); // SPANISH for "Error saving landlord"
+			    }
+			}
+		  
 		});
 		
 //			public void actionPerformed(ActionEvent e) {
@@ -1013,6 +1246,16 @@ public class TenantPanel extends JPanel {
 		
 		// -- END UPDATE BUTTON ACTION LISTENER -- //
 		
+		chckbxAval.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (chckbxAval.isSelected()) {
+					showAvalFields();
+				} else {
+					hideAvalFields();
+				}
+			}
+		});
+		
 		// --- END BUTTON ACTIONS --- //
 		
 	}
@@ -1049,6 +1292,54 @@ public class TenantPanel extends JPanel {
 	    txtName.setText(tenant.getName());
 	    txtPhone.setText(tenant.getPhone());
 	    txtEmail.setText(tenant.getEmail());
+	}
+	
+	private void hideAvalFields() {
+		lblAval.setVisible(false);
+		
+		lblRutAval.setVisible(false);
+		lblNameAval.setVisible(false);
+		lblSurnameAval.setVisible(false);
+		lblEmailAval.setVisible(false);
+		lblPhoneAval.setVisible(false);
+		
+		lblBankAval.setVisible(false);
+		lblTypeAval.setVisible(false);
+		lblNumAval.setVisible(false);
+		
+	    txtRutAval.setVisible(false);
+	    txtNameAval.setVisible(false);
+	    txtSurnameAval.setVisible(false);
+	    txtEmailAval.setVisible(false);
+	    txtPhoneAval.setVisible(false);
+	    
+	    comboBankAval.setVisible(false);
+	    comboTypeAval.setVisible(false);
+	    txtNumAval.setVisible(false);
+	}
+	
+	private void showAvalFields() {
+		lblAval.setVisible(true);
+		
+		lblRutAval.setVisible(true);
+		lblNameAval.setVisible(true);
+		lblSurnameAval.setVisible(true);
+		lblEmailAval.setVisible(true);
+		lblPhoneAval.setVisible(true);
+		
+		lblBankAval.setVisible(true);
+		lblTypeAval.setVisible(true);
+		lblNumAval.setVisible(true);
+		
+	    txtRutAval.setVisible(true);
+	    txtNameAval.setVisible(true);
+	    txtSurnameAval.setVisible(true);
+	    txtEmailAval.setVisible(true);
+	    txtPhoneAval.setVisible(true);
+	    
+	    comboBankAval.setVisible(true);
+	    comboTypeAval.setVisible(true);
+	    txtNumAval.setVisible(true);
 	}
 	
 	private void searchByRut() {
