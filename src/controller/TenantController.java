@@ -21,10 +21,10 @@ public class TenantController {
             return false;
         }
 
-        if (PersonDAO.rutExistsInDB(rut)) {
-            Popup.show("El RUT ya está registrado en el sistema.", "error"); // SPANISH for "The RUT is already registered in the system."
-            return false;
-        }
+        if (PersonDAO.tenantRutExistsInDB(rut)) {
+			Popup.show("El RUT ya está registrado en el sistema como 'Arrendatario'.", "error"); // SPANISH for "The RUT is already registered in the system."
+			return false;
+		}
 
         if (bankName == null || bankName.isEmpty() || bankName.equals("Seleccionar banco")) { // SPANISH for "Select a valid bank"
             Popup.show("Debe seleccionar un banco válido.", "error"); // SPANISH for "You must select a valid bank."
@@ -54,8 +54,13 @@ public class TenantController {
 			return false;
 		}
 
-		if (PersonDAO.rutExistsInDB(rut)) {
-			Popup.show("El RUT ya está registrado en el sistema.", "error"); // SPANISH for "The RUT is already registered in the system."
+		if (PersonDAO.tenantRutExistsInDB(rut)) {
+			Popup.show("El RUT ya está registrado en el sistema como 'Arrendatario'.", "error"); // SPANISH for "The RUT is already registered in the system."
+			return false;
+		}
+		
+		if (PersonDAO.avalRutExistsInDB(rut)) {
+			Popup.show("El RUT ya está registrado en el sistema como 'Aval'.", "error"); // SPANISH for "The RUT is already registered in the system."
 			return false;
 		}
 

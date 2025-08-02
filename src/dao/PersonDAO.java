@@ -26,4 +26,40 @@ public class PersonDAO {
 	    return false;
 	}
 	
+	public static boolean tenantRutExistsInDB(String rut) {
+	    String sql = "SELECT COUNT(*) FROM person WHERE rut = ? and type = 'tenant'";
+	    try (Connection conn = DBConnection.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, rut);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt(1) > 0;
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
+	
+	public static boolean avalRutExistsInDB(String rut) {
+	    String sql = "SELECT COUNT(*) FROM person WHERE rut = ? and type = 'aval'";
+	    try (Connection conn = DBConnection.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setString(1, rut);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt(1) > 0;
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
+	
 }
