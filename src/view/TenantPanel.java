@@ -82,7 +82,7 @@ public class TenantPanel extends JPanel {
 	private JTextField txtEmailAval;
 	private JTextField txtPhoneAval;
 	private JTextField txtSurnameAval;
-	
+	private JSeparator separator_2;
 	
 
 	public TenantPanel(Container contentPane, Menu menu) {
@@ -401,7 +401,7 @@ public class TenantPanel extends JPanel {
 		                hideEditButtons();
 		                btnSave.setVisible(true);
 		                actualTenant = null;
-		                System.out.println("RUT Not Found as 'Tenant': " + formattedRut);
+		                System.out.println("RUT Not Found as 'Aval': " + formattedRut);
 		            }
 		        } else {
 		            cleanFields();
@@ -702,6 +702,12 @@ public class TenantPanel extends JPanel {
 		separator_1.setBackground(Color.GRAY);
 		separator_1.setBounds(837, 163, 12, 124);
 		add(separator_1);
+		
+		separator_2 = new JSeparator();
+		separator_2.setForeground(Color.BLUE);
+		separator_2.setBounds(480, 285, 358, 16);
+		separator_2.setVisible(false); // Initially hidden until the checkbox is checked
+		add(separator_2);
 		    
 		   
 		// --- END SEPARATORS --- //
@@ -887,10 +893,7 @@ public class TenantPanel extends JPanel {
 				avalFields.put("Aval - Email", txtEmailAval);
 				avalFields.put("Aval - Teléfono", txtPhoneAval);
 				
-				JSeparator separator_2 = new JSeparator();
-				separator_2.setForeground(Color.BLUE);
-				separator_2.setBounds(480, 285, 358, 16);
-				add(separator_2);
+				
 
 				if (!FieldValidator.validField(avalFields))
 					return;
@@ -1316,6 +1319,8 @@ public class TenantPanel extends JPanel {
 	    comboBankAval.setVisible(false);
 	    comboTypeAval.setVisible(false);
 	    txtNumAval.setVisible(false);
+	    
+	    separator_2.setVisible(false); // Hide the separator when aval fields are hidden
 	}
 	
 	private void showAvalFields() {
@@ -1340,6 +1345,8 @@ public class TenantPanel extends JPanel {
 	    comboBankAval.setVisible(true);
 	    comboTypeAval.setVisible(true);
 	    txtNumAval.setVisible(true);
+	    
+	    separator_2.setVisible(true); // Show the separator when aval fields are shown
 	}
 	
 	private void searchByRut() {

@@ -77,7 +77,7 @@ public class TenantController {
 				"tenant", true, true,
 				bankDAO.getBankByName(bankName), accountType, accountNum);
 		
-		Aval aval = new Aval(rut, nameAval, surnameAval, emailAval, phoneAval, "aval", true, bankDAO.getBankByName(bankNameAval), accountTypeAval, accountNumAval);
+		Aval aval = new Aval(rutAval, nameAval, surnameAval, emailAval, phoneAval, "aval", true, bankDAO.getBankByName(bankNameAval), accountTypeAval, accountNumAval);
 
 		return tenantDAO.saveTenantAval(tenant, bankId, accountType, accountNum, aval, bankIdAval, accountTypeAval, accountNumAval);
 	}

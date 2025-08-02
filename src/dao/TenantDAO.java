@@ -55,7 +55,8 @@ public class TenantDAO {
 	            tenantStmt.setInt(1, personId);
 	            tenantStmt.setInt(2, tenant.getIsActive() ? 1 : 0);
 	            tenantStmt.setInt(3, tenant.getIsRenting() ? 1 : 0);
-	            tenantStmt.setInt(4, tenant.getHasAval() ? 1 : 0); // Assuming aval_id is nullable
+	            // INSERT NULL for aval_id if not provided
+	            tenantStmt.setNull(4, java.sql.Types.INTEGER); // Assuming aval_id is nullable
 	            tenantStmt.executeUpdate();
 
 	            // Insert bank account
@@ -64,29 +65,6 @@ public class TenantDAO {
 	            bankStmt.setString(3, accountType);
 	            bankStmt.setString(4, accountNum);
 	            bankStmt.executeUpdate();
-	            
-//	            // Insert in person table for aval
-//	            ResultSet generatedKeysAval = personAvalStmt.getGeneratedKeys();
-//				if (generatedKeysAval.next()) {
-//					
-//					// Obtain the generated ID for the aval person
-//					int avalPersonId = generatedKeysAval.getInt(1);
-//					
-//					// Insert aval person details
-//					personAvalStmt.setString(1, tenant.getRut());
-//					personAvalStmt.setString(2, tenant.getName());
-//					personAvalStmt.setString(3, tenant.getSurname());
-//					personAvalStmt.setString(4, tenant.getEmail());
-//					personAvalStmt.setString(5, tenant.getPhone());
-//					personAvalStmt.executeUpdate();
-//
-//					// Insertar en tabla aval
-//					avalInsertStmt.setInt(1, avalPersonId);
-//					avalInsertStmt.executeUpdate();
-//					
-//					conn.commit();
-//					return true;
-//				}
 	            
 	            conn.commit();
 	            return true;
@@ -113,7 +91,7 @@ public class TenantDAO {
 	        Connection conn = DBConnection.getConnection();
 	        PreparedStatement personTenantStmt = conn.prepareStatement(insertPersonTenantSQL, Statement.RETURN_GENERATED_KEYS);
 	        PreparedStatement tenantStmt = conn.prepareStatement(insertTenantSQL);
-	        PreparedStatement bankStmt = conn.prepareStatement(insertBankAccountSQL);
+	        PreparedStatement bankTenantStmt = conn.prepareStatement(insertBankAccountSQL);
 	    	PreparedStatement personAvalStmt = conn.prepareStatement(insertPersonAvalSQL, Statement.RETURN_GENERATED_KEYS);
 	    	PreparedStatement avalStmt = conn.prepareStatement(insertAvalSQL);
 	    	PreparedStatement bankAvalStmt = conn.prepareStatement(insertBankAccountAvalSQL);
@@ -142,10 +120,10 @@ public class TenantDAO {
 	            avalStmt.executeUpdate();
 
 	            // Insert bank account for aval
-	            bankAvalStmt.setInt(1, bankId);
+	            bankAvalStmt.setInt(1, bankIdAval);
 	            bankAvalStmt.setInt(2, avalPersonId);
-	            bankAvalStmt.setString(3, accountType);
-	            bankAvalStmt.setString(4, accountNum);
+	            bankAvalStmt.setString(3, accountTypeAval);
+	            bankAvalStmt.setString(4, accountNumAval);
 	            bankAvalStmt.executeUpdate();
 	            
 	            // Insert in person table for tenant
@@ -173,9 +151,16 @@ public class TenantDAO {
 						// Insert in tenant table
 			            tenantStmt.setInt(1, tenantPersonId);
 			            tenantStmt.setInt(2, tenant.getIsActive() ? 1 : 0);
-			            avalStmt.setInt(3, tenant.getIsRenting() ? 1 : 0);
-			            avalStmt.setInt(4, avalId); // Assuming aval_id is nullable
-			            avalStmt.executeUpdate();
+			            tenantStmt.setInt(3, tenant.getIsRenting() ? 1 : 0);
+			            tenantStmt.setInt(4, avalId); // Assuming aval_id is nullable
+			            tenantStmt.executeUpdate();
+			            
+			            // Insert bank account for tenant
+			            bankTenantStmt.setInt(1, bankId);
+			            bankTenantStmt.setInt(2, tenantPersonId);
+			            bankTenantStmt.setString(3, accountType);
+			            bankTenantStmt.setString(4, accountNum);
+			            bankTenantStmt.executeUpdate();
 						
 						conn.commit();
 						return true;
