@@ -16,6 +16,7 @@ import dao.BankDAO;
 import dao.TenantDAO;
 import db.DBConnection;
 import model.Tenant;
+import model.Aval;
 import utils.FieldValidator;
 import utils.PhoneDocumentFilter;
 import utils.RUTDocumentFilter;
@@ -72,6 +73,7 @@ public class TenantPanel extends JPanel {
 	private JButton btnUpdate;
 	private JButton btnShowTL;
 	private Tenant actualTenant; // Holds the currently selected landlord for updates or deletions
+	private Aval actualAval; // Holds the currently selected aval for updates or deletions
 	private JComboBox<String> comboBank;
 	private JComboBox<String> comboType;
 	private JComboBox<String> comboBankAval;
@@ -329,6 +331,25 @@ public class TenantPanel extends JPanel {
 	    add(txtRutAval);
 	    
 	    txtRutAval.addKeyListener(new KeyAdapter() {
+		    @Override
+		    public void keyTyped(KeyEvent e) {
+		        char c = e.getKeyChar();
+		        String text = txtRutAval.getText();
+
+		        // Solo permitir números, puntos y guiones
+		        if (!Character.isDigit(c) && c != '.' && c != '-' && c != 'k' && c != 'K') {
+		            e.consume();
+		            return;
+		        }
+
+		        // Limitar a 12 caracteres
+		        if (text.length() >= 12) {
+		            e.consume();
+		        }
+		    }
+		});
+	    
+	    txtRutAval.addKeyListener(new KeyAdapter() {
 			@Override
 		    public void keyReleased(KeyEvent e) {
 		        String inputRut = txtRutAval.getText().toUpperCase();;
@@ -348,13 +369,13 @@ public class TenantPanel extends JPanel {
 
 		        // Buscar solo si es válido
 		        if (RUTValidator.isValid(formattedRut)) {
-		        	actualTenant = TenantDAO.getByRut2(formattedRut); // usar RUT limpio para búsqueda
+		        	actualAval = TenantDAO.getAvalByRut2(formattedRut); // usar RUT limpio para búsqueda
 
-		            if (actualTenant != null) {
-		                txtNameAval.setText(actualTenant.getName());
-		                txtSurnameAval.setText(actualTenant.getSurname());
-		                txtEmailAval.setText(actualTenant.getEmail());
-		                txtPhoneAval.setText(actualTenant.getPhone());
+		            if (actualAval != null) {
+		                txtNameAval.setText(actualAval.getName());
+		                txtSurnameAval.setText(actualAval.getSurname());
+		                txtEmailAval.setText(actualAval.getEmail());
+		                txtPhoneAval.setText(actualAval.getPhone());
 		                
 //		             // Normalización defensiva por si hay errores de mayúsculas
 //		                String bankName = actualLandlord.getBankName();
@@ -387,20 +408,20 @@ public class TenantPanel extends JPanel {
 //		                }
 //		              
 		                
-		                comboBank.setSelectedItem(actualTenant.getBankName()); // Set selected bank
-		                comboType.setSelectedItem(actualTenant.getAccountType()); // Set selected account type
-		                txtNum.setText(actualTenant.getAccountNum()); // Set account number
+		                comboBank.setSelectedItem(actualAval.getBankName()); // Set selected bank
+		                comboType.setSelectedItem(actualAval.getAccountType()); // Set selected account type
+		                txtNum.setText(actualAval.getAccountNum()); // Set account number
 		                showEditButton();
 		                btnSave.setVisible(false);
-		                System.out.println("\nRUT Found	: " + actualTenant.getRut());
-		                System.out.println("Bank		: " + actualTenant.getBankName());
-		                System.out.println("Account Type	: " + actualTenant.getAccountType());
-		                System.out.println("N°    		: " + actualTenant.getAccountNum());
+		                System.out.println("\nRUT Found	: " + actualAval.getRut());
+		                System.out.println("Bank		: " + actualAval.getBankName());
+		                System.out.println("Account Type	: " + actualAval.getAccountType());
+		                System.out.println("N°    		: " + actualAval.getAccountNum());
 		            } else {
 		                cleanFields();
 		                hideEditButtons();
 		                btnSave.setVisible(true);
-		                actualTenant = null;
+		                actualAval = null;
 		                System.out.println("RUT Not Found as 'Aval': " + formattedRut);
 		            }
 		        } else {

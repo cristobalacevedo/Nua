@@ -318,6 +318,38 @@ public class TenantDAO {
 	    return null;
 	}
 	
+	public static Aval getAvalByRut2(String rut) {
+	    String sql = """
+	        SELECT p.rut, p.name, p.surname, p.email, p.phone, p.type, ba.num AS accountNum, ba.type AS accountType, b.name AS bankName
+	        FROM aval a
+	    	JOIN person p ON a.person_id = p.id
+	    	JOIN bankaccount ba ON ba.person_id = p.id 
+	    	JOIN bank b ON ba.bank_id = b.id
+	    	WHERE p.rut = ? AND p.type = 'aval'
+	    	""";
+	    Connection conn = DBConnection.getConnection();
+	    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	        stmt.setString(1, rut);
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            return new Aval(
+	            		rs.getString("rut"),
+                		rs.getString("name"),
+                		rs.getString("surname"),
+                		rs.getString("email"),
+                		rs.getString("phone"),
+                		rs.getString("type"),
+                		rs.getString("bankName"),
+    	                rs.getString("accountType"),
+    	                rs.getString("accountNum")
+                );
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+	
 	public static Tenant getIdByName(String name) {
 	    String sql = """
 	        SELECT p.id, p.rut, p.name, p.surname, p.email, p.phone, p.type, t.isactive, t.hasrentals, t.aval_id
@@ -348,7 +380,7 @@ public class TenantDAO {
 		return null;
 	}
 	
-	public List<TenantOption> getAllLandlordOptions() {
+	public List<TenantOption> getAllTenantOptions() {
 	    List<TenantOption> list = new ArrayList<>();
 	    String sql = "SELECT person_id, name, surname, rut FROM tenant t JOIN person p ON t.person_id = p.id";
 
