@@ -180,7 +180,7 @@ public class TenantDAO {
 	    String insertPersonTenantSQL = "INSERT INTO person (rut, name, surname, email, phone, type) VALUES (?, ?, ?, ?, ?, 'tenant')"; 
 	    String insertTenantSQL = "INSERT INTO tenant (person_id, isactive, hasrentals, aval_id) VALUES (?, ?, ?, ?)"; 
 	    String insertBankAccountSQL = "INSERT INTO bankaccount (bank_id, person_id, type, num) VALUES (?, ?, ?, ?)";
-	    String getAvalIdSQL = "SELECT id FROM aval WHERE person_id = (SELECT id FROM person WHERE rut = ?)";
+	    String getAvalIdSQL = "SELECT person_id FROM aval WHERE person_id = (SELECT id FROM person WHERE rut = ?)";
 
 	    try (
 	        Connection conn = DBConnection.getConnection();
@@ -196,7 +196,7 @@ public class TenantDAO {
 	        avalStmt.setString(1, aval.getRut());
 	        try (ResultSet rs = avalStmt.executeQuery()) {
 	            if (rs.next()) {
-	                avalId = rs.getInt("id");
+	                avalId = rs.getInt("person_id");
 	            } else {
 	                conn.rollback();
 	                System.out.println("No se encontró un aval con el RUT especificado: " + aval.getRut());

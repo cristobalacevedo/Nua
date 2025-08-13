@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 
 import javax.swing.UIManager.*;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -14,8 +15,11 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
+import javax.swing.JLabel;
 
 public class Menu extends JFrame {
 
@@ -31,6 +35,7 @@ public class Menu extends JFrame {
 	private JButton btnExit = new JButton("Salir"); // SPANISH
 	private boolean isMenuActive = true;
 	private JPanel clonePanel; // Clone of the menu panel
+	private JLabel lblLogo;
 
 	// Menu constructor
 	public Menu() {
@@ -42,11 +47,24 @@ public class Menu extends JFrame {
 		setLocationRelativeTo(null); // Center the window on screen
 		setTitle("NUA - Menú Principal"); // Set the title of the window") - SPANISH
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(170, 170, 170));
 		contentPane.setName("Menu"); // Set the name of the panel to "Menu"
 		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		ImageIcon imagen = new ImageIcon(getClass().getResource("/ico/logo.jpg"));
 
+        // Escalar la imagen (opcional)
+        Image imagenEscalada = imagen.getImage().getScaledInstance(400, 250, Image.SCALE_SMOOTH);
+        imagen = new ImageIcon(imagenEscalada);
+		
+		lblLogo = new JLabel(imagen);
+		lblLogo.setBounds(814, 470, 356, 132);
+		contentPane.add(lblLogo);
+		
+		
+		
 	
 		// --- BUTTONS --- //
 		
@@ -85,6 +103,7 @@ public class Menu extends JFrame {
 		btnExit.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
 		btnExit.setBounds(100, 571, 89, 31);
 		contentPane.add(btnExit);
+		
 		
 		// --- END BUTTONS --- //
 		
@@ -172,9 +191,22 @@ public class Menu extends JFrame {
 	// MENU CLONE
 	
 	public JPanel MenuClone(){
+		
 		setTitle("NUA - Menú Principal");
 		JPanel menuClone = new JPanel();
 		menuClone.setName("MenuClone");
+		menuClone.setBackground(new Color(170, 170, 170));
+		ImageIcon imageClone = new ImageIcon(getClass().getResource("/ico/logo.jpg"));
+
+        // Escalar la imagen (opcional)
+        Image imagenEscaladaClone = imageClone.getImage().getScaledInstance(400, 250, Image.SCALE_SMOOTH);
+        imageClone = new ImageIcon(imagenEscaladaClone);
+		
+		JLabel lblLogoClone = new JLabel(imageClone);
+		lblLogoClone.setBounds(814, 470, 356, 132);
+		menuClone.add(lblLogoClone);
+		
+		
 		JButton btnLandlordsClone = new JButton(btnLandlords.getText());
 		btnLandlordsClone.setFont(btnLandlords.getFont());
 		btnLandlordsClone.setBounds(btnLandlords.getBounds());
@@ -265,5 +297,4 @@ public class Menu extends JFrame {
 		
 		return menuClone;
 	}
-	
 }

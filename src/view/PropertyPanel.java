@@ -144,7 +144,7 @@ public class PropertyPanel extends JPanel {
 	public String sizeText;
 	
 	public PropertyPanel(Container contentPane, Menu menu) {
-		setBackground(new Color(187, 187, 187));
+		setBackground(new Color(170, 170, 170));
 		setForeground(Color.BLACK);
 		setName("PropertiesPanel"); // Set the name of the panel
 		setLayout(null);

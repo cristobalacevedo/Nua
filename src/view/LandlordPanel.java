@@ -75,7 +75,7 @@ public class LandlordPanel extends JPanel {
 
 	
 	public LandlordPanel(Container contentPane, Menu menu) {
-		setBackground(new Color(187, 187, 187));
+		setBackground(new Color(170, 170, 170));
 		setForeground(Color.BLACK);
 		setName("LandlordPanel"); 
 		setLayout(null);

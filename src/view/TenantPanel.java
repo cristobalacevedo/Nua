@@ -90,7 +90,7 @@ public class TenantPanel extends JPanel {
 	
 
 	public TenantPanel(Container contentPane, Menu menu) {
-		setBackground(new Color(187, 187, 187));
+		setBackground(new Color(170, 170, 170));
 		setForeground(Color.BLACK);
 		setName("TenantPanel"); 
 		setLayout(null);
@@ -757,6 +757,7 @@ public class TenantPanel extends JPanel {
 		
 		// -- BACK BUTTON -- //
 		
+		btnBack = new JButton("Atrás"); // SPANISH for "Back"		
 		btnBack.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 22));
 		btnBack.setBounds(50, 600, 131, 50);
 		add(btnBack);

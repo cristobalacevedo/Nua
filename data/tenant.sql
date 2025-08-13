@@ -1,7 +1,9 @@
 CREATE TABLE "tenant" (
 	"person_id"	INTEGER,
-	"isrenting"	INTEGER NOT NULL,
-	"isactive"	INTEGER NOT NULL,
+	"hasrentals" INTEGER NOT NULL,
+	"isactive" INTEGER NOT NULL,
+	"aval_id" INTEGER,
 	PRIMARY KEY("person_id"),
-	FOREIGN KEY("person_id") REFERENCES "person"("id") ON DELETE CASCADE
+	FOREIGN KEY("person_id") REFERENCES "person"("id") ON DELETE CASCADE,
+	FOREIGN KEY("aval_id") REFERENCES "aval"("id") ON DELETE CASCADE
 );
