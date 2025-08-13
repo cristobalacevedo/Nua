@@ -59,9 +59,32 @@ public class TenantController {
 			return false;
 		}
 		
-		if (PersonDAO.avalRutExistsInDB(rut)) {
-			Popup.show("El RUT ya está registrado en el sistema como 'Aval'.", "error"); // SPANISH for "The RUT is already registered in the system."
-			return false;
+		if (PersonDAO.avalRutExistsInDB(rutAval)) {
+		    int confirm = PopupDialog.showYesNoWarn(
+		        null,
+		        "El RUT: " + rutAval + ", ya está registrado en el sistema como 'Aval'. \n¿Desea asignar este aval al nuevo arrendatario?",
+		        "Asignar Aval Existente"
+		    );
+
+		    if (confirm != javax.swing.JOptionPane.YES_OPTION) {
+		        return false; // Usuario canceló
+		    }
+
+		    // USER ACCEPTED TO USE EXISTING AVAL
+		    int bankId = bankDAO.getIdByName(bankName);
+
+		    Tenant tenant = new Tenant(
+		        rut, name, surname, email, phone,
+		        "tenant", true, true,
+		        bankDAO.getBankByName(bankName), accountType, accountNum
+		    );
+
+		    Aval aval = new Aval(
+		        rutAval, nameAval, surnameAval, emailAval, phoneAval,
+		        "aval", true, bankDAO.getBankByName(bankNameAval), accountTypeAval, accountNumAval
+		    );
+
+		    return tenantDAO.saveTenantAvalExist(tenant, bankId, accountType, accountNum, aval);
 		}
 
 		if (bankName == null || bankName.isEmpty() || bankName.equals("Seleccionar banco")) { // SPANISH for "Select a valid bank"
