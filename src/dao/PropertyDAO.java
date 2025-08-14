@@ -17,6 +17,9 @@ import model.Land;
 import model.Office;
 import model.Parking;
 import model.Storage;
+import utils.PropertyOption;
+import utils.PropertyTypeOption;
+import utils.TownOption;
 
 public class PropertyDAO {
     private Connection conn;
@@ -66,7 +69,7 @@ public class PropertyDAO {
 		return propertyTypes;
 	}
 	
-	public List<AvailablePropertyView> getAllAvailable() {
+	public static List<AvailablePropertyView> getAllAvailable() {
 	    List<AvailablePropertyView> list = new ArrayList<>();
 	    String sql = "SELECT * FROM all_available_properties";
 
@@ -113,6 +116,101 @@ public class PropertyDAO {
 		return typeID;
 	}
 	
+	public static int getTypeIDByName(PropertyTypeOption selectedOption) {
+		int typeID = -1; // Default value if not found
+		String sql = "SELECT id FROM property_type WHERE name = ?";
+		
+		try (Connection conn = DBConnection.getConnection(); 
+			PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, selectedOption.getValue());
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getInt("id");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return typeID;
+	}
+	
+	
+	public static List<PropertyOption> getAllAvailableByTypeID(int typeID) {
+	    List<PropertyOption> properties = new ArrayList<>();
+
+	    String sql = "SELECT " +
+	            "p.id AS property_id, " +
+	            "CONCAT(pe.name, ' ', pe.surname) AS Dueño, " +
+	            "CASE " +
+	            "  WHEN pp.name = 'House' THEN 'Casa' " +
+	            "  WHEN pp.name = 'Flat' THEN 'Departamento' " +
+	            "  WHEN pp.name = 'Parking' THEN 'Estacionamiento' " +
+	            "  WHEN pp.name = 'Storage' THEN 'Bodega' " +
+	            "  WHEN pp.name = 'Land' THEN 'Parcela/Terreno' " +
+	            "  WHEN pp.name = 'Office' THEN 'Oficina' " +
+	            "END AS Tipo, " +
+	            "p.rol_sii AS ROL_SII, " +
+	            "p.size AS Tamaño, " +
+	            "t.name AS Comuna, " +
+	            "CONCAT(a.st_name, ' ', a.num_1, ' #', a.num_2) AS Dirección, " +
+	            "CASE " +
+	            "  WHEN p.available = 1 THEN 'Disponible' " +
+	            "  WHEN p.available = 0 THEN 'Arrendado' " +
+	            "END AS Disponibilidad " +
+	            "FROM property p " +
+	            "JOIN property_type pp ON p.property_type_id = pp.id " +
+	            "JOIN landlord l ON p.landlord_id = l.person_id " +
+	            "JOIN person pe ON l.person_id = pe.id " +
+	            "JOIN address a ON p.address_id = a.id " +
+	            "JOIN town t ON a.town_id = t.id " +
+	            "WHERE p.available = 1 " +
+	            "AND p.property_type_id = ?";
+
+	    try (Connection conn = DBConnection.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setInt(1, typeID);
+	        ResultSet rs = stmt.executeQuery();
+
+	        while (rs.next()) {
+	        	
+                	// DEBUG: Imprimir los datos obtenidos
+//	        	System.out.println("DEBUG RAW: id=" + rs.getInt("property_id") +
+//	        	                       ", type=" + rs.getString("Tipo") +
+//	        	                       ", address=" + rs.getString("Dirección") +
+//	        	                       ", town=" + rs.getString("Comuna") +
+//	        	                       ", landlord=" + rs.getString("Dueño"));
+	        	
+	        	
+	            int id = rs.getInt("property_id");
+	            //String type = rs.getString("Tipo");
+	            String address = rs.getString("Dirección");
+	            String town = rs.getString("Comuna");
+	            String landlord = rs.getString("Dueño");
+
+	            // Evitar nulls en el texto
+	            if (address == null) address = "";
+	            if (town == null) town = "";
+	            if (landlord == null) landlord = "";
+
+	            // Texto a mostrar en el combo
+	            String displayProperty = address + ", " + town + " - " + landlord;
+
+	            // DEBUG: Imprimir el texto que se va a agregar
+	            System.out.println("DEBUG - Adding property: " + displayProperty + " - ID: " + id);
+	            properties.add(new PropertyOption(displayProperty, String.valueOf(id)));
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return properties;
+	}
+
+	
+	
 	// --- HOUSE METHODS ---
 	
 	public boolean insertCompleteHouse(House data) throws SQLException {
@@ -151,7 +249,7 @@ public class PropertyDAO {
     }
 
     private int insertHouseProperty(House data, int addressId) throws SQLException {
-        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii, available) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming available is always true (1) for new properties
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, data.getLandlordId());
             stmt.setInt(2, data.getPropertyTypeId());
@@ -303,7 +401,7 @@ public class PropertyDAO {
 	}
 	
 	private int insertFlatProperty(Flat data, int addressId) throws SQLException {
-        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii, available) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming available is always true (1) for new properties)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, data.getLandlordId());
             stmt.setInt(2, data.getPropertyTypeId());
@@ -360,7 +458,7 @@ public class PropertyDAO {
 	}
 	
 	private int insertParkingProperty(Parking data, int addressId) throws SQLException {
-        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii, available) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming available is always true (1) for new properties)
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, data.getLandlordId());
             stmt.setInt(2, data.getPropertyTypeId());
@@ -433,7 +531,7 @@ public class PropertyDAO {
     }
 	
 	private int insertStorageProperty(Storage data, int addressId) throws SQLException {
-        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii, available) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming available is always true (1) for new properties)
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, data.getLandlordId());
             stmt.setInt(2, data.getPropertyTypeId());
@@ -489,7 +587,7 @@ public class PropertyDAO {
     }
 
     private int insertLandProperty(Land data, int addressId) throws SQLException {
-        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii, available) VALUES (?, ?, ?, ?, ?, 1)"; // Assuming available is always true (1) for new properties)
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, data.getLandlordId());
             stmt.setInt(2, data.getPropertyTypeId());
@@ -642,7 +740,7 @@ public class PropertyDAO {
 	}
 	
 	private int insertOfficeProperty(Office data, int addressId) throws SQLException {
-        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO property (landlord_id, property_type_id, address_id, size, rol_sii, available) VALUES (?, ?, ?, ?, ?, 1)";
         try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setInt(1, data.getLandlordId());
             stmt.setInt(2, data.getPropertyTypeId());
@@ -675,6 +773,8 @@ public class PropertyDAO {
             }
         }
     }
+
+
 	
 }
 
