@@ -1,5 +1,6 @@
 package view;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -10,6 +11,7 @@ import javax.swing.text.AbstractDocument;
 import dao.PropertyDAO;
 import dao.RegionDAO;
 import dao.TownDAO;
+import model.ParkingForm;
 import utils.PropertyOption;
 import utils.PropertyTypeOption;
 import utils.RUTDocumentFilter;
@@ -58,6 +60,8 @@ public class RentalsPanel extends JPanel {
 	private JRadioButton rdbtnUF;
 	private JCheckBox chckbxStorage;
 	private JCheckBox chckbxParking;
+	private JPanel panel_Parking; // Panel for Parking options
+	private JPanel panel_Storage; // Panel for Storage options
 
 	
 	public RentalsPanel(Container contentPane, Menu menu) {
@@ -257,13 +261,32 @@ public class RentalsPanel extends JPanel {
 		
 		chckbxParking = new JCheckBox("Con Estacionamiento/s");
 		chckbxParking.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
-		chckbxParking.setBounds(750, 143, 199, 23);
+		chckbxParking.setBounds(750, 143, 200, 23);
 		add(chckbxParking);
 		
 		chckbxStorage = new JCheckBox("Con Bodega/s");
 		chckbxStorage.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
-		chckbxStorage.setBounds(961, 143, 139, 23);
+		chckbxStorage.setBounds(1004, 143, 139, 23);
 		add(chckbxStorage);
+		
+		panel_Parking = new JPanel();
+		panel_Parking.setLayout(null); 
+		//panelEstacionamientos.setOpaque(false);
+		panel_Parking.setBounds(750, 173, 199, 192);
+		panel_Parking.setBackground(new Color(187, 187, 187)); 
+		panel_Parking.setVisible(false); // Initially hidden, only shown when Flat or Office is selected
+		//panelEstacionamientos.setOpaque(true);  // para que el fondo blanco se aplique
+		//panelEstacionamientos.setBorder(BorderFactory.createLineBorder(Color.RED));
+		add(panel_Parking);
+		setComponentZOrder(panel_Parking, 0);
+		
+		panel_Storage = new JPanel();
+		panel_Storage.setLayout(null);
+        panel_Storage.setBounds(1004, 173, 200, 192);
+        panel_Storage.setBackground(new Color(187, 187, 187)); 
+        panel_Storage.setVisible(false); // Initially hidden, only shown when Flat or Office is selected
+        add(panel_Storage);
+        setComponentZOrder(panel_Storage, 0);
 		
 
 		// ActionListener for Radio Buttons
@@ -306,5 +329,49 @@ public class RentalsPanel extends JPanel {
 		});
 		
 				
+	}
+	
+	
+	public JPanel getParkings(int parkingQty) {
+	    JPanel panelParking = new JPanel();
+	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + parkingQty)); // SPANISH for "Parking #"
+	    panelParking.setBackground(Color.LIGHT_GRAY);
+	    panelParking.setLayout(null);
+	    
+	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"}); // SPANISH for "Covered", "Uncovered"
+	    tipoCombo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+	    tipoCombo.setBounds(50, 28, 116, 30);
+	   // panelParking.add(tipoCombo);
+	    
+	    txtPrkngRol = new JTextField(10);
+	    txtPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+	    txtPrkngRol.setBounds(65, 20, 60, 30);
+	    panelParking.add(txtPrkngRol);
+	    
+	    txtPrkngNum = new JTextField(10);
+	    txtPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+	    txtPrkngNum.setBounds(65, 50, 60, 30);
+	    panelParking.add(txtPrkngNum);
+
+	    JLabel lblPrkngType = new JLabel("Tipo:");
+	    lblPrkngType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblPrkngType.setBounds(20, 28, 116, 16);
+	   // panelParking.add(lblPrkngType);
+	   
+	    JLabel lblPrkngRol = new JLabel("ROL:");
+	    lblPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblPrkngRol.setBounds(20, 25, 116, 16);
+	    panelParking.add(lblPrkngRol);
+	    
+	    JLabel lblPrkngNum = new JLabel("Nº:");
+	    lblPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblPrkngNum.setBounds(20, 55, 116, 16);
+	    panelParking.add(lblPrkngNum);
+	    
+	    
+	    ParkingForm form = new ParkingForm(txtPrkngRol, tipoCombo, txtPrkngNum);
+	    parkingForms.add(form); // ✅ agregamos el formulario a la lista
+	    
+	    return panelParking;
 	}
 }
