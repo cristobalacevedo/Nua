@@ -215,8 +215,8 @@ public class RentalsPanel extends JPanel {
 
 		            if (!propertyType.isEmpty()) {
 		                int typeID = PropertyDAO.getTypeIDByName(propertyType);
-		                System.out.println("DEBUG - Nombre que mando: " + propertyType);
-		                System.out.println("DEBUG - ID que devuelve: " + typeID);
+		                System.out.println("DEBUG - Name sent: " + propertyType);
+		                System.out.println("DEBUG - ID received: " + typeID);
 
 		                comboProperty.removeAllItems();
 		                comboProperty.addItem(new PropertyOption("Seleccione una Propiedad", ""));
@@ -303,7 +303,7 @@ public class RentalsPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// Aquí puedes agregar la lógica que necesites cuando se seleccione "UF"
 				lblValue.setText("Valor:      UF"); // SPANISH for "Value: UF"
-				System.out.println("DEBUG - Value Selected: Pesos ($)");
+				System.out.println("DEBUG - Value Selected: UF");
 			}
 		});
 		// --- END RADIO BUTTONS --- //
@@ -332,46 +332,46 @@ public class RentalsPanel extends JPanel {
 	}
 	
 	
-	public JPanel getParkings(int parkingQty) {
-	    JPanel panelParking = new JPanel();
-	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + parkingQty)); // SPANISH for "Parking #"
-	    panelParking.setBackground(Color.LIGHT_GRAY);
-	    panelParking.setLayout(null);
-	    
-	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"}); // SPANISH for "Covered", "Uncovered"
-	    tipoCombo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-	    tipoCombo.setBounds(50, 28, 116, 30);
-	   // panelParking.add(tipoCombo);
-	    
-	    txtPrkngRol = new JTextField(10);
-	    txtPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-	    txtPrkngRol.setBounds(65, 20, 60, 30);
-	    panelParking.add(txtPrkngRol);
-	    
-	    txtPrkngNum = new JTextField(10);
-	    txtPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-	    txtPrkngNum.setBounds(65, 50, 60, 30);
-	    panelParking.add(txtPrkngNum);
-
-	    JLabel lblPrkngType = new JLabel("Tipo:");
-	    lblPrkngType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblPrkngType.setBounds(20, 28, 116, 16);
-	   // panelParking.add(lblPrkngType);
-	   
-	    JLabel lblPrkngRol = new JLabel("ROL:");
-	    lblPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblPrkngRol.setBounds(20, 25, 116, 16);
-	    panelParking.add(lblPrkngRol);
-	    
-	    JLabel lblPrkngNum = new JLabel("Nº:");
-	    lblPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblPrkngNum.setBounds(20, 55, 116, 16);
-	    panelParking.add(lblPrkngNum);
-	    
-	    
-	    ParkingForm form = new ParkingForm(txtPrkngRol, tipoCombo, txtPrkngNum);
-	    parkingForms.add(form); // ✅ agregamos el formulario a la lista
-	    
-	    return panelParking;
-	}
+//	public JPanel getParkings(int parkingQty) {
+//	    JPanel panelParking = new JPanel();
+//	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + parkingQty)); // SPANISH for "Parking #"
+//	    panelParking.setBackground(Color.LIGHT_GRAY);
+//	    panelParking.setLayout(null);
+//	    
+//	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"}); // SPANISH for "Covered", "Uncovered"
+//	    tipoCombo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+//	    tipoCombo.setBounds(50, 28, 116, 30);
+//	   // panelParking.add(tipoCombo);
+//	    
+//	    txtPrkngRol = new JTextField(10);
+//	    txtPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+//	    txtPrkngRol.setBounds(65, 20, 60, 30);
+//	    panelParking.add(txtPrkngRol);
+//	    
+//	    txtPrkngNum = new JTextField(10);
+//	    txtPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
+//	    txtPrkngNum.setBounds(65, 50, 60, 30);
+//	    panelParking.add(txtPrkngNum);
+//
+//	    JLabel lblPrkngType = new JLabel("Tipo:");
+//	    lblPrkngType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+//	    lblPrkngType.setBounds(20, 28, 116, 16);
+//	   // panelParking.add(lblPrkngType);
+//	   
+//	    JLabel lblPrkngRol = new JLabel("ROL:");
+//	    lblPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+//	    lblPrkngRol.setBounds(20, 25, 116, 16);
+//	    panelParking.add(lblPrkngRol);
+//	    
+//	    JLabel lblPrkngNum = new JLabel("Nº:");
+//	    lblPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+//	    lblPrkngNum.setBounds(20, 55, 116, 16);
+//	    panelParking.add(lblPrkngNum);
+//	    
+//	    
+//	    ParkingForm form = new ParkingForm(txtPrkngRol, tipoCombo, txtPrkngNum);
+//	    parkingForms.add(form); // ✅ agregamos el formulario a la lista
+//	    
+//	    return panelParking;
+//	}
 }
