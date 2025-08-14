@@ -1,83 +1,70 @@
 package utils;
 
 import java.io.*;
-import java.nio.file.*;
-import java.time.LocalDate;
-import java.util.*;
-import com.google.gson.Gson;;
-import com.google.gson.GsonBuilder;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import org.json.JSONObject;
 
 public class UF {
-
-    private static final String CACHE_FILE = "uf_cache.json";
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-    // Clase para representar el JSON
-    private static class UFCache {
-        String fecha;
-        double valor;
-    }
+    private static final String UF_FILE = "data/uf.json";
+    private static final String UF_API = "https://mindicador.cl/api/uf";
 
     public static double getUFValue() {
-        // 1. Intentar leer desde caché
-        Double cachedValue = readCache();
-        if (cachedValue != null) {
-            return cachedValue;
-        }
-
-        // 2. Si no hay caché o está vencido, obtener desde Python
-        double valorUF = 0.0;
         try {
-            Process p = Runtime.getRuntime().exec("python UF_value/ufclp.py");
-            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                if (line.startsWith("Valor UF")) {
-                    String[] parts = line.split("\\$");
-                    String numberPart = parts[1].trim().split(" ")[0];
-                    valorUF = Double.parseDouble(numberPart);
-                    break;
+            // 1. Verificar si existe un archivo con datos
+            if (Files.exists(Paths.get(UF_FILE))) {
+                String content = new String(Files.readAllBytes(Paths.get(UF_FILE)));
+                JSONObject json = new JSONObject(content);
+
+                String fechaGuardada = json.getString("fecha");
+                String fechaHoy = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+
+                // 2. Si la fecha es de hoy, devolver valor guardado
+                if (fechaHoy.equals(fechaGuardada)) {
+                    return json.getDouble("valor");
                 }
             }
-            in.close();
 
-            // 3. Guardar en caché
-            saveCache(valorUF);
+            // 3. Si no existe o está desactualizado → consultar API
+            URL url = new URL(UF_API);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return valorUF;
-    }
-
-    private static Double readCache() {
-        try {
-            if (!Files.exists(Paths.get(CACHE_FILE))) {
-                return null; // No existe caché
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
             }
-            String content = Files.readString(Paths.get(CACHE_FILE));
-            UFCache cache = gson.fromJson(content, UFCache.class);
+            br.close();
 
-            if (cache.fecha.equals(LocalDate.now().toString())) {
-                return cache.valor; // Aún válido
-            }
+            JSONObject jsonApi = new JSONObject(sb.toString());
+            JSONObject ufHoy = jsonApi.getJSONArray("serie").getJSONObject(0);
+
+            double valor = ufHoy.getDouble("valor");
+            String fecha = ufHoy.getString("fecha").substring(0, 10);
+
+            // 4. Guardar en archivo
+            JSONObject jsonGuardar = new JSONObject();
+            jsonGuardar.put("fecha", fecha);
+            jsonGuardar.put("valor", valor);
+
+            Files.write(Paths.get(UF_FILE), jsonGuardar.toString().getBytes());
+
+            return valor;
+
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        return null; // Caché vencido o error
-    }
-
-    private static void saveCache(double valor) {
-        try {
-            UFCache cache = new UFCache();
-            cache.fecha = LocalDate.now().toString();
-            cache.valor = valor;
-
-            Files.writeString(Paths.get(CACHE_FILE), gson.toJson(cache));
-        } catch (Exception e) {
-            e.printStackTrace();
+            return -1; // Error
         }
     }
+}
+
 
     // Test
   //  public static void main(String[] args) {
@@ -90,4 +77,3 @@ public class UF {
 //        double ufHoy = getUFValue();
 //        System.out.println("UF hoy: " + ufHoy);
 //    }
-}
