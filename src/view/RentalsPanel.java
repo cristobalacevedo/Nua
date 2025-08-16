@@ -224,13 +224,15 @@ public class RentalsPanel extends JPanel {
 		comboProperty.setEditable(false);
 		add(comboProperty);
 		String defaultProperty = "Seleccione Tipo de Propiedad";
-		comboProperty.addItem(new PropertyOption(defaultProperty, ""));
+		comboProperty.addItem(new PropertyOption(defaultProperty, 0, ""));
 		
 		comboProperty.addItemListener(e -> {
 		    if (e.getStateChange() == ItemEvent.SELECTED) {
 		        PropertyOption selected = (PropertyOption) comboProperty.getSelectedItem();
-		        if (selected != null && !selected.getValue().isEmpty()) {
-		        	System.out.println("DEBUG - Property selected: " + selected.getLabel() + " - ID: " + selected.getValue());
+		        // IF getId() is not null or 0
+		       
+		        if (selected != null && selected.getId() != 0) {
+		        	System.out.println("DEBUG - Property selected: " + selected.getLabel() + " - ID: " + selected.getId());
 		            onPropertySelected(selected);
 		        }
 		    }
@@ -249,19 +251,19 @@ public class RentalsPanel extends JPanel {
 		                System.out.println("DEBUG - ID received: " + typeID);
 
 		                comboProperty.removeAllItems();
-		                comboProperty.addItem(new PropertyOption("Seleccione una Propiedad", ""));
+		                comboProperty.addItem(new PropertyOption("Seleccione una Propiedad", 0, ""));
 
 		                List<PropertyOption> properties = PropertyDAO.getAllAvailableByTypeID(typeID);
 		                
 		                System.out.println("DEBUG - Propiedades encontradas: " + properties.size());
 
 		                for (PropertyOption property : properties) {
-		                	System.out.println("DEBUG - label: " + property.getLabel() + " - ID: " + property.getValue());
+		                	System.out.println("DEBUG - label: " + property.getLabel() + " - ID: " + property.getId());
 		                    comboProperty.addItem(property);
 		                }
 		            } else {
 		                comboProperty.removeAllItems();
-		                comboProperty.addItem(new PropertyOption("Seleccione una Propiedad", ""));
+		                comboProperty.addItem(new PropertyOption("Seleccione una Propiedad", 0, ""));
 		            }
 		        }
 		    }
@@ -318,7 +320,7 @@ public class RentalsPanel extends JPanel {
 	    });
 	        
 	    endDatePicker = new DatePicker();
-	    FormLayout formLayout = (FormLayout) endDatePicker.getLayout();
+	   // FormLayout formLayout = (FormLayout) endDatePicker.getLayout();
 	    endDatePicker.getComponentToggleCalendarButton().setText("+");
 	    endDatePicker.getComponentToggleCalendarButton().setFont(new Font("Segoe UI", Font.BOLD, 12));
 	    endDatePicker.getComponentDateTextField().setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 18));
@@ -333,7 +335,7 @@ public class RentalsPanel extends JPanel {
 		panel_Parking = new JPanel();
 		panel_Parking.setLayout(null); 
 		//panelEstacionamientos.setOpaque(false);
-		panel_Parking.setBounds(750, 141, 199, 192);
+		panel_Parking.setBounds(750, 141, 200, 280);
 		panel_Parking.setBackground(new Color(187, 187, 187)); 
 		panel_Parking.setVisible(false); // Initially hidden, only shown when Flat or Office is selected
 		//panelEstacionamientos.setOpaque(true);  // para que el fondo blanco se aplique
@@ -341,9 +343,13 @@ public class RentalsPanel extends JPanel {
 		add(panel_Parking);
 		setComponentZOrder(panel_Parking, 0);
 		
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 199, 102);
+		panel_Parking.add(panel);
+		
 		panel_Storage = new JPanel();
 		panel_Storage.setLayout(null);
-        panel_Storage.setBounds(1004, 141, 200, 192);
+        panel_Storage.setBounds(1004, 141, 200, 280);
         panel_Storage.setBackground(new Color(187, 187, 187)); 
         panel_Storage.setVisible(false); // Initially hidden, only shown when Flat or Office is selected
         add(panel_Storage);
@@ -394,6 +400,24 @@ public class RentalsPanel extends JPanel {
 				
 	}
 	
+	private void drawParkings(List<Parking> parkings) {
+	    panel_Parking.removeAll();
+	    panel_Parking.setVisible(!parkings.isEmpty());
+
+	    int i = 0;
+	    for (Parking parking : parkings) {
+	        JPanel miniForm = getParking(parking, i + 1);
+	        miniForm.setBounds(0, 90 * i, 180, 90);
+	        panel_Parking.add(miniForm);
+	        i++;
+	        System.out.println("DEBUG - Added Parking Panel for Estacionamiento #" + i);
+	        System.out.println("DEBUG - Parking Rol: " + parking.getRolSII() + ", Num: " + parking.getNum1() + ", Size: " + parking.getSize());
+	    }
+
+	    panel_Parking.revalidate();
+	    panel_Parking.repaint();
+	}
+	
 	private void drawStorages(List<Storage> storages) {
 	    panel_Storage.removeAll();
 	    panel_Storage.setVisible(!storages.isEmpty());
@@ -404,34 +428,21 @@ public class RentalsPanel extends JPanel {
 	        miniForm.setBounds(i * 233, 0, 230, 90);
 	        panel_Storage.add(miniForm);
 	        i++;
+	        System.out.println("DEBUG - Added Storage Panel for Bodega #" + i);
+	        System.out.println("DEBUG - Storage Rol: " + storage.getRolSII() + ", Num: " + storage.getNum1() + ", Size: " + storage.getSize());
 	    }
 
 	    panel_Storage.revalidate();
 	    panel_Storage.repaint();
 	}
 
-	private void drawParkings(List<Parking> parkings) {
-	    panel_Parking.removeAll();
-	    panel_Parking.setVisible(!parkings.isEmpty());
-
-	    int i = 0;
-	    for (Parking parking : parkings) {
-	        JPanel miniForm = getParking(parking, i + 1);
-	        miniForm.setBounds(i * 233, 0, 230, 90);
-	        panel_Parking.add(miniForm);
-	        i++;
-	    }
-
-	    panel_Parking.revalidate();
-	    panel_Parking.repaint();
-	}
-	
 	private void onPropertySelected(PropertyOption propertyOption) {
 	    // Aquí deberías tener un ID único del Flat
 	    int flatId = propertyOption.getId(); 
 	    System.out.println("DEBUG - Flat ID selected: " + flatId);
 	    // Solo si es Flat (o si tu sistema también aplica para Office, etc.)
-	    if ("Flat".equals(propertyOption.getValue())) {
+	    
+	    if ("Flat".equals(propertyOption.getType())) {
 	    	System.out.println("DEBUG - Loading Storages and Parkings for Flat ID: " + flatId);
 	        List<Storage> storages = StorageDAO.getStoragesByFlatId(flatId);
 	        System.out.println("DEBUG - Storages found: " + storages.size());
@@ -446,26 +457,27 @@ public class RentalsPanel extends JPanel {
 	    }
 	}
 	
+	
 	private JPanel getParking(Parking parking, int index) {
 	    JPanel panelStorage = new JPanel();
-	    panelStorage.setBorder(BorderFactory.createTitledBorder("Bodega #" + index));
+	    panelStorage.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + index));
 	    panelStorage.setBackground(Color.LIGHT_GRAY);
 	    panelStorage.setLayout(null);
 
-	    JLabel lblRol = new JLabel("ROL: " + parking.getRolSII());
-	    lblRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblRol.setBounds(20, 25, 200, 16);
-	    panelStorage.add(lblRol);
+	    JLabel lblParkingRol = new JLabel("ROL: " + parking.getRolSII());
+	    lblParkingRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblParkingRol.setBounds(20, 25, 200, 16);
+	    panelStorage.add(lblParkingRol);
 
-	    JLabel lblNum = new JLabel("Nº: " + parking.getNum1());
-	    lblNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblNum.setBounds(20, 45, 200, 16);
-	    panelStorage.add(lblNum);
+	    JLabel lblParkingNum = new JLabel("Nº: " + parking.getNum1());
+	    lblParkingNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblParkingNum.setBounds(20, 45, 200, 16);
+	    panelStorage.add(lblParkingNum);
 
-	    JLabel lblSize = new JLabel("Superficie m²: " + parking.getSize());
-	    lblSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblSize.setBounds(20, 65, 200, 16);
-	    panelStorage.add(lblSize);
+	    JLabel lblParkingSize = new JLabel("Superficie m²: " + parking.getSize());
+	    lblParkingSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblParkingSize.setBounds(20, 65, 200, 16);
+	    panelStorage.add(lblParkingSize);
 
 	    return panelStorage;
 	}
@@ -476,22 +488,21 @@ public class RentalsPanel extends JPanel {
 	    panelStorage.setBackground(Color.LIGHT_GRAY);
 	    panelStorage.setLayout(null);
 
-	    JLabel lblRol = new JLabel("ROL: " + storage.getRolSII());
-	    lblRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblRol.setBounds(20, 25, 200, 16);
-	    panelStorage.add(lblRol);
+	    JLabel lblStorageRol = new JLabel("ROL: " + storage.getRolSII());
+	    lblStorageRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblStorageRol.setBounds(20, 25, 200, 16);
+	    panelStorage.add(lblStorageRol);
 
-	    JLabel lblNum = new JLabel("Nº: " + storage.getNum1());
-	    lblNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblNum.setBounds(20, 45, 200, 16);
-	    panelStorage.add(lblNum);
+	    JLabel lblStorageNum = new JLabel("Nº: " + storage.getNum1());
+	    lblStorageNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblStorageNum.setBounds(20, 45, 200, 16);
+	    panelStorage.add(lblStorageNum);
 
-	    JLabel lblSize = new JLabel("Superficie m²: " + storage.getSize());
-	    lblSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-	    lblSize.setBounds(20, 65, 200, 16);
-	    panelStorage.add(lblSize);
+	    JLabel lblStorageSize = new JLabel("Superficie m²: " + storage.getSize());
+	    lblStorageSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblStorageSize.setBounds(20, 65, 200, 16);
+	    panelStorage.add(lblStorageSize);
 
 	    return panelStorage;
 	}
-	
 }

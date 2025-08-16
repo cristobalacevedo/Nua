@@ -76,7 +76,7 @@ public class StorageDAO {
 
 		public static List<Storage> getStoragesByFlatId(int flatId) {
 			List<Storage> storages = new ArrayList<>();
-			String sql = "SELECT id, property_id, flat_id FROM storage WHERE flat_id = ?";
+			String sql = "SELECT id, property_id, flat_id, size FROM storage WHERE flat_id = ?";
 
 			try (Connection conn = DBConnection.getConnection();
 					PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -88,6 +88,7 @@ public class StorageDAO {
 								rs.getInt("id"),
 								rs.getInt("property_id"),
 								rs.getInt("flat_id")
+								// HAY QUE HACER OTRA QUERY PARA TRAER ADDRESS, ROL, SIZE !!!
 								);
 						storages.add(storage);
 					}

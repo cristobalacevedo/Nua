@@ -150,6 +150,7 @@ public class PropertyDAO {
 	            "  WHEN pp.name = 'Land' THEN 'Parcela/Terreno' " +
 	            "  WHEN pp.name = 'Office' THEN 'Oficina' " +
 	            "END AS Tipo, " +
+	            "pp.name as name," +
 	            "p.rol_sii AS ROL_SII, " +
 	            "p.size AS Tamaño, " +
 	            "t.name AS Comuna, " +
@@ -188,6 +189,7 @@ public class PropertyDAO {
 	            String address = rs.getString("Dirección");
 	            String town = rs.getString("Comuna");
 	            String landlord = rs.getString("Dueño");
+	            String type = rs.getString("name");
 
 	            // Evitar nulls en el texto
 	            if (address == null) address = "";
@@ -198,8 +200,8 @@ public class PropertyDAO {
 	            String displayProperty = address + ", " + town + " - " + landlord;
 
 	            // DEBUG: Imprimir el texto que se va a agregar
-	            System.out.println("DEBUG - Adding property: " + displayProperty + " - ID: " + id);
-	            properties.add(new PropertyOption(displayProperty, String.valueOf(id)));
+	            System.out.println("DEBUG - Adding property: " + displayProperty + " - ID: " + id + " - Type: " + type);
+	            properties.add(new PropertyOption(displayProperty, id, type));
 	        }
 
 	    } catch (SQLException e) {
