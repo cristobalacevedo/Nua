@@ -1,12 +1,18 @@
 package dao;
 
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
+
+import db.DBConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import model.Parking;
+import model.Storage;
 
 public class ParkingDAO {
 	 private final Connection conn;
@@ -70,4 +76,54 @@ public class ParkingDAO {
 	            stmt.executeBatch(); // Ejecuta todos los INSERTS
 	        }
 	    }
+
+	    public static List<Parking> getParkingsByFlatId(int flatId) {
+			List<Parking> parkings = new ArrayList<>();
+			String sql = "SELECT id, property_id, flat_id FROM storage WHERE flat_id = ?";
+
+			try (Connection conn = DBConnection.getConnection();
+					PreparedStatement ps = conn.prepareStatement(sql)) {
+
+				ps.setInt(1, flatId);
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						Parking parking = new Parking(
+								rs.getInt("id"),
+								rs.getInt("property_id"),
+								rs.getInt("flat_id")
+								);
+						parkings.add(parking);
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return parkings;
+		}
+	    
+	    public static List<Parking> getParkingsByOfficeId(int flatId) {
+			List<Parking> parkings = new ArrayList<>();
+			String sql = "SELECT id, property_id, office_id FROM storage WHERE flat_id = ?";
+
+			try (Connection conn = DBConnection.getConnection();
+					PreparedStatement ps = conn.prepareStatement(sql)) {
+
+				ps.setInt(1, flatId);
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						Parking parking = new Parking(
+								rs.getInt("id"),
+								rs.getInt("property_id"),
+								rs.getInt("office_id")
+								);
+						parkings.add(parking);
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return parkings;
+		}
+	    
+	    
 	}

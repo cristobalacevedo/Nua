@@ -22,6 +22,10 @@ public class Parking extends Estate {
 		// Default constructor necessary to use `new Parking()`
 	}
 
+	public Parking(int id, int property_id, int flat_id) {
+		// TODO Auto-generated constructor stub
+	}
+	
 	// GETTERS
 	
 	public int getId() {

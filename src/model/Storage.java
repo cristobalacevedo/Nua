@@ -21,9 +21,14 @@ public class Storage extends Estate {
 	public Storage() {
 		// Default constructor necessary to use `new Parking()`
 	}
-
-	// GETTERS
 	
+	public Storage(int id, int property_id, int flat_id) {
+		
+	}
+
+	
+	// GETTERS
+
 	public int getId() {
 		return id;
 	}

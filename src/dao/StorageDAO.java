@@ -2,10 +2,13 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 
+import db.DBConnection;
 import model.Storage;
 
 public class StorageDAO {
@@ -70,4 +73,30 @@ public class StorageDAO {
 	            stmt.executeBatch(); // Ejecuta todos los INSERTS
 	        }
 	    }
+
+		public static List<Storage> getStoragesByFlatId(int flatId) {
+			List<Storage> storages = new ArrayList<>();
+			String sql = "SELECT id, property_id, flat_id FROM storage WHERE flat_id = ?";
+
+			try (Connection conn = DBConnection.getConnection();
+					PreparedStatement ps = conn.prepareStatement(sql)) {
+
+				ps.setInt(1, flatId);
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						Storage storage = new Storage(
+								rs.getInt("id"),
+								rs.getInt("property_id"),
+								rs.getInt("flat_id")
+								);
+						storages.add(storage);
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return storages;
+		}
+		
+		
 	}

@@ -8,16 +8,17 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.text.AbstractDocument;
 
+import dao.ParkingDAO;
 import dao.PropertyDAO;
-import dao.RegionDAO;
-import dao.TownDAO;
+import dao.StorageDAO;
+import model.Parking;
 import model.ParkingForm;
+import model.Storage;
 import utils.PropertyOption;
 import utils.PropertyTypeOption;
 import utils.RUTDocumentFilter;
 import utils.NumberDocumentFilter;
 import utils.TenantOption;
-import utils.TownOption;
 import utils.UF;
 import utils.ValueDocumentFilter;
 
@@ -25,6 +26,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,10 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JCheckBox;
-import javax.swing.JSeparator;
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.CalendarPanel;
+import javax.swing.ImageIcon;
+import com.privatejgoodies.forms.layout.FormLayout;
 
 
 // This class represents the Rentals panel in the application.
@@ -50,6 +55,8 @@ public class RentalsPanel extends JPanel {
 	private JLabel lblUFValue;
 	private JLabel lblValue;
 	private JLabel lblCommission;
+	private JLabel lblStartDate;
+	private JLabel lblEndDate;
 	private JTextField txtValue;
 	private JTextField txtCommission;
 	private JTextField txtNote;
@@ -62,8 +69,11 @@ public class RentalsPanel extends JPanel {
 	private JCheckBox chckbxParking;
 	private JPanel panel_Parking; // Panel for Parking options
 	private JPanel panel_Storage; // Panel for Storage options
+	private ButtonGroup groupCurrency; // Group for Radio Buttons 
+	private DatePicker startDatePicker; // Date Picker for Start Date
+	private DatePicker endDatePicker; // Date Picker for End Date
 
-	
+	// Constructor for RentalsPanel
 	public RentalsPanel(Container contentPane, Menu menu) {
 		setBackground(new Color(170, 170, 170));
 		setForeground(Color.BLACK);
@@ -83,34 +93,44 @@ public class RentalsPanel extends JPanel {
 		
 		lblPropertyType = new JLabel("Tipo:"); // SPANISH for "Property Type:"
 		lblPropertyType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblPropertyType.setBounds(80, 105, 96, 22);
+		lblPropertyType.setBounds(382, 43, 96, 22);
 		add(lblPropertyType);
 		
 		lblPropertiesSelect = new JLabel("Propiedad:");
 		lblPropertiesSelect.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblPropertiesSelect.setBounds(80, 148, 96, 22);
+		lblPropertiesSelect.setBounds(80, 111, 96, 22);
 		add(lblPropertiesSelect);
 		
 		lblTenantSelect = new JLabel("Arrendatario:");
 		lblTenantSelect.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblTenantSelect.setBounds(80, 191, 113, 22);
+		lblTenantSelect.setBounds(80, 154, 113, 22);
 		add(lblTenantSelect);
 		
 		lblUFValue = new JLabel("Valor UF hoy: $" + UF.getUFValue());  // SPANISH for "Value UF" + today's value);
 		lblUFValue.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblUFValue.setBounds(259, 250, 205, 23);
+		lblUFValue.setBounds(259, 218, 205, 23);
 		add(lblUFValue);
 		
 		lblValue = new JLabel("Valor: "); // SPANISH for "Value: $"
 		lblValue.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblValue.setBounds(90, 276, 103, 30);
+		lblValue.setBounds(80, 252, 103, 30);
 		add(lblValue);
 		
 		lblCommission = new JLabel("Comisión: %"); // SPANISH for "Value: $"
 		lblCommission.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
-		lblCommission.setBounds(90, 304, 105, 32);
+		lblCommission.setBounds(80, 280, 105, 32);
 		add(lblCommission);
 		btnShowAA.setBackground(new Color(51, 153, 0));
+		
+		lblStartDate = new JLabel("Fecha Inicio:");
+        lblStartDate.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+        lblStartDate.setBounds(454, 192, 103, 30);
+        add(lblStartDate);
+        
+        lblEndDate = new JLabel("Fecha Fin:");
+        lblEndDate.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 18));
+        lblEndDate.setBounds(454, 228, 103, 30);
+        add(lblEndDate);
 		
 		// --- END LABELS --- //
 		
@@ -139,7 +159,7 @@ public class RentalsPanel extends JPanel {
 		// --- TEXT FIELDS --- //
 		
 		txtValue = new JTextField();
-		txtValue.setBounds(195, 276, 122, 29);
+		txtValue.setBounds(193, 252, 122, 29);
 		txtValue.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 20));
 		add(txtValue);
 		txtValue.setColumns(10);
@@ -151,7 +171,7 @@ public class RentalsPanel extends JPanel {
 		
 		txtCommission = new JTextField();
 		txtCommission.setColumns(10);
-		txtCommission.setBounds(195, 305, 37, 29);
+		txtCommission.setBounds(193, 281, 37, 29);
 		txtCommission.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 20));
 		add(txtCommission);
 		
@@ -162,7 +182,7 @@ public class RentalsPanel extends JPanel {
 //		int commission = Integer.parseInt(textCommission);
 		
 		txtNote = new JTextField();
-		txtNote.setBounds(194, 390, 215, 30);
+		txtNote.setBounds(195, 441, 215, 30);
 		txtNote.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 20));
 		add(txtNote);
 		txtNote.setColumns(10);
@@ -173,7 +193,7 @@ public class RentalsPanel extends JPanel {
 		// --- COMBO BOXES ---
 		
 		comboType = new JComboBox<>();
-		comboType.setBounds(194, 100, 220, 32);
+		comboType.setBounds(443, 38, 220, 32);
 		comboType.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		comboType.setEditable(false);
 		add(comboType);
@@ -199,12 +219,22 @@ public class RentalsPanel extends JPanel {
 		
 		
 		comboProperty = new JComboBox<>();
-		comboProperty.setBounds(194, 143, 530, 32);
+		comboProperty.setBounds(194, 106, 530, 32);
 		comboProperty.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		comboProperty.setEditable(false);
 		add(comboProperty);
 		String defaultProperty = "Seleccione Tipo de Propiedad";
 		comboProperty.addItem(new PropertyOption(defaultProperty, ""));
+		
+		comboProperty.addItemListener(e -> {
+		    if (e.getStateChange() == ItemEvent.SELECTED) {
+		        PropertyOption selected = (PropertyOption) comboProperty.getSelectedItem();
+		        if (selected != null && !selected.getValue().isEmpty()) {
+		        	System.out.println("DEBUG - Property selected: " + selected.getLabel() + " - ID: " + selected.getValue());
+		            onPropertySelected(selected);
+		        }
+		    }
+		});
 		
 		comboType.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -240,39 +270,70 @@ public class RentalsPanel extends JPanel {
 		comboTenant = new JComboBox<TenantOption>();
 		comboTenant.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
 		comboTenant.setEditable(false);
-		comboTenant.setBounds(194, 186, 530, 32);
+		comboTenant.setBounds(194, 149, 530, 32);
 		add(comboTenant);
 		
 		// --- RADIO BUTTONS --- //
 		
 		rdbtnPesos = new JRadioButton("Pesos ($)");
 		rdbtnPesos.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
-		rdbtnPesos.setBounds(195, 224, 110, 23);
+		rdbtnPesos.setBounds(195, 192, 110, 23);
 		add(rdbtnPesos);
 		
 		rdbtnUF = new JRadioButton("UF");
 		rdbtnUF.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
-		rdbtnUF.setBounds(195, 250, 58, 23);
+		rdbtnUF.setBounds(195, 218, 58, 23);
 		add(rdbtnUF);
 		
-		ButtonGroup group = new ButtonGroup();
-		group.add(rdbtnPesos);
-		group.add(rdbtnUF);
+		groupCurrency = new ButtonGroup();
+		groupCurrency.add(rdbtnPesos);
+		groupCurrency.add(rdbtnUF);
 		
 		chckbxParking = new JCheckBox("Con Estacionamiento/s");
 		chckbxParking.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
-		chckbxParking.setBounds(750, 143, 200, 23);
+		chckbxParking.setBounds(750, 111, 200, 23);
 		add(chckbxParking);
 		
 		chckbxStorage = new JCheckBox("Con Bodega/s");
 		chckbxStorage.setFont(new Font("Yu Gothic UI Semibold", Font.PLAIN, 16));
-		chckbxStorage.setBounds(1004, 143, 139, 23);
+		chckbxStorage.setBounds(1004, 111, 139, 23);
 		add(chckbxStorage);
 		
+	    // --- END RADIO BUTTONS --- //
+		
+		
+		// --- DATE PICKER --- //	
+		
+		startDatePicker = new DatePicker();
+	        
+		startDatePicker.getComponentToggleCalendarButton().setText("+");
+		startDatePicker.getComponentToggleCalendarButton().setFont(new Font("Segoe UI", Font.BOLD, 12));
+		startDatePicker.getComponentDateTextField().setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 18));
+		startDatePicker.setBounds(559, 192, 165, 30);
+	    add(startDatePicker);
+	        
+	    startDatePicker.getComponentToggleCalendarButton().addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    	}
+	    });
+	        
+	    endDatePicker = new DatePicker();
+	    FormLayout formLayout = (FormLayout) endDatePicker.getLayout();
+	    endDatePicker.getComponentToggleCalendarButton().setText("+");
+	    endDatePicker.getComponentToggleCalendarButton().setFont(new Font("Segoe UI", Font.BOLD, 12));
+	    endDatePicker.getComponentDateTextField().setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 18));
+	    endDatePicker.setBounds(560, 229, 164, 30);
+	    add(endDatePicker);
+	        
+	    endDatePicker.getComponentToggleCalendarButton().addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+	    	}
+	    });
+	
 		panel_Parking = new JPanel();
 		panel_Parking.setLayout(null); 
 		//panelEstacionamientos.setOpaque(false);
-		panel_Parking.setBounds(750, 173, 199, 192);
+		panel_Parking.setBounds(750, 141, 199, 192);
 		panel_Parking.setBackground(new Color(187, 187, 187)); 
 		panel_Parking.setVisible(false); // Initially hidden, only shown when Flat or Office is selected
 		//panelEstacionamientos.setOpaque(true);  // para que el fondo blanco se aplique
@@ -282,11 +343,13 @@ public class RentalsPanel extends JPanel {
 		
 		panel_Storage = new JPanel();
 		panel_Storage.setLayout(null);
-        panel_Storage.setBounds(1004, 173, 200, 192);
+        panel_Storage.setBounds(1004, 141, 200, 192);
         panel_Storage.setBackground(new Color(187, 187, 187)); 
         panel_Storage.setVisible(false); // Initially hidden, only shown when Flat or Office is selected
         add(panel_Storage);
         setComponentZOrder(panel_Storage, 0);
+        
+       
 		
 
 		// ActionListener for Radio Buttons
@@ -331,47 +394,104 @@ public class RentalsPanel extends JPanel {
 				
 	}
 	
+	private void drawStorages(List<Storage> storages) {
+	    panel_Storage.removeAll();
+	    panel_Storage.setVisible(!storages.isEmpty());
+
+	    int i = 0;
+	    for (Storage storage : storages) {
+	        JPanel miniForm = getStorage(storage, i + 1);
+	        miniForm.setBounds(i * 233, 0, 230, 90);
+	        panel_Storage.add(miniForm);
+	        i++;
+	    }
+
+	    panel_Storage.revalidate();
+	    panel_Storage.repaint();
+	}
+
+	private void drawParkings(List<Parking> parkings) {
+	    panel_Parking.removeAll();
+	    panel_Parking.setVisible(!parkings.isEmpty());
+
+	    int i = 0;
+	    for (Parking parking : parkings) {
+	        JPanel miniForm = getParking(parking, i + 1);
+	        miniForm.setBounds(i * 233, 0, 230, 90);
+	        panel_Parking.add(miniForm);
+	        i++;
+	    }
+
+	    panel_Parking.revalidate();
+	    panel_Parking.repaint();
+	}
 	
-//	public JPanel getParkings(int parkingQty) {
-//	    JPanel panelParking = new JPanel();
-//	    panelParking.setBorder(BorderFactory.createTitledBorder("Estacionamiento #" + parkingQty)); // SPANISH for "Parking #"
-//	    panelParking.setBackground(Color.LIGHT_GRAY);
-//	    panelParking.setLayout(null);
-//	    
-//	    JComboBox<String> tipoCombo = new JComboBox<>(new String[]{"Cubierto", "Descubierto"}); // SPANISH for "Covered", "Uncovered"
-//	    tipoCombo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-//	    tipoCombo.setBounds(50, 28, 116, 30);
-//	   // panelParking.add(tipoCombo);
-//	    
-//	    txtPrkngRol = new JTextField(10);
-//	    txtPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-//	    txtPrkngRol.setBounds(65, 20, 60, 30);
-//	    panelParking.add(txtPrkngRol);
-//	    
-//	    txtPrkngNum = new JTextField(10);
-//	    txtPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 16));
-//	    txtPrkngNum.setBounds(65, 50, 60, 30);
-//	    panelParking.add(txtPrkngNum);
-//
-//	    JLabel lblPrkngType = new JLabel("Tipo:");
-//	    lblPrkngType.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-//	    lblPrkngType.setBounds(20, 28, 116, 16);
-//	   // panelParking.add(lblPrkngType);
-//	   
-//	    JLabel lblPrkngRol = new JLabel("ROL:");
-//	    lblPrkngRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-//	    lblPrkngRol.setBounds(20, 25, 116, 16);
-//	    panelParking.add(lblPrkngRol);
-//	    
-//	    JLabel lblPrkngNum = new JLabel("Nº:");
-//	    lblPrkngNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
-//	    lblPrkngNum.setBounds(20, 55, 116, 16);
-//	    panelParking.add(lblPrkngNum);
-//	    
-//	    
-//	    ParkingForm form = new ParkingForm(txtPrkngRol, tipoCombo, txtPrkngNum);
-//	    parkingForms.add(form); // ✅ agregamos el formulario a la lista
-//	    
-//	    return panelParking;
-//	}
+	private void onPropertySelected(PropertyOption propertyOption) {
+	    // Aquí deberías tener un ID único del Flat
+	    int flatId = propertyOption.getId(); 
+	    System.out.println("DEBUG - Flat ID selected: " + flatId);
+	    // Solo si es Flat (o si tu sistema también aplica para Office, etc.)
+	    if ("Flat".equals(propertyOption.getValue())) {
+	    	System.out.println("DEBUG - Loading Storages and Parkings for Flat ID: " + flatId);
+	        List<Storage> storages = StorageDAO.getStoragesByFlatId(flatId);
+	        System.out.println("DEBUG - Storages found: " + storages.size());
+	        List<Parking> parkings = ParkingDAO.getParkingsByFlatId(flatId);
+	        System.out.println("DEBUG - Parkings found: " + parkings.size());
+
+	        drawStorages(storages);
+	        drawParkings(parkings);
+	    } else {
+	        panel_Storage.setVisible(false);
+	        panel_Parking.setVisible(false);
+	    }
+	}
+	
+	private JPanel getParking(Parking parking, int index) {
+	    JPanel panelStorage = new JPanel();
+	    panelStorage.setBorder(BorderFactory.createTitledBorder("Bodega #" + index));
+	    panelStorage.setBackground(Color.LIGHT_GRAY);
+	    panelStorage.setLayout(null);
+
+	    JLabel lblRol = new JLabel("ROL: " + parking.getRolSII());
+	    lblRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblRol.setBounds(20, 25, 200, 16);
+	    panelStorage.add(lblRol);
+
+	    JLabel lblNum = new JLabel("Nº: " + parking.getNum1());
+	    lblNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblNum.setBounds(20, 45, 200, 16);
+	    panelStorage.add(lblNum);
+
+	    JLabel lblSize = new JLabel("Superficie m²: " + parking.getSize());
+	    lblSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblSize.setBounds(20, 65, 200, 16);
+	    panelStorage.add(lblSize);
+
+	    return panelStorage;
+	}
+	
+	private JPanel getStorage(Storage storage, int index) {
+	    JPanel panelStorage = new JPanel();
+	    panelStorage.setBorder(BorderFactory.createTitledBorder("Bodega #" + index));
+	    panelStorage.setBackground(Color.LIGHT_GRAY);
+	    panelStorage.setLayout(null);
+
+	    JLabel lblRol = new JLabel("ROL: " + storage.getRolSII());
+	    lblRol.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblRol.setBounds(20, 25, 200, 16);
+	    panelStorage.add(lblRol);
+
+	    JLabel lblNum = new JLabel("Nº: " + storage.getNum1());
+	    lblNum.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblNum.setBounds(20, 45, 200, 16);
+	    panelStorage.add(lblNum);
+
+	    JLabel lblSize = new JLabel("Superficie m²: " + storage.getSize());
+	    lblSize.setFont(new Font("Yu Gothic UI Light", Font.BOLD, 16));
+	    lblSize.setBounds(20, 65, 200, 16);
+	    panelStorage.add(lblSize);
+
+	    return panelStorage;
+	}
+	
 }
